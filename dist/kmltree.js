@@ -99,6 +99,14 @@ var openBalloon = function(kmlObject, plugin, whitelisted){
 
 var kmltree = (function(){
 
+    // can be removed when the following ticket is resolved:
+    // http://code.google.com/p/earth-api-samples/issues/detail?id=290&q=label%3AType-Defect&sort=-stars%20-status&colspec=ID%20Type%20Summary%20Component%20OpSys%20Browser%20Status%20Stars
+    function qualifyURL(url) {
+        var a = document.createElement('a');
+        a.href = url;
+        return a.href;
+    }
+
     var NetworkLinkQueue = function(opts){
         if(opts['success'] && opts['error'] && opts['tree'] && opts['my']){
             this.queue = [];
@@ -253,14 +261,7 @@ var kmltree = (function(){
                 throw('KML already loaded');
             }
             showLoading();
-            var url = opts.url;
-            // can be removed when the following ticket is resolved:
-            // http://code.google.com/p/earth-api-samples/issues/detail?id=290&q=label%3AType-Defect&sort=-stars%20-status&colspec=ID%20Type%20Summary%20Component%20OpSys%20Browser%20Status%20Stars
-            if(!url.match('http')){
-                url = window.location.protocol + "//" + window.location.host +
-                    "/" + url;
-                url = url.replace(/(\w)\/\//g, '$1/');
-            }
+            var url = qualifyURL(opts.url);
             if(cachebust || opts.bustCache){
                 var buster = (new Date()).getTime();
                 if(url.indexOf('?') === -1){
