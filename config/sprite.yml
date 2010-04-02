@@ -1,0 +1,8 @@
+# css sprite generation config
+# for instructions, see http://github.com/merbjedi/sprite
+
+config:
+  style: sass_mixin
+  style_output_path: sass/_sprites
+  public_path: src/
+  sprites_class: 'sprites'

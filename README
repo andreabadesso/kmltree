@@ -1,0 +1,10 @@
+To build kmltree, just run the default rake command:
+
+$ rake
+
+This will download the Google Closure Compiler if you don't already have it
+under compiler/compiler.jar. Run clobber to update the closure compiler next
+time you build kmltree:
+
+$ rake clobber
+$ rake
