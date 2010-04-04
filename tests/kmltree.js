@@ -790,7 +790,7 @@ module('kmlTree');
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');            
             var grid = $('.kmltreetest').find('span.name:contains(Grid)').parent();
             var icon = grid.find('>span.icon').css('background-image');
-            equals(icon, "url(http://marinemap.googlecode.com/svn/trunk/media/common/images/silk/sport_golf.png)");
+            ok(icon.indexOf('http://marinemap.googlecode.com/svn/trunk/media/common/images/silk/sport_golf.png') !== -1);
             tree.destroy();
             $('.kmltreetest').remove();
             start();
