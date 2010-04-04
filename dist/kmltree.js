@@ -57,44 +57,13 @@ kmldom = (function(){
 })();
 
 
-
-// src/openBalloon.js
-
-// For some reason GEAPI can't switch between features when opening new
-// balloons accurately. Have to clear the old popup and add a timeout to
-// make sure the balloon A is closed before balloon b is opened.
-var openBalloon = function(kmlObject, plugin, whitelisted){
-    var a = plugin.getBalloon();
-    if(a){
-        // there is already a balloon(a) open
-        var f = a.getFeature();
-        if(f !== kmlObject){
-            // not trying to re-open the same balloon
-            plugin.setBalloon(null);
-            // try this function again in 50ms
-            setTimeout(function(){
-                openBalloon(kmlObject, plugin, whitelisted);
-            }, 10);
-            // setTimeout(openBalloon, 10, [kmlObject, plugin, whitelisted]);
-        }
-    }else{
-        // if balloon A closed or never existed, create & open balloon B
-        kmlObject.setVisibility(true);
-        if(whitelisted && kmlObject.getDescription()){
-            var b = plugin.createHtmlStringBalloon('');
-            b.setFeature(kmlObject); // optional
-            b.setContentString(kmlObject.getDescription());
-            plugin.setBalloon(b);
-        }else{
-            var b = plugin.createFeatureBalloon('');
-            b.setFeature(kmlObject);
-            setTimeout(function(){
-                plugin.setBalloon(b);
-            }, 10);
-        }
-    }
-};
-
+openBalloon = function(kmlObject, plugin, whitelisted){
+    kmlObject.setVisibility(true);
+    var b = plugin.createHtmlStringBalloon('');
+    b.setFeature(kmlObject); // optional
+    b.setContentString(kmlObject.getDescription());
+    plugin.setBalloon(b);   
+}
 // src/kmltree.js
 
 var kmltree = (function(){
@@ -185,7 +154,7 @@ var kmltree = (function(){
         '<%= customClass %> ',
         '<%= (visible ? "visible " : "") %>',
         '<%= (customIcon ? "hasIcon " : "") %>',
-        '<%= (fireEvents ? "fireEvents " : "") %>',
+        // '<%= (fireEvents ? "fireEvents " : "") %>',
         '<%= (alwaysRenderNodes ? "alwaysRenderNodes " : "") %>',
         '<%= (select ? "select " : "") %>',
         '<%= (open ? "open " : "") %>',
@@ -215,7 +184,7 @@ var kmltree = (function(){
     
     var constructor_defaults = {
         enableSelection: function(){return false;},
-        fireEvents: function(){return false;},
+        // fireEvents: function(){return false;},
         visitFunction: function(kmlObject, config){return config},
         openNetworkLinks: true,
         restoreStateOnRefresh: true,
@@ -229,6 +198,12 @@ var kmltree = (function(){
         
         
     return function(opts){
+        
+        if(parseFloat(opts.ge.getPluginVersion()) < 5.2){
+            alert('kmltree requires a version of the Google Earth Plugin >= 5.2. Please <a href="http://code.google.com/apis/earth/">upgrade to the newest version</a>.');
+            throw('old version of google earth api');
+        }
+        
         var that = {};
         var errorCount = 0;
         var lookupTable = {};
@@ -494,7 +469,7 @@ var kmltree = (function(){
                             description: this.getDescription(),
                             snippet: snippet,
                             select: opts.enableSelection(this),
-                            fireEvents: opts.fireEvents(this),
+                            // fireEvents: opts.fireEvents(this),
                             listItemType: getListItemType(this),
                             customIcon: customIcon(this),
                             customClass: '',
@@ -965,7 +940,8 @@ var kmltree = (function(){
         
         that.walk = walk;
         var id = opts.element.attr('id');
-                
+        
+        
         $('#'+id+' li > span.name').live('click', function(){
             var node = $(this).parent();
             var kmlObject = lookup(node);
@@ -981,18 +957,19 @@ var kmltree = (function(){
                     openBalloon(kmlObject, ge, opts['whiteListed']);
                 }                
             }
-            if(node.hasClass('fireEvents')){
+            // if(node.hasClass('fireEvents')){
                 $(that).trigger('click', [node[0], kmlObject]);
-            }
+            // }
             // node.trigger('mouseup');
         });
-            
-        $('#'+id+' li.fireEvents > span.name').live('contextmenu', function(){
+
+        $('#'+id+' li > span.name').live('contextmenu', function(){            
+        // $('#'+id+' li.fireEvents > span.name').live('contextmenu', function(){
             var parent = $(this).parent();
             var kmlObject = lookup(parent);
-            if(parent.hasClass('fireEvents')){
+            // if(parent.hasClass('fireEvents')){
                 $(that).trigger('contextmenu', [parent[0], kmlObject]);
-            }
+            // }
         });
         
         // Events to handle clearing selection
@@ -1041,9 +1018,9 @@ var kmltree = (function(){
                 }else{
                     toggleVisibility(node, toggle);                    
                 }
-                if(node.hasClass('fireEvents')){
+                // if(node.hasClass('fireEvents')){
                     $(that).trigger('toggleItem', [node, toggle]);
-                }
+                // }
             }
         });
         
@@ -1076,9 +1053,9 @@ var kmltree = (function(){
                     });
                 }
             }
-            if(node.hasClass('fireEvents')){
+            // if(node.hasClass('fireEvents')){
                 $(that).trigger('dblclick', [node, kmlObject]);
-            }
+            // }
             
         });
         

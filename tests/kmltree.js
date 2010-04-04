@@ -21,7 +21,8 @@ module('kmlTree');
     // given the name of a file within examples/kml, creates an absolute url
     // to it, appending ?r=revision if necessary
     function example(filename){
-        var url = 'http://kmltree.googlecode.com/hg/examples/kml/' + filename;
+        var url = '../examples/kml/' + filename;
+        // var url = 'http://kmltree.googlecode.com/hg/examples/kml/' + filename;
         var r = getParameterByName('r');
         if(r !== ''){
             url = url + '?r=' + r;
@@ -48,7 +49,7 @@ module('kmlTree');
         ok(errors);
 
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('hello.kml'),
             gex: gex, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
@@ -60,17 +61,17 @@ module('kmlTree');
         $('.kmltreetest').remove();
     });
 
-    earthAsyncTest('load kml, fire kmlLoaded event', 2, function(ge, gex){
+    earthAsyncTest('load kml, fire kmlLoaded event. <a href="../examples/kmlLoaded.html">example</a>', 2, function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('hello.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            bustCache: false
+            bustCache: true
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
@@ -79,13 +80,13 @@ module('kmlTree');
             start();
         });
         ok(tree !== false, 'Tree initialized');
-        tree.load(true);
+        tree.load();
     });
 
-    earthAsyncTest('click events', 4, function(ge, gex){
+    earthAsyncTest('click events <a href="../examples/clickEvents.html">example</a>', 4, function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('clickEvents.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -97,11 +98,11 @@ module('kmlTree');
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(Placemark without description)')
+            $('.kmltreetest').find('span.name:contains(Click Me)')
                 .click();
         });
         $(tree).bind('click', function(e, node, kmlObject){
-            equals(kmlObject.getName(), 'Placemark without description');
+            equals(kmlObject.getName(), 'Click Me');
             equals(e.target, tree);
             tree.destroy();
             $('.kmltreetest').remove();
