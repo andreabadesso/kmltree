@@ -1,0 +1,78 @@
+html, body {
+    margin:0px;
+    padding:0px;
+}
+
+#tree {
+    float:left;
+    width:300px;
+    height: 400px;
+}
+
+#map3d {
+    position:absolute;
+    left:450px;
+    height: 400px;
+    width: 600px;
+}
+
+h1 {
+    font-size:24px;
+    font-weight:normal;
+    font-family:sans-serif;
+    color:#DBE8EB;
+    margin:0;
+    padding:10px;
+    background-image : -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.41, rgb(36,45,57)),
+        color-stop(0.65, rgb(49,58,75)),
+        color-stop(0.86, rgb(57,68,85))
+    );
+    
+    background-image: -moz-linear-gradient(
+        center bottom,
+        rgb(36,45,57) 41%,
+        rgb(49,58,75) 65%,
+        rgb(57,68,85) 86%
+    );
+}
+
+h1 a, h1 a:visited {
+    color:#DBE8EB;
+}
+
+#nav {
+    margin:0px;
+    margin-top:7px;
+    position:absolute;
+    top:0px;
+    right:5px;
+    padding:5px;
+    list-style:none;
+}
+
+#nav a, #nav a:visited {
+    color:#DBE8EB;
+}
+
+#nav li {
+    margin:0px;
+    padding:0px;
+    float:left;
+}
+
+a.src {
+    padding:10px;
+    position:relative;
+    top:10px;
+    left:10px;
+    padding-left:20px;
+    background: white url(kml.png) no-repeat left center;
+}
+
+p.description {
+    padding:10px;
+}
