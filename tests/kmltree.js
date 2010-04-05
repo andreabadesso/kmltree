@@ -253,31 +253,31 @@ module('kmlTree');
         tree.load(true);
     });
 
-    earthAsyncTest('optional title support', function(ge, gex){
-        $(document.body).append('<div class="kmltreetest"></div>');
-        var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
-            ge: ge, 
-            gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
-            element: $('.kmltreetest'),
-            trans: trans,
-            title: true,
-            bustCache: false
-        });
-        $(tree).bind('kmlLoaded', function(e, kmlObject){
-            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
-            var title = $('.kmltreetest').find('h4:contains(kmlForestTest.kmz)');
-            equals(title.length, 1);
-            ok(title.hasClass('marinemap-kmltree-title'))
-            tree.destroy();
-            $('.kmltreetest').remove();
-            start();
-        });
-        ok(tree !== false, 'Tree initialized');
-        tree.load(true);
-    });
+    // earthAsyncTest('optional title support', function(ge, gex){
+    //     $(document.body).append('<div class="kmltreetest"></div>');
+    //     var tree = kmltree({
+    //         url: example('kmlForestTest.kmz'),
+    //         ge: ge, 
+    //         gex: gex, 
+    //         animate: false, 
+    //         map_div: $('#map3d'), 
+    //         element: $('.kmltreetest'),
+    //         trans: trans,
+    //         title: true,
+    //         bustCache: false
+    //     });
+    //     $(tree).bind('kmlLoaded', function(e, kmlObject){
+    //         ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+    //         var title = $('.kmltreetest').find('h4:contains(kmlForestTest.kmz)');
+    //         equals(title.length, 1);
+    //         ok(title.hasClass('marinemap-kmltree-title'))
+    //         tree.destroy();
+    //         $('.kmltreetest').remove();
+    //         start();
+    //     });
+    //     ok(tree !== false, 'Tree initialized');
+    //     tree.load(true);
+    // });
 
     earthAsyncTest('supports kml <a href="http://code.google.com/apis/kml/documentation/kmlreference.html#open">open tag</a>', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
@@ -289,7 +289,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -318,7 +317,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -352,7 +350,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -381,7 +378,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -408,7 +404,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -435,7 +430,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -464,7 +458,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -496,7 +489,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -537,7 +529,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -601,7 +592,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -625,7 +615,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -670,7 +659,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -714,7 +702,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -756,7 +743,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -782,7 +768,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false,
             supportItemIcon: true
         });
@@ -810,7 +795,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -839,7 +823,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -873,7 +856,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -904,7 +886,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -938,7 +919,6 @@ module('kmlTree');
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
             trans: trans,
-            title: true,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
