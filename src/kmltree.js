@@ -145,8 +145,7 @@ var kmltree = (function(){
         var ge = opts.gex.pluginInstance;
 
         if(parseFloat(ge.getPluginVersion()) < 5.1){
-            alert('kmltree requires a version of the Google Earth Plugin >= 5.1. Please <a href="http://code.google.com/apis/earth/">upgrade to the newest version</a>.');
-            throw('old version of google earth api');
+            throw('kmltree requires a google earth plugin version >= 5.1');
         }
                 
         if(!opts.url || !opts.gex || !opts.element || !opts.trans){
