@@ -188,7 +188,7 @@ var kmltree = (function(){
         visitFunction: function(kmlObject, config){return config},
         openNetworkLinks: true,
         restoreStateOnRefresh: true,
-        showTitle: true,
+        // showTitle: true,
         bustCache: false,
         restoreState: false,
         // whiteListed: false,
@@ -209,12 +209,9 @@ var kmltree = (function(){
         var opts = jQuery.extend({}, constructor_defaults, opts);
         var ge = opts.gex.pluginInstance;
 
-        console.log(parseFloat(ge.getPluginVersion()), ge.getPluginVersion());
         if(parseFloat(ge.getPluginVersion()) < 5.1){
-            alert('kmltree requires a version of the Google Earth Plugin >= 5.2. Please <a href="http://code.google.com/apis/earth/">upgrade to the newest version</a>.');
-            throw('old version of google earth api');
+            throw('kmltree requires a google earth plugin version >= 5.1');
         }
-
                 
         if(!opts.url || !opts.gex || !opts.element || !opts.trans){
             throw('kmlTree must be called with options url, gex, trans & element');
@@ -378,9 +375,9 @@ var kmltree = (function(){
                     // show error
                     setTimeout(function() {
                         var content = '<div class="marinemap-kmltree">';
-                        if(opts.title){
+                        // if(opts.title){
                             content += '<h4 class="marinemap-kmltree-title">Error Loading</h4>';
-                        }
+                        // }
                         opts.element.html(content + '<p class="error">could not load kml file. Try clicking <a target="_blank" href="'+url+'">this link</a>, then refreshing the application.</p></div>');
                         $(that).trigger('kmlLoadError', [kmlObject]);
                     },
@@ -396,9 +393,9 @@ var kmltree = (function(){
             
             var rendered = renderOptions(options.children[0].children);
             var content = '<div class="marinemap-kmltree">';
-            if(opts.title){
+            // if(opts.title){
                 content += '<h4 class="marinemap-kmltree-title">'+options.children[0].name+'</h4>';
-            }
+            // }
             opts.element.find('div.marinemap-kmltree').remove();
             opts.element.find('.marinemap-kmltree-loading').before(content + '<ul class="marinemap-kmltree">' + rendered +'</ul></div>');
             ge.getFeatures().appendChild(kmlObject);
