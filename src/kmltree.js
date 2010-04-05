@@ -144,11 +144,10 @@ var kmltree = (function(){
         var opts = jQuery.extend({}, constructor_defaults, opts);
         var ge = opts.gex.pluginInstance;
 
-        if(parseFloat(ge.getPluginVersion()) < 5.2){
-            alert('kmltree requires a version of the Google Earth Plugin >= 5.2. Please <a href="http://code.google.com/apis/earth/">upgrade to the newest version</a>.');
+        if(parseFloat(ge.getPluginVersion()) < 5.1){
+            alert('kmltree requires a version of the Google Earth Plugin >= 5.1. Please <a href="http://code.google.com/apis/earth/">upgrade to the newest version</a>.');
             throw('old version of google earth api');
         }
-
                 
         if(!opts.url || !opts.gex || !opts.element || !opts.trans){
             throw('kmlTree must be called with options url, gex, trans & element');
