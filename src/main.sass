@@ -1,4 +1,7 @@
+@import sprites.sass
+
 div.marinemap-kmltree
+  background-color: #f4f8fb
   font-family: sans-serif
   font-size: 12px
   -moz-user-select: none
@@ -18,6 +21,7 @@ div.marinemap-kmltree
 
   li
     ul
+      padding-top: 5px
       display: none
 
     &.open > ul
@@ -37,8 +41,9 @@ li.marinemap-kmltree-item
   span.name
     color: #313841
 
-  &.hasDescription span.name:hover, &.select > span.name:hover
-    border-bottom: 1px solid #7F7F7F
+  &.hasDescription > span.name
+    color: blue
+    text-decoration: underline
     cursor: pointer
 
 
@@ -59,51 +64,86 @@ span
     height: 16px
 
   &.expander
-    background: transparent url(../images/kmlTreeSprites.png) no-repeat -15px 0px
+    +sprite("kml", "arrow-right")
     margin-left: -16px
 
+    &:hover
+      +sprite("kml", "arrow-right-hover")
 
+    &:active
+      +sprite("kml", "arrow-right-active")
+
+    
 div.marinemap-kmltree li.open > span.expander
-  background: transparent url(../images/kmlTreeSprites.png) no-repeat top left
+  +sprite("kml", "arrow-down")
+  
+  &:hover
+    +sprite("kml", "arrow-down-hover")
 
+  &:active
+    +sprite("kml", "arrow-down-active")
 
 span.toggler
   margin-right: 3px
-  background: transparent url(../images/checkbox.png) no-repeat -15px -20px
+  +sprite("kml", "unchecked")
 
   &:hover
-    background: transparent url(../images/checkbox.png) no-repeat -15px -120px
+    +sprite("kml", "unchecked-hover")
 
+  &:active
+    +sprite("kml", "unchecked-active")
+
+li.checkOffOnly > span.toggler
+  +sprite("kml", "unchecked-checkOffOnly")
 
 li
   &.visible > span.toggler
-    background: transparent url(../images/checkbox.png) no-repeat -15px -220px
+    +sprite("kml", "checked")
 
     &:hover
-      background: transparent url(../images/checkbox.png) no-repeat -15px -320px
+      +sprite("kml", "checked-hover")
+    
+    &:active
+      +sprite("kml", "checked-active")
 
-  &.radioFolder
-    >
-      ul > li
-        > span.toggler
-          margin-right: 3px
-          background: transparent url(../images/radiobutton.png) no-repeat -15px -20px
+  &.radioFolder > ul > li
+    > span.toggler
+      margin-right: 3px
+      +sprite("kml", "radio-off")
 
-          &:hover
-            background: transparent url(../images/radiobutton.png) no-repeat -15px -120px
+      &:hover
+        +sprite("kml", "radio-off-hover")
 
-        &.visible > span.toggler
-          background: transparent url(../images/radiobutton.png) no-repeat -15px -220px
-
-      span.toggler
-        margin-right: 3px
-        background: transparent url(../images/radiobutton.png) no-repeat -15px -20px
-
-        &:hover
-          background: transparent url(../images/radiobutton.png) no-repeat -15px -120px
+      &:active
+        +sprite("kml", "radio-off-active")
 
     &.visible > span.toggler
-      background: transparent url(../images/radiobutton.png) no-repeat -15px -220px
+      margin-right: 3px
+      +sprite("kml", "radio-on")
+
+      &:hover
+        +sprite("kml", "radio-on-hover")
+
+      &:active
+        +sprite("kml", "radio-on-active")
+
+  &.radioFolder > span.toggler
+    +sprite("kml", "radio-off")
+    
+    &:hover
+      +sprite("kml", "radio-off-hover")
+
+    &:active
+      +sprite("kml", "radio-off-active")
+
+  &.radioFolder.visible > span.toggler
+    +sprite("kml", "radio-on")
+
+    &:hover
+      +sprite("kml", "radio-on-hover")
+
+    &:active
+      +sprite("kml", "radio-on-active")
 
   &.KmlPlacemark span.expander, &.KmlPhotoOverlay span.expander, &.KmlGroundOverlay span.expander, &.KmlTour span.expander
     display: none
@@ -123,33 +163,33 @@ li
   &.KmlFolder > span.icon
     margin-right: 3px
     display: block
-    background: transparent url(../images/kmlTreeSprites.png) no-repeat -33px -2px
+    +sprite("kml", "folder")
 
   &.KmlNetworkLink
     > span.icon
       margin-right: 3px
       display: block
-      background: transparent url(../images/kmlTreeSprites.png) no-repeat -33px -2px
+      +sprite("kml", "folder")
 
     &.loading > span.icon
       margin-right: 3px
       display: block
-      background: transparent url(../images/kml-throbber.gif) no-repeat !important
+      background: transparent url(images/kml-throbber.gif) no-repeat !important
 
     &.error > span.icon
       margin-right: 3px
       display: block
-      background: transparent url(../images/kmlTreeSprites.png) no-repeat -81px -2px !important
+      +sprite("kml", "folder_error")
 
   &.KmlTour > span.icon
     margin-right: 3px
     display: block
-    background: transparent url(../images/kmlTreeSprites.png) no-repeat -48px -1px
+    +sprite("kml", "film")
 
   &.KmlPhotoOverlay > span.icon, &.KmlGroundOverlay > span.icon
     margin-right: 3px
     display: block
-    background: transparent url(../images/kmlTreeSprites.png) no-repeat -64px 0px
+    +sprite("kml", "map")
 
   &.customIcon > span.icon
     margin-right: 3px
@@ -205,4 +245,4 @@ div
       font-weight: bold
       height: 40px
       padding-bottom: 15px
-      background: transparent url(../images/ajax-loader.gif) no-repeat center bottom
+      background: transparent url(images/ajax-loader.gif) no-repeat center bottom

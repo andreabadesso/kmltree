@@ -1,15 +1,22 @@
 require 'rake/clean'
 
-CLEAN.include('dist/kmltree.css', 'dist/kmltree.min.js', 'dist/kmltree.js')
+CLEAN.include('dist/kmltree.css', 'dist/kmltree.min.js', 'dist/kmltree.js', 'dist/images', 'src/_sprites.sass', 'sprites-url')
 CLOBBER.include('compiler')
 
 SRC = FileList[ 'src/tmpl.js', 'src/kmldom.js', 'src/openBalloon.js', 
   'src/kmltree.js']
 
-task :default => ["dist/kmltree.css", "dist/kmltree.min.js"]
+task :default => ["dist/kmltree.css", "dist/kmltree.min.js", "dist/images"]
 
-file "dist/kmltree.css" => ["clean", "src/main.sass"] do
+file "dist/kmltree.css" => ["clean", "src/main.sass", "src/_sprites.sass"] do
   sh "sass src/main.sass dist/kmltree.css"
+  sh "sed 's:/sprites-url/::' dist/kmltree.css > out"
+  rm "dist/kmltree.css"
+  mv "out", "dist/kmltree.css"
+end
+
+file "src/_sprites.sass" => ['config/sprite.yml'] do
+  sh "sprite"
 end
 
 file "dist/kmltree.min.js" => ['dist/kmltree.js', 'compiler/compiler.jar'] do 
@@ -35,4 +42,9 @@ file "dist/kmltree.js" do
   end
   cmd << " > dist/kmltree.js"
   sh cmd
+end
+
+file "dist/images" => ["src/_sprites.sass"] do
+  sh "cp -r src/sprites-url/images dist/"
+  sh "rm -rf src/sprites-url"
 end
