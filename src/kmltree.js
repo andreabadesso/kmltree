@@ -154,6 +154,7 @@ var kmltree = (function(){
         
         if(!opts.element.attr('id')){
             opts.element.attr('id', 'kml-tree'+(new Date()).getTime());
+            opts.element.attr('UNSELECTABLE', "on");
         }
         
         if(opts.restoreState){
