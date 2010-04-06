@@ -228,7 +228,9 @@ var kmltree = (function(){
             });
         }
         
-        $(opts.element).css({position: 'relative'});
+        if(opts.element.css('position') !== 'absolute'){
+          $(opts.element).css({position: 'relative'});
+        }
         
         
         var load = function(cachebust){

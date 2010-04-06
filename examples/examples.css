@@ -4,9 +4,10 @@ html, body {
 }
 
 #tree {
-/*    background-color:#f4f8fb;*/
+    position:absolute;
+    top:140px;
+    left:10px;
     padding:10px;
-    float:left;
     width:300px;
     height: 400px;
 }
@@ -14,7 +15,8 @@ html, body {
 #map3d {
     position:absolute;
     left:450px;
-    height: 400px;
+    top:140px;
+    height: 600px;
     width: 600px;
 }
 
