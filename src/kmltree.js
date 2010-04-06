@@ -328,12 +328,12 @@ var kmltree = (function(){
             
             
             var rendered = renderOptions(options.children[0].children);
-            var content = '<div class="marinemap-kmltree">';
+            var content = '<div UNSELECTABLE="on" class="marinemap-kmltree">';
             // if(opts.title){
-                content += '<h4 class="marinemap-kmltree-title">'+options.children[0].name+'</h4>';
+                content += '<h4 UNSELECTABLE="on" class="marinemap-kmltree-title">'+options.children[0].name+'</h4>';
             // }
             opts.element.find('div.marinemap-kmltree').remove();
-            opts.element.find('.marinemap-kmltree-loading').before(content + '<ul class="marinemap-kmltree">' + rendered +'</ul></div>');
+            opts.element.find('.marinemap-kmltree-loading').before(content + '<ul UNSELECTABLE="on" class="marinemap-kmltree">' + rendered +'</ul></div>');
             ge.getFeatures().appendChild(kmlObject);
             var queue = new NetworkLinkQueue({
                 success: function(links){
