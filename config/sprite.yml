@@ -16,10 +16,14 @@ images:
     align: horizontal
     spaced_by: 5
     sources:
-      - famfamfam/icons/folder.png
-      - famfamfam/icons/folder_error.png
+      # - famfamfam/icons/folder.png
+      - folder.png
+      - folder-open.png
+      - folder-error.png
+      # - famfamfam/icons/folder_error.png
       - famfamfam/icons/film.png
       - famfamfam/icons/map.png
+      - superoverlay.png
       - arrow-down.png
       - arrow-down-hover.png
       - arrow-down-active.png
