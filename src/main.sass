@@ -1,19 +1,13 @@
 @import sprites.sass
+@import mixins.sass
 
 div.kmltree
-  // background-color: #E7EDF1
   font-family: sans-serif
   font-size: 12px
-  -moz-user-select: none
-  -khtml-user-select: none
-  -webkit-user-select: none
-  user-select: none
+  +user-select(none)
 
   p.error
-    -moz-user-select: text
-    -khtml-user-select: text
-    -webkit-user-select: none
-    user-select: text
+    +user-select('text')
 
   ul
     list-style: none
@@ -234,9 +228,8 @@ div
     top: 0px
     width: 100%
     height: 100%
-    background-color: #f4f8fb
-    opacity: .8
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"
+    background-color: #FFF
+    +opacity(70)
     text-align: center
 
     span
@@ -245,8 +238,7 @@ div
       top: 0px
       left: 0px
       width: 100%
-      opacity: 1
-      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"
+      +opacity(100)
       font-weight: bold
       height: 40px
       padding-bottom: 15px
