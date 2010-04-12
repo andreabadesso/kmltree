@@ -4,10 +4,10 @@
 div.kmltree
   font-family: sans-serif
   font-size: 12px
-  +user-select(none)
+  +user-select("none")
 
   p.error
-    +user-select('text')
+    +user-select("text")
 
   ul
     list-style: none
@@ -55,7 +55,7 @@ div.kmltree h4.kmltree-title
 
 .expander
   +sprite("kml", "arrow-right")
-  margin-left: -16px
+  margin-left: -17px
 
   &:hover
     +sprite("kml", "arrow-right-hover")
@@ -74,7 +74,7 @@ div.kmltree li.open > .expander
     +sprite("kml", "arrow-down-active")
 
 .toggler
-  margin-right: 3px
+  margin-right: 4px
   +sprite("kml", "unchecked")
 
   &:hover
@@ -98,7 +98,6 @@ li
 
   &.radioFolder > ul > li
     > .toggler
-      margin-right: 3px
       +sprite("kml", "radio-off")
 
       &:hover
@@ -108,7 +107,6 @@ li
         +sprite("kml", "radio-off-active")
 
     &.visible > .toggler
-      margin-right: 3px
       +sprite("kml", "radio-on")
 
       &:hover
@@ -149,47 +147,35 @@ div.kmltree
     padding: 0px
 
 
+li.KmlFolder > .icon, li.KmlNetworkLink > .icon, li.KmlTour > .icon, li.KmlPhotoOverlay >  .icon, li.customIcon > .icon
+  margin-right: 4px
+  display: block
+
 li
   &.KmlFolder > .icon
-    margin-right: 3px
-    display: block
     +sprite("kml", "folder")
 
   &.KmlFolder.open > .icon
-    margin-right: 3px
-    display: block
     +sprite("kml", "folder-open")
 
 
   &.KmlNetworkLink
     > .icon
-      margin-right: 3px
-      display: block
       +sprite("kml", "folder")
 
     &.loading > .icon
-      margin-right: 3px
-      display: block
       background: transparent url(images/kml-throbber.gif) no-repeat !important
 
     &.error > .icon
-      margin-right: 3px
-      display: block
       +sprite("kml", "folder-error")
 
   &.KmlTour > .icon
-    margin-right: 3px
-    display: block
     +sprite("kml", "tour")
 
   &.KmlPhotoOverlay > .icon, &.KmlGroundOverlay > .icon
-    margin-right: 3px
-    display: block
     +sprite("kml", "superoverlay")
 
   &.customIcon > .icon
-    margin-right: 3px
-    display: block
     background: transparent no-repeat
 
   &.kmltree-item p.snippet
