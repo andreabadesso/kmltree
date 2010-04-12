@@ -1,213 +1,214 @@
-div.marinemap-kmltree {
+div.kmltree {
   font-family: sans-serif;
   font-size: 12px;
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
   user-select: none; }
-  div.marinemap-kmltree p.error {
+  div.kmltree p.error {
     -moz-user-select: text;
     -khtml-user-select: text;
     -webkit-user-select: none;
     user-select: text; }
-  div.marinemap-kmltree ul {
+  div.kmltree ul {
     list-style: none;
     padding-left: 18px; }
-  div.marinemap-kmltree li ul {
+  div.kmltree li ul {
     padding-top: 5px;
     display: none; }
-  div.marinemap-kmltree li.open > ul {
+  div.kmltree li.open > ul {
     display: block; }
 
 span.kmlId, span.nlDocId {
   display: none; }
 
-li.marinemap-kmltree-item {
+li.kmltree-item {
   white-space: nowrap;
   margin: 0em 0;
   padding: 5px 0; }
-  li.marinemap-kmltree-item span.name {
+  li.kmltree-item span.name {
     color: #313841; }
-  li.marinemap-kmltree-item.hasDescription > span.name {
+  li.kmltree-item.hasDescription > span.name {
     color: blue;
     text-decoration: underline;
     cursor: pointer; }
 
-div.marinemap-kmltree h4.marinemap-kmltree-title {
+div.kmltree h4.kmltree-title {
   color: #6C7C90;
   font-weight: bold;
   margin: 0 0 -5px 0;
   text-shadow: #FCFAFF 0px 1px 0px;
   -moz-text-shadow: #FCFAFF 0px 1px 0px; }
 
-span.expander, span.toggler, span.icon {
+.expander, .toggler, .icon {
   margin: 0;
   padding: 0;
   float: left;
   width: 16px;
   height: 16px; }
-span.expander {
-  background: url('images/sprites/kml.png?1271109983') no-repeat -168px 0px;
+
+.expander {
+  background: url('images/sprites/kml.png?1271111895') no-repeat -168px 0px;
   width: 16px;
   height: 16px;
   margin-left: -16px; }
-  span.expander:hover {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -189px 0px;
+  .expander:hover {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -189px 0px;
     width: 16px;
     height: 16px; }
-  span.expander:active {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -210px 0px;
+  .expander:active {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -210px 0px;
     width: 16px;
     height: 16px; }
 
-div.marinemap-kmltree li.open > span.expander {
-  background: url('images/sprites/kml.png?1271109983') no-repeat -105px 0px;
+div.kmltree li.open > .expander {
+  background: url('images/sprites/kml.png?1271111895') no-repeat -105px 0px;
   width: 16px;
   height: 16px; }
-  div.marinemap-kmltree li.open > span.expander:hover {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -126px 0px;
+  div.kmltree li.open > .expander:hover {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -126px 0px;
     width: 16px;
     height: 16px; }
-  div.marinemap-kmltree li.open > span.expander:active {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -147px 0px;
+  div.kmltree li.open > .expander:active {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -147px 0px;
     width: 16px;
     height: 16px; }
 
-span.toggler {
+.toggler {
   margin-right: 3px;
-  background: url('images/sprites/kml.png?1271109983') no-repeat -231px 0px;
+  background: url('images/sprites/kml.png?1271111895') no-repeat -231px 0px;
   width: 16px;
   height: 16px; }
-  span.toggler:hover {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -273px 0px;
+  .toggler:hover {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -273px 0px;
     width: 16px;
     height: 16px; }
-  span.toggler:active {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -294px 0px;
+  .toggler:active {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -294px 0px;
     width: 16px;
     height: 16px; }
 
-li.checkOffOnly > span.toggler {
-  background: url('images/sprites/kml.png?1271109983') no-repeat -252px 0px;
+li.checkOffOnly > .toggler {
+  background: url('images/sprites/kml.png?1271111895') no-repeat -252px 0px;
   width: 16px;
   height: 16px; }
 
-li.visible > span.toggler {
-  background: url('images/sprites/kml.png?1271109983') no-repeat -315px 0px;
+li.visible > .toggler {
+  background: url('images/sprites/kml.png?1271111895') no-repeat -315px 0px;
   width: 16px;
   height: 16px; }
-  li.visible > span.toggler:hover {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -336px 0px;
+  li.visible > .toggler:hover {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -336px 0px;
     width: 16px;
     height: 16px; }
-  li.visible > span.toggler:active {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -357px 0px;
+  li.visible > .toggler:active {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -357px 0px;
     width: 16px;
     height: 16px; }
-li.radioFolder > ul > li > span.toggler {
+li.radioFolder > ul > li > .toggler {
   margin-right: 3px;
-  background: url('images/sprites/kml.png?1271109983') no-repeat -378px 0px;
+  background: url('images/sprites/kml.png?1271111895') no-repeat -378px 0px;
   width: 16px;
   height: 16px; }
-  li.radioFolder > ul > li > span.toggler:hover {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -399px 0px;
+  li.radioFolder > ul > li > .toggler:hover {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -399px 0px;
     width: 16px;
     height: 16px; }
-  li.radioFolder > ul > li > span.toggler:active {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -420px 0px;
+  li.radioFolder > ul > li > .toggler:active {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -420px 0px;
     width: 16px;
     height: 16px; }
-li.radioFolder > ul > li.visible > span.toggler {
+li.radioFolder > ul > li.visible > .toggler {
   margin-right: 3px;
-  background: url('images/sprites/kml.png?1271109983') no-repeat -441px 0px;
+  background: url('images/sprites/kml.png?1271111895') no-repeat -441px 0px;
   width: 16px;
   height: 16px; }
-  li.radioFolder > ul > li.visible > span.toggler:hover {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -462px 0px;
+  li.radioFolder > ul > li.visible > .toggler:hover {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -462px 0px;
     width: 16px;
     height: 16px; }
-  li.radioFolder > ul > li.visible > span.toggler:active {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -483px 0px;
+  li.radioFolder > ul > li.visible > .toggler:active {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -483px 0px;
     width: 16px;
     height: 16px; }
-li.radioFolder > span.toggler {
-  background: url('images/sprites/kml.png?1271109983') no-repeat -378px 0px;
+li.radioFolder > .toggler {
+  background: url('images/sprites/kml.png?1271111895') no-repeat -378px 0px;
   width: 16px;
   height: 16px; }
-  li.radioFolder > span.toggler:hover {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -399px 0px;
+  li.radioFolder > .toggler:hover {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -399px 0px;
     width: 16px;
     height: 16px; }
-  li.radioFolder > span.toggler:active {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -420px 0px;
+  li.radioFolder > .toggler:active {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -420px 0px;
     width: 16px;
     height: 16px; }
-li.radioFolder.visible > span.toggler {
-  background: url('images/sprites/kml.png?1271109983') no-repeat -441px 0px;
+li.radioFolder.visible > .toggler {
+  background: url('images/sprites/kml.png?1271111895') no-repeat -441px 0px;
   width: 16px;
   height: 16px; }
-  li.radioFolder.visible > span.toggler:hover {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -462px 0px;
+  li.radioFolder.visible > .toggler:hover {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -462px 0px;
     width: 16px;
     height: 16px; }
-  li.radioFolder.visible > span.toggler:active {
-    background: url('images/sprites/kml.png?1271109983') no-repeat -483px 0px;
+  li.radioFolder.visible > .toggler:active {
+    background: url('images/sprites/kml.png?1271111895') no-repeat -483px 0px;
     width: 16px;
     height: 16px; }
-li.KmlPlacemark span.expander, li.KmlPhotoOverlay span.expander, li.KmlGroundOverlay span.expander, li.KmlTour span.expander {
+li.KmlPlacemark .expander, li.KmlPhotoOverlay .expander, li.KmlGroundOverlay .expander, li.KmlTour .expander {
   display: none; }
 
-div.marinemap-kmltree li.checkHideChildren ul, div.marinemap-kmltree li.checkHideChildren span.expander {
+div.kmltree li.checkHideChildren ul, div.kmltree li.checkHideChildren .expander {
   display: none; }
-div.marinemap-kmltree span.icon {
+div.kmltree .icon {
   display: none;
   padding: 0px; }
 
-li.KmlFolder > span.icon {
+li.KmlFolder > .icon {
   margin-right: 3px;
   display: block;
-  background: url('images/sprites/kml.png?1271109983') no-repeat 0px 0px;
+  background: url('images/sprites/kml.png?1271111895') no-repeat 0px 0px;
   width: 16px;
   height: 16px; }
-li.KmlFolder.open > span.icon {
+li.KmlFolder.open > .icon {
   margin-right: 3px;
   display: block;
-  background: url('images/sprites/kml.png?1271109983') no-repeat -21px 0px;
+  background: url('images/sprites/kml.png?1271111895') no-repeat -21px 0px;
   width: 16px;
   height: 16px; }
-li.KmlNetworkLink > span.icon {
+li.KmlNetworkLink > .icon {
   margin-right: 3px;
   display: block;
-  background: url('images/sprites/kml.png?1271109983') no-repeat 0px 0px;
+  background: url('images/sprites/kml.png?1271111895') no-repeat 0px 0px;
   width: 16px;
   height: 16px; }
-li.KmlNetworkLink.loading > span.icon {
+li.KmlNetworkLink.loading > .icon {
   margin-right: 3px;
   display: block;
   background: transparent url(images/kml-throbber.gif) no-repeat !important; }
-li.KmlNetworkLink.error > span.icon {
+li.KmlNetworkLink.error > .icon {
   margin-right: 3px;
   display: block;
-  background: url('images/sprites/kml.png?1271109983') no-repeat -42px 0px;
+  background: url('images/sprites/kml.png?1271111895') no-repeat -42px 0px;
   width: 16px;
   height: 16px; }
-li.KmlTour > span.icon {
+li.KmlTour > .icon {
   margin-right: 3px;
   display: block;
-  background: url('images/sprites/kml.png?1271109983') no-repeat -63px 0px;
+  background: url('images/sprites/kml.png?1271111895') no-repeat -63px 0px;
   width: 16px;
   height: 16px; }
-li.KmlPhotoOverlay > span.icon, li.KmlGroundOverlay > span.icon {
+li.KmlPhotoOverlay > .icon, li.KmlGroundOverlay > .icon {
   margin-right: 3px;
   display: block;
-  background: url('images/sprites/kml.png?1271109983') no-repeat -84px 0px;
+  background: url('images/sprites/kml.png?1271111895') no-repeat -84px 0px;
   width: 16px;
   height: 16px; }
-li.customIcon > span.icon {
+li.customIcon > .icon {
   margin-right: 3px;
   display: block;
   background: transparent no-repeat; }
-li.marinemap-kmltree-item p.snippet {
+li.kmltree-item p.snippet {
   text-indent: 0px;
   width: 80%;
   margin: 5px 0px 5px 20px;
@@ -219,16 +220,16 @@ span.name {
   position: relative;
   top: 1px; }
 
-div.marinemap-kmltree li.selected {
+div.kmltree li.selected {
   background-color: #B2E1FF;
   padding-left: 5px;
   margin-left: -5px; }
-  div.marinemap-kmltree li.selected > span.name {
+  div.kmltree li.selected > span.name {
     font-weight: bold;
     border-bottom: none; }
-    div.marinemap-kmltree li.selected > span.name:hover {
+    div.kmltree li.selected > span.name:hover {
       border: none; }
-div.marinemap-kmltree-loading {
+div.kmltree-loading {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -238,7 +239,7 @@ div.marinemap-kmltree-loading {
   opacity: .8;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
   text-align: center; }
-  div.marinemap-kmltree-loading span {
+  div.kmltree-loading span {
     position: absolute;
     padding-top: 20px;
     top: 0px;

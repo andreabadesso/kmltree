@@ -1,6 +1,6 @@
 @import sprites.sass
 
-div.marinemap-kmltree
+div.kmltree
   // background-color: #E7EDF1
   font-family: sans-serif
   font-size: 12px
@@ -33,7 +33,7 @@ span
     display: none
 
 
-li.marinemap-kmltree-item
+li.kmltree-item
   white-space: nowrap
   margin: 0em 0
   padding: 5px 0
@@ -47,7 +47,7 @@ li.marinemap-kmltree-item
     cursor: pointer
 
 
-div.marinemap-kmltree h4.marinemap-kmltree-title
+div.kmltree h4.kmltree-title
   color: #6C7C90
   font-weight: bold
   margin: 0 0 -5px 0
@@ -55,26 +55,25 @@ div.marinemap-kmltree h4.marinemap-kmltree-title
   -moz-text-shadow: #FCFAFF 0px 1px 0px
 
 
-span
-  &.expander, &.toggler, &.icon
-    margin: 0
-    padding: 0
-    float: left
-    width: 16px
-    height: 16px
+.expander, .toggler, .icon
+  margin: 0
+  padding: 0
+  float: left
+  width: 16px
+  height: 16px
 
-  &.expander
-    +sprite("kml", "arrow-right")
-    margin-left: -16px
+.expander
+  +sprite("kml", "arrow-right")
+  margin-left: -16px
 
-    &:hover
-      +sprite("kml", "arrow-right-hover")
+  &:hover
+    +sprite("kml", "arrow-right-hover")
 
-    &:active
-      +sprite("kml", "arrow-right-active")
+  &:active
+    +sprite("kml", "arrow-right-active")
 
     
-div.marinemap-kmltree li.open > span.expander
+div.kmltree li.open > .expander
   +sprite("kml", "arrow-down")
   
   &:hover
@@ -83,7 +82,7 @@ div.marinemap-kmltree li.open > span.expander
   &:active
     +sprite("kml", "arrow-down-active")
 
-span.toggler
+.toggler
   margin-right: 3px
   +sprite("kml", "unchecked")
 
@@ -93,11 +92,11 @@ span.toggler
   &:active
     +sprite("kml", "unchecked-active")
 
-li.checkOffOnly > span.toggler
+li.checkOffOnly > .toggler
   +sprite("kml", "unchecked-checkOffOnly")
 
 li
-  &.visible > span.toggler
+  &.visible > .toggler
     +sprite("kml", "checked")
 
     &:hover
@@ -107,7 +106,7 @@ li
       +sprite("kml", "checked-active")
 
   &.radioFolder > ul > li
-    > span.toggler
+    > .toggler
       margin-right: 3px
       +sprite("kml", "radio-off")
 
@@ -117,7 +116,7 @@ li
       &:active
         +sprite("kml", "radio-off-active")
 
-    &.visible > span.toggler
+    &.visible > .toggler
       margin-right: 3px
       +sprite("kml", "radio-on")
 
@@ -127,7 +126,7 @@ li
       &:active
         +sprite("kml", "radio-on-active")
 
-  &.radioFolder > span.toggler
+  &.radioFolder > .toggler
     +sprite("kml", "radio-off")
     
     &:hover
@@ -136,7 +135,7 @@ li
     &:active
       +sprite("kml", "radio-off-active")
 
-  &.radioFolder.visible > span.toggler
+  &.radioFolder.visible > .toggler
     +sprite("kml", "radio-on")
 
     &:hover
@@ -145,64 +144,64 @@ li
     &:active
       +sprite("kml", "radio-on-active")
 
-  &.KmlPlacemark span.expander, &.KmlPhotoOverlay span.expander, &.KmlGroundOverlay span.expander, &.KmlTour span.expander
+  &.KmlPlacemark .expander, &.KmlPhotoOverlay .expander, &.KmlGroundOverlay .expander, &.KmlTour .expander
     display: none
 
 
-div.marinemap-kmltree
+div.kmltree
   li.checkHideChildren
-    ul, span.expander
+    ul, .expander
       display: none
 
-  span.icon
+  .icon
     display: none
     padding: 0px
 
 
 li
-  &.KmlFolder > span.icon
+  &.KmlFolder > .icon
     margin-right: 3px
     display: block
     +sprite("kml", "folder")
 
-  &.KmlFolder.open > span.icon
+  &.KmlFolder.open > .icon
     margin-right: 3px
     display: block
     +sprite("kml", "folder-open")
 
 
   &.KmlNetworkLink
-    > span.icon
+    > .icon
       margin-right: 3px
       display: block
       +sprite("kml", "folder")
 
-    &.loading > span.icon
+    &.loading > .icon
       margin-right: 3px
       display: block
       background: transparent url(images/kml-throbber.gif) no-repeat !important
 
-    &.error > span.icon
+    &.error > .icon
       margin-right: 3px
       display: block
       +sprite("kml", "folder-error")
 
-  &.KmlTour > span.icon
+  &.KmlTour > .icon
     margin-right: 3px
     display: block
     +sprite("kml", "tour")
 
-  &.KmlPhotoOverlay > span.icon, &.KmlGroundOverlay > span.icon
+  &.KmlPhotoOverlay > .icon, &.KmlGroundOverlay > .icon
     margin-right: 3px
     display: block
     +sprite("kml", "superoverlay")
 
-  &.customIcon > span.icon
+  &.customIcon > .icon
     margin-right: 3px
     display: block
     background: transparent no-repeat
 
-  &.marinemap-kmltree-item p.snippet
+  &.kmltree-item p.snippet
     text-indent: 0px
     width: 80%
     margin: 5px 0px 5px 20px
@@ -217,7 +216,7 @@ span.name
 
 
 div
-  &.marinemap-kmltree li.selected
+  &.kmltree li.selected
     background-color: #B2E1FF
     padding-left: 5px
     margin-left: -5px
@@ -229,7 +228,7 @@ div
       &:hover
         border: none
 
-  &.marinemap-kmltree-loading
+  &.kmltree-loading
     position: absolute
     left: 0px
     top: 0px

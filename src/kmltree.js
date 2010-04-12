@@ -103,24 +103,23 @@ var kmltree = (function(){
         '<%= (description ? "hasDescription " : "") %>',
         '<%= (snippet ? "hasSnippet " : "") %>',
         '<%= (customIcon ? "customIcon " : "") %>',
-        'marinemap-kmltree-id-<%= id %> marinemap-kmltree-item',
+        'kmltree-id-<%= id %> kmltree-item',
         '">',
             '<span class="kmlId"><%= kmlId %></span>',
             '<span class="nlDocId"></span>',
-            '<span UNSELECTABLE="on" class="expander">',
-                '<img width="16" height="16" src="<%= trans %>" />',
-            '</span>',
-            '<span UNSELECTABLE="on" class="toggler">',
-                '<img width="16" height="16" src="<%= trans %>" />',
-            '</span>',
-            '<span ',
+            '<div UNSELECTABLE="on" class="expander">',
+                '&nbsp;',
+            '</div>',
+            '<div UNSELECTABLE="on" class="toggler">',
+                '&nbsp;',
+            '</div>',
+            '<div ',
             '<% if(customIcon){ %>',
                 'style="background:url(<%= customIcon %>);"',
             '<% } %>',
             'class="icon">',
-                '<img UNSELECTABLE="on" width="16" height="16" src="',
-                '<%= trans %>" />',
-            '</span>',
+                '&nbsp;',
+            '</div>',
             '<span UNSELECTABLE="on" class="name"><%= name %></span>',
             '<% if(snippet){ %>',
                 '<p UNSELECTABLE="on" class="snippet"><%= snippet %></p>',
@@ -162,8 +161,8 @@ var kmltree = (function(){
             throw('kmltree requires a google earth plugin version >= 5.1');
         }
                 
-        if(!opts.url || !opts.gex || !opts.element || !opts.trans){
-            throw('kmltree requires options url, gex, trans & element');
+        if(!opts.url || !opts.gex || !opts.element){
+            throw('kmltree requires options url, gex & element');
         }
         
         if(!opts.element.attr('id')){
@@ -207,7 +206,7 @@ var kmltree = (function(){
         var getNodesById = function(id){
             if(id){
                 id = id.replace(/\//g, '-');
-                return opts.element.find('.marinemap-kmltree-id-'+id);
+                return opts.element.find('.kmltree-id-'+id);
             }
         };
         
@@ -291,7 +290,7 @@ var kmltree = (function(){
         var showLoading = function(msg){
             hideLoading();
             var msg = msg || opts.loadingMsg;
-            var h = $('<div class="marinemap-kmltree-loading"><span>' + 
+            var h = $('<div class="kmltree-loading"><span>' + 
                 msg + '</span></div>');
             var height = opts.element.height();
             if(height !== 0){
@@ -305,7 +304,7 @@ var kmltree = (function(){
         that.showLoading = showLoading;
         
         var hideLoading = function(){
-            opts.element.find('.marinemap-kmltree-loading').remove();
+            opts.element.find('.kmltree-loading').remove();
         };
         
         that.hideLoading = hideLoading;
@@ -332,8 +331,8 @@ var kmltree = (function(){
                     // show error
                     setTimeout(function() {
                         opts.element.html([
-                            '<div class="marinemap-kmltree">',
-                                '<h4 class="marinemap-kmltree-title">',
+                            '<div class="kmltree">',
+                                '<h4 class="kmltree-title">',
                                     'Error Loading',
                                 '</h4>',
                                 '<p class="error">',
@@ -358,13 +357,13 @@ var kmltree = (function(){
             
             
             var rendered = renderOptions(options.children[0].children);
-            opts.element.find('div.marinemap-kmltree').remove();
-            opts.element.find('.marinemap-kmltree-loading').before([
-                '<div UNSELECTABLE="on" class="marinemap-kmltree">',
-                    '<h4 UNSELECTABLE="on" class="marinemap-kmltree-title">',
+            opts.element.find('div.kmltree').remove();
+            opts.element.find('.kmltree-loading').before([
+                '<div UNSELECTABLE="on" class="kmltree">',
+                    '<h4 UNSELECTABLE="on" class="kmltree-title">',
                         options.children[0].name,
                     '</h4>',
-                    '<ul UNSELECTABLE="on" class="marinemap-kmltree">',
+                    '<ul UNSELECTABLE="on" class="kmltree">',
                         rendered,
                     '</ul>',
                 '</div>'
@@ -393,7 +392,7 @@ var kmltree = (function(){
                 // regardless of previousState, expanding networklinks that 
                 // are set to open within the kml
                 restoreState(
-                    opts.element.find('div.marinemap-kmltree'), 
+                    opts.element.find('div.kmltree'), 
                     that.previousState, 
                     queue);
             }else{
@@ -451,7 +450,6 @@ var kmltree = (function(){
                             customClass: '',
                             children: [],
                             kmlId: lookupId,
-                            trans: opts.trans,
                             alwaysRenderNodes: false
                         }
                         child = opts.visitFunction(this, child);
@@ -577,7 +575,7 @@ var kmltree = (function(){
         
         var getStateFromLocalStorage = function(){
             var json = localStorage.getItem(
-                'marinemap-kmltree-('+opts.url+')');
+                'kmltree-('+opts.url+')');
             if(json){
                 return JSON.parse(json);
             }else{
@@ -587,7 +585,7 @@ var kmltree = (function(){
         
         var setStateInLocalStorage = function(){
             var state = JSON.stringify(getState());
-            localStorage.setItem('marinemap-kmltree-('+opts.url+')', state);
+            localStorage.setItem('kmltree-('+opts.url+')', state);
         };
         
         
@@ -600,7 +598,7 @@ var kmltree = (function(){
             var id = opts.element.attr('id');
             $('#'+id+' li > span.name').die();
             $('#'+id+' li').die();
-            $('#'+id+' li > span.expander').die();
+            $('#'+id+' li > .expander').die();
             opts.element.html('');
             // $(that).unbind();
         };
@@ -668,7 +666,7 @@ var kmltree = (function(){
             
             var parent = node.parent().parent();
             
-            while(!parent.hasClass('marinemap-kmltree') 
+            while(!parent.hasClass('kmltree') 
                 && !parent.find('>ul:visible').length){
                 parent.addClass('open');
                 var parent = parent.parent().parent();
@@ -717,7 +715,7 @@ var kmltree = (function(){
         
         var toggleUp = function(node, toggling, from){
             var parent = node.parent().parent();
-            if(!parent.hasClass('marinemap-kmltree')){
+            if(!parent.hasClass('kmltree')){
                 if(toggling){
                     var herParent = parent.parent().parent();
                     if(herParent.hasClass('radioFolder')){
@@ -924,7 +922,7 @@ var kmltree = (function(){
                 });
             };
             if(!node){
-                node = opts.element.find('div.marinemap-kmltree');
+                node = opts.element.find('div.kmltree');
             }
             recurse_(node, context);
         };
@@ -972,7 +970,7 @@ var kmltree = (function(){
         });
         
         // expand events
-        $('#'+id+' li > span.expander').live('click', function(e){
+        $('#'+id+' li > .expander').live('click', function(e){
             var el = $(this).parent();
             if(el.hasClass('KmlNetworkLink') && !el.hasClass('loaded') 
                 && !el.hasClass('loading')){
@@ -983,7 +981,7 @@ var kmltree = (function(){
             }
         });
         
-        $('#'+id+' li > span.toggler').live('click', function(){
+        $('#'+id+' li > .toggler').live('click', function(){
             var node = $(this).parent();
             var toggle = !node.hasClass('visible');
             if(!toggle && node.hasClass('selected')){
