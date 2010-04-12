@@ -38,10 +38,6 @@
                     trans: 'http://chart.apis.google.com/chart?cht=p3&chs=1x1&chf=bg,s,EFEF0000'
                 });
                 
-                $(tree).bind('click', function(event, node, kmlObject){
-                    log.add('clicked "'+kmlObject.getName() + '"');
-                });
-                
                 tree.load();
             }
 
