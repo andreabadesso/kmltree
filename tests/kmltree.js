@@ -30,7 +30,6 @@ module('kmlTree');
         return url;
     }
     
-    var trans = 'http://chart.apis.google.com/chart?cht=p3&chs=1x1&chf=bg,s,EFEF0000';
     
     earthTest('create instance', 2, function(ge, gex){    
         $(document.body).append('<div class="kmltreetest"></div>');
@@ -40,7 +39,6 @@ module('kmlTree');
                 gex: gex, 
                 map_div: $('#map3d'), 
                 element: $('.kmltreetest'),
-                trans: trans,
                 bustCache: false
             });
         }catch(e){
@@ -53,7 +51,6 @@ module('kmlTree');
             gex: gex, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         ok(tree !== false, 'Tree initialized');
@@ -70,7 +67,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: true
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -92,8 +88,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -122,8 +116,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         var tree2 = kmltree({
@@ -133,8 +125,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest2'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -176,8 +166,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -205,8 +193,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -234,7 +220,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -262,7 +247,6 @@ module('kmlTree');
     //         animate: false, 
     //         map_div: $('#map3d'), 
     //         element: $('.kmltreetest'),
-    //         trans: trans,
     //         title: true,
     //         bustCache: false
     //     });
@@ -288,7 +272,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -316,7 +299,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -349,7 +331,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -377,7 +358,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -403,7 +383,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -429,16 +408,15 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
             var node = $('.kmltreetest').find('span.name:contains(closed folder)').parent();
             equals(node.length, 1);
-            node.find('> span.expander').click();
+            node.find('> .expander').click();
             equals(node.find('>ul:visible').length, 1);
-            node.find('> span.expander').click();
+            node.find('> .expander').click();
             equals(node.find('>ul:visible').length, 0);
             $('.kmltreetest').remove();
             tree.destroy();
@@ -457,7 +435,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -466,10 +443,10 @@ module('kmlTree');
             var kmlObject = tree.lookup(node);
             equals(node.length, 1);
             ok(!kmlObject.getVisibility());
-            node.find('> span.toggler').click();
+            node.find('> .toggler').click();
             ok(kmlObject.getVisibility());
             ok(kmlObject.getVisibility());
-            node.find('> span.toggler').click();
+            node.find('> .toggler').click();
             ok(!kmlObject.getVisibility());
             $('.kmltreetest').remove();
             tree.destroy();
@@ -488,7 +465,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -500,7 +476,7 @@ module('kmlTree');
             ok(node.find('> ul > li.visible').length > 0);
             ok(kmlObject.getVisibility());
             // turn them off
-            node.find('> span.toggler').click();
+            node.find('> .toggler').click();
             equals(node.find('> ul > li.visible').length, 0);
             ok(!kmlObject.getVisibility());
             var child = node.find('> ul > li')[0];
@@ -508,7 +484,7 @@ module('kmlTree');
             ok(childKml);
             ok(!childKml.getVisibility());
             // turn back on
-            node.find('> span.toggler').click();
+            node.find('> .toggler').click();
             ok(kmlObject.getVisibility());
             ok(childKml.getVisibility());
             $('.kmltreetest').remove();
@@ -528,7 +504,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -538,7 +513,7 @@ module('kmlTree');
             // All items off to start
             ok(!node.hasClass('visible'));
             // turn on
-            node.find('> span.toggler').click();
+            node.find('> .toggler').click();
             var kmlObject = tree.lookup(node);
             ok(kmlObject);
             ok(kmlObject.getVisibility());
@@ -591,7 +566,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -614,7 +588,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -629,16 +602,16 @@ module('kmlTree');
             var kmlObject = tree.lookup(node);
             // start out not visible
             ok(!kmlObject.getVisibility());
-            node.find('> span.toggler').click();
+            node.find('> .toggler').click();
             ok(kmlObject.getVisibility());
             ok(tree.lookup(a).getVisibility());
             ok(a.hasClass('visible'));
             ok(!tree.lookup(b).getVisibility());
             ok(!b.hasClass('visible'));
-            b.find('> span.toggler').click();
+            b.find('> .toggler').click();
             ok(!tree.lookup(a).getVisibility());
             ok(tree.lookup(b).getVisibility());
-            b.find('> span.toggler').click();
+            b.find('> .toggler').click();
             ok(!tree.lookup(a).getVisibility());
             ok(!tree.lookup(b).getVisibility())
             tree.destroy();
@@ -658,7 +631,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -671,16 +643,16 @@ module('kmlTree');
             ok(b.length === 1);
             ok(node.hasClass('radioFolder'));
             var parent = node.parent().parent();
-            parent.find('> span.toggler').click();
-            parent.find('> span.toggler').click();
-            parent.find('> span.toggler').click();        
+            parent.find('> .toggler').click();
+            parent.find('> .toggler').click();
+            parent.find('> .toggler').click();        
             ok(!tree.lookup(parent).getVisibility(), 
                 'Startout with parent and children cleared');
             ok(!tree.lookup(a).getVisibility(), 
                 'Startout with parent and children cleared');
             ok(!tree.lookup(b).getVisibility(), 
                 'Startout with parent and children cleared');
-            parent.find('> span.toggler').click();        
+            parent.find('> .toggler').click();        
             ok(tree.lookup(a).getVisibility(), 'Should turn on the first child.');
             ok(!tree.lookup(b).getVisibility(), 
                 'Only one child of a radioFolder should be turned on at a time.');
@@ -701,7 +673,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -712,7 +683,7 @@ module('kmlTree');
             ok(tree.lookup(parent).getVisibility());
             ok(tree.lookup(a).getVisibility());
             ok(tree.lookup(b).getVisibility());
-            parent.find('> span.toggler').click();
+            parent.find('> .toggler').click();
             ok(!tree.lookup(parent).getVisibility(), 
                 'Parent visibility off after click.');
             ok(!tree.lookup(a).getVisibility(), 
@@ -720,7 +691,7 @@ module('kmlTree');
             ok(!tree.lookup(b).getVisibility(),
                 'Both children should be turned off by click on parent.');
 
-            parent.find('> span.toggler').click();
+            parent.find('> .toggler').click();
             ok(!tree.lookup(parent).getVisibility() &&
                 !tree.lookup(a).getVisibility() && 
                 !tree.lookup(b).getVisibility(),
@@ -742,13 +713,12 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
             var folder = $('.kmltreetest').find('span.name:contains(folder with contents hidden)').parent();
-            ok(folder.find('> span.toggler:visible').length === 0, 'Toggle icon should not be visible');
+            ok(folder.find('> .toggler:visible').length === 0, 'Toggle icon should not be visible');
             ok(folder.find('> ul > li').length === 0, 'Shouldnt add children');
             tree.destroy();
             $('.kmltreetest').remove();
@@ -767,14 +737,13 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false,
             supportItemIcon: true
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');            
             var grid = $('.kmltreetest').find('span.name:contains(Grid)').parent();
-            var icon = grid.find('>span.icon').css('background-image');
+            var icon = grid.find('>.icon').css('background-image');
             ok(icon.indexOf('http://marinemap.googlecode.com/svn/trunk/media/common/images/silk/sport_golf.png') !== -1);
             tree.destroy();
             $('.kmltreetest').remove();
@@ -794,7 +763,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -822,7 +790,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -833,7 +800,7 @@ module('kmlTree');
             $('.kmltreetest').find('span.name:contains(Placemark with description)').click();
             ok(ge.getBalloon(), 'Balloon should now be open.');
             ok(tree.lookup(node).getVisibility(), 'Should be visible if viewing balloon.');
-            node.find('> span.toggler').click();
+            node.find('> .toggler').click();
             ok(!tree.lookup(node).getVisibility(), 'Feature should be invisible');
             ok(!ge.getBalloon(), 'Balloon should be closed.');
             ge.setBalloon(null);
@@ -855,7 +822,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -885,12 +851,11 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(Placemark without description)').parent().find('span.icon').dblclick();
+            $('.kmltreetest').find('span.name:contains(Placemark without description)').parent().find('.icon').dblclick();
             setTimeout(function(){
                 var secondLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
                 ok(secondLat !== firstLat);
@@ -918,7 +883,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             bustCache: false
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
@@ -948,8 +912,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -975,8 +937,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1009,8 +969,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1053,8 +1011,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1079,8 +1035,6 @@ module('kmlTree');
             animate: false,
             map_div: $('#map3d'),
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false,
             restoreState: false
         });
@@ -1106,8 +1060,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1134,8 +1086,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1175,14 +1125,12 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'Document loaded correctly');
             var E = $('.kmltreetest').find('span.name:contains(E)').parent();
-            E.find('>span.toggler').click();
+            E.find('>.toggler').click();
             var state = tree.getState();
             equals(state.name, 'root');
             equals(state.children.length, 1);
@@ -1192,7 +1140,7 @@ module('kmlTree');
             equals(state.children[0].children[0].children[0].children[0].name, 'E');
             equals(state.children[0].children[0].children[0].children[0].modified.visibility.current, false);
             // turn back on
-            E.find('>span.toggler').click();
+            E.find('>.toggler').click();
             var state = tree.getState();
             // should just come back as not modified
             equals(state.children.length, 0);
@@ -1213,8 +1161,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1222,8 +1168,8 @@ module('kmlTree');
             var E = $('.kmltreetest').find('span.name:contains(E)').parent();
             var C = $('.kmltreetest').find('span.name:contains(C)').parent();
             var A = $('.kmltreetest').find('span.name:contains(A)').parent();
-            E.find('>span.toggler').click();
-            C.find('>span.toggler').click();
+            E.find('>.toggler').click();
+            C.find('>.toggler').click();
             var state = tree.getState();
             equals(state.name, 'root');
             equals(state.children.length, 1);
@@ -1235,7 +1181,7 @@ module('kmlTree');
             equals(state.children[0].children[0].children[0].children[1].name, 'E');
             ok(state.children[0].children[0].children[0].children[0].modified && state.children[0].children[0].children[0].children[0].modified.visibility.current === false);
             ok(state.children[0].children[0].children[0].children[1].modified && state.children[0].children[0].children[0].children[1].modified.visibility.current === false);
-            A.find('>span.toggler').click();
+            A.find('>.toggler').click();
             var state = tree.getState();
             equals(state.name, 'root');
             equals(state.children.length, 1);
@@ -1248,9 +1194,9 @@ module('kmlTree');
             equals(state.children[0].children[0].children[1].children[1].name, 'E');
             ok(state.children[0].children[0].children[1].children[0].modified && state.children[0].children[0].children[1].children[0].modified.visibility.current === false);
             ok(state.children[0].children[0].children[1].children[1].modified && state.children[0].children[0].children[1].children[1].modified.visibility.current === false);
-            A.find('>span.toggler').click();
+            A.find('>.toggler').click();
             // turn back on
-            C.find('>span.toggler').click();
+            C.find('>.toggler').click();
             var state = tree.getState();
             equals(state.name, 'root');
             equals(state.children.length, 1);
@@ -1265,7 +1211,7 @@ module('kmlTree');
             }
             
             // should just come back as not modified
-            E.find('>span.toggler').click();
+            E.find('>.toggler').click();
             var state = tree.getState();
             equals(state.children.length, 0);
             tree.destroy();
@@ -1285,8 +1231,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1296,7 +1240,7 @@ module('kmlTree');
             var D = $('.kmltreetest').find('span.name:contains(D)').parent();
             var C = $('.kmltreetest').find('span.name:contains(C)').parent();
             var E = $('.kmltreetest').find('span.name:contains(E)').parent();
-            B.find('>span.toggler').click();
+            B.find('>.toggler').click();
             var state = tree.getState();
             equals(state.name, 'root');
             equals(state.children.length, 1);
@@ -1310,7 +1254,7 @@ module('kmlTree');
             equals(state.children[0].children[0].children[1].children[0].modified.visibility.current, false);
             equals(state.children[0].children[0].children[1].children[1].name, 'E');
             equals(state.children[0].children[0].children[1].children[1].modified.visibility.current, false);
-            E.find('>span.toggler').click();
+            E.find('>.toggler').click();
             var state = tree.getState();
             // E will actually no longer be in the state results, because it starts out visible
             // equals(state.children[0].children[0].children[1].children[1].name, 'E');
@@ -1324,8 +1268,8 @@ module('kmlTree');
             equals(state.children[0].children[0].name, 'B');
             equals(state.children[0].children[0]['modified'], undefined);
             // Turn back on all B's children
-            B.find('>span.toggler').click();
-            B.find('>span.toggler').click();
+            B.find('>.toggler').click();
+            B.find('>.toggler').click();
             var state = tree.getState();
             equals(state.children.length, 0);
             tree.destroy();
@@ -1345,8 +1289,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1356,14 +1298,14 @@ module('kmlTree');
             var D = $('.kmltreetest').find('span.name:contains(D)').parent();
             var C = $('.kmltreetest').find('span.name:contains(C)').parent();
             var E = $('.kmltreetest').find('span.name:contains(E)').parent();
-            B.find('>span.expander').click();
+            B.find('>.expander').click();
             var state = tree.getState();
             equals(state.name, 'root');
             equals(state.children.length, 1);
             equals(state.children[0].children[0].name, 'B');
             ok(state.children[0].children[0].modified && state.children[0].children[0].modified.open.current === false);
             // Test can be simple, because it doesnt need to track up/down the tree like toggling
-            B.find('>span.expander').click();
+            B.find('>.expander').click();
             var state = tree.getState();
             equals(state.children.length, 0);
             tree.destroy();
@@ -1383,8 +1325,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1394,14 +1334,14 @@ module('kmlTree');
             var D = $('.kmltreetest').find('span.name:contains(D)').parent();
             var C = $('.kmltreetest').find('span.name:contains(C)').parent();
             var E = $('.kmltreetest').find('span.name:contains(E)').parent();
-            B.find('>span.expander').click();
+            B.find('>.expander').click();
             var state = tree.getState();
             equals(state.name, 'root');
             equals(state.children.length, 1);
             equals(state.children[0].children[0].name, 'B');
             ok(state.children[0].children[0].modified && state.children[0].children[0].modified.open.current === false);
             // Test can be simple, because it doesnt need to track up/down the tree like toggling
-            B.find('>span.expander').click();
+            B.find('>.expander').click();
             var state = tree.getState();
             equals(state.children.length, 0);
             tree.destroy();
@@ -1423,13 +1363,11 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(E)').parent().find('>span.toggler').click();
+            $('.kmltreetest').find('span.name:contains(E)').parent().find('>.toggler').click();
             $(tree).bind('kmlLoaded', function(e, kmlObject){
                 ok(true, 'kml refreshed');
                 var E = $('.kmltreetest').find('span.name:contains(E)').parent();
@@ -1454,15 +1392,13 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(H)').parent().find('>span.toggler').click();
-            $('.kmltreetest').find('span.name:contains(G)').parent().find('>span.expander').click();
-            $('.kmltreetest').find('span.name:contains(A)').parent().find('>span.toggler').click();
+            $('.kmltreetest').find('span.name:contains(H)').parent().find('>.toggler').click();
+            $('.kmltreetest').find('span.name:contains(G)').parent().find('>.expander').click();
+            $('.kmltreetest').find('span.name:contains(A)').parent().find('>.toggler').click();
             $(tree).bind('kmlLoaded', function(e, kmlObject){
                 ok(true, 'kml refreshed');
                 var A = $('.kmltreetest').find('span.name:contains(A)').parent();
@@ -1494,15 +1430,13 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(H)').parent().find('>span.toggler').click();
-            $('.kmltreetest').find('span.name:contains(G)').parent().find('>span.expander').click();
-            $('.kmltreetest').find('span.name:contains(A)').parent().find('>span.toggler').click();
+            $('.kmltreetest').find('span.name:contains(H)').parent().find('>.toggler').click();
+            $('.kmltreetest').find('span.name:contains(G)').parent().find('>.expander').click();
+            $('.kmltreetest').find('span.name:contains(A)').parent().find('>.toggler').click();
             $(tree).one('kmlLoaded', function(e, kmlObject){
                 $(tree).one('kmlLoaded', function(e, kmlObject){
                     ok(true, 'kml refreshed');
@@ -1537,17 +1471,15 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
             var L = $('.kmltreetest').find('span.name:contains(L)').parent();
-            L.find('>span.expander').click();
+            L.find('>.expander').click();
             $(tree).one('networklinkload', function(){
                 var X = $('.kmltreetest').find('span.name:contains(X)').parent();
-                X.find('>span.toggler').click();
+                X.find('>.toggler').click();
                 ok(!X.hasClass('visible'));
                 $(tree).one('kmlLoaded', function(e, kmlObject){
                     ok(true, 'kml refreshed');
@@ -1576,21 +1508,19 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
             var L = $('.kmltreetest').find('span.name:contains(L)').parent();
-            L.find('>span.expander').click();
+            L.find('>.expander').click();
             $(tree).one('networklinkload', function(){
                 var X = $('.kmltreetest').find('span.name:contains(X)').parent();
                 var Z = $('.kmltreetest').find('span.name:contains(Z)').parent();
                 var Y = $('.kmltreetest').find('span.name:contains(Y)').parent();
-                X.find('>span.toggler').click();
-                Y.find('>span.toggler').click();
-                Z.find('>span.toggler').click();
+                X.find('>.toggler').click();
+                Y.find('>.toggler').click();
+                Z.find('>.toggler').click();
                 ok(!X.hasClass('visible'));
                 ok(!Y.hasClass('visible'));
                 ok(!Z.hasClass('visible'));
@@ -1628,8 +1558,6 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1640,9 +1568,9 @@ module('kmlTree');
                     var X = $('.kmltreetest').find('span.name:contains(X)').parent();
                     var Z = $('.kmltreetest').find('span.name:contains(Z)').parent();
                     var B = $('.kmltreetest').find('span.name:contains(B)').parent();
-                    X.find('>span.toggler').click();
-                    B.find('>span.toggler').click();
-                    Z.find('>span.toggler').click();
+                    X.find('>.toggler').click();
+                    B.find('>.toggler').click();
+                    Z.find('>.toggler').click();
                     ok(!X.hasClass('visible'));
                     ok(!B.hasClass('visible'));
                     ok(!Z.hasClass('visible'));
@@ -1670,9 +1598,9 @@ module('kmlTree');
                     tree.refresh();
                 });
                 var Y = $('.kmltreetest').find('span.name:contains(Y)').parent();
-                Y.find('>span.expander').click();
+                Y.find('>.expander').click();
             });
-            L.find('>span.expander').click();
+            L.find('>.expander').click();
         });
         ok(tree !== false, 'Tree initialized');
         tree.load(true);
@@ -1687,13 +1615,11 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(E)').parent().find('>span.toggler').click();
+            $('.kmltreetest').find('span.name:contains(E)').parent().find('>.toggler').click();
             var A = $('.kmltreetest').find('span.name:contains(A)').parent();
             var B = $('.kmltreetest').find('span.name:contains(B)').parent();
             $(tree).one('networklinkload', function(){
@@ -1710,9 +1636,9 @@ module('kmlTree');
                     });
                     tree.refresh();
                 });
-                B.find('>span.expander').click();
+                B.find('>.expander').click();
             });
-            A.find('>span.expander').click();
+            A.find('>.expander').click();
         });
         window.tree = tree;
         ok(tree !== false, 'Tree initialized');
@@ -1728,14 +1654,12 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             restoreStateOnRefresh: false,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(E)').parent().find('>span.toggler').click();
+            $('.kmltreetest').find('span.name:contains(E)').parent().find('>.toggler').click();
             $(tree).bind('kmlLoaded', function(e, kmlObject){
                 ok(true, 'kml refreshed');
                 var E = $('.kmltreetest').find('span.name:contains(E)').parent();
@@ -1763,15 +1687,13 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            trans: trans,
             restoreStateOnRefresh: false,
             restoreState: true,
-            fireEvents: function(){return true;},
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(E)').parent().find('>span.toggler').click();
+            $('.kmltreetest').find('span.name:contains(E)').parent().find('>.toggler').click();
             var E = $('.kmltreetest').find('span.name:contains(E)').parent();
             ok(!E.hasClass('visible'));
             tree.destroy();
@@ -1783,10 +1705,8 @@ module('kmlTree');
                 animate: false, 
                 map_div: $('#map3d'), 
                 element: $('.kmltreetest'),
-                trans: trans,
                 restoreStateOnRefresh: false,
                 restoreState: true,
-                fireEvents: function(){return true;},
                 bustCache: false
             });
             $(tree2).bind('kmlLoaded', function(e, kmlObject){
