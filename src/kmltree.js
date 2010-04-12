@@ -45,7 +45,6 @@ var kmltree = (function(){
                     item.loading = true;
                 }
             }
-            // start up opening networklinks
         }
     };
     
