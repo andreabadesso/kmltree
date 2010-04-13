@@ -762,9 +762,7 @@ var kmltree = (function(){
             }
             setModified(node, 'visibility', toggling);
             var o = lookup(node);
-            console.log('toggle item', o, o.getType(), o.getVisibility());
             lookup(node).setVisibility(toggling);
-            console.log('toggle item', o, o.getType(), o.getVisibility());
             node.toggleClass('visible', toggling);
             
             if(node.hasClass('KmlNetworkLink') && node.hasClass('loaded')){
