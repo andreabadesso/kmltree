@@ -110,7 +110,7 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         $(document.body).append('<div class="kmltreetest2"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -119,7 +119,7 @@ module('kmlTree');
             bustCache: false
         });
         var tree2 = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -160,7 +160,7 @@ module('kmlTree');
     earthAsyncTest('dblclick events', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -187,7 +187,7 @@ module('kmlTree');
     earthAsyncTest('contextmenu events', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -214,7 +214,7 @@ module('kmlTree');
     earthAsyncTest('getNodesById', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -241,7 +241,7 @@ module('kmlTree');
     // earthAsyncTest('optional title support', function(ge, gex){
     //     $(document.body).append('<div class="kmltreetest"></div>');
     //     var tree = kmltree({
-    //         url: example('kmlForestTest.kmz'),
+    //         url: example('kmlForestTest.kml'),
     //         ge: ge, 
     //         gex: gex, 
     //         animate: false, 
@@ -252,7 +252,7 @@ module('kmlTree');
     //     });
     //     $(tree).bind('kmlLoaded', function(e, kmlObject){
     //         ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
-    //         var title = $('.kmltreetest').find('h4:contains(kmlForestTest.kmz)');
+    //         var title = $('.kmltreetest').find('h4:contains(kmlForestTest.kml)');
     //         equals(title.length, 1);
     //         ok(title.hasClass('marinemap-kmltree-title'))
     //         tree.destroy();
@@ -266,7 +266,7 @@ module('kmlTree');
     earthAsyncTest('supports kml <a href="http://code.google.com/apis/kml/documentation/kmlreference.html#open">open tag</a>', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -293,7 +293,7 @@ module('kmlTree');
     earthAsyncTest('supports <a href="http://code.google.com/apis/kml/documentation/kmlreference.html#visibility">visibility tag</a>', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -325,7 +325,7 @@ module('kmlTree');
     earthAsyncTest('supports <a href="http://code.google.com/apis/kml/documentation/kmlreference.html#snippet">snippet tag</a>', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -352,7 +352,7 @@ module('kmlTree');
     earthAsyncTest('features with descriptions appear as a link', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -377,7 +377,7 @@ module('kmlTree');
     earthAsyncTest("open folder contents visible, closed folders' content not", function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -402,7 +402,7 @@ module('kmlTree');
     earthAsyncTest('folders expand/collapse', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -429,7 +429,7 @@ module('kmlTree');
     earthAsyncTest('can toggle features', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -459,7 +459,7 @@ module('kmlTree');
     earthAsyncTest('toggling folders toggles children', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -498,7 +498,7 @@ module('kmlTree');
     earthAsyncTest('toggling child toggles all parents', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -560,7 +560,7 @@ module('kmlTree');
     earthAsyncTest('list items given class names matching kmlObject.getType()', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -582,7 +582,7 @@ module('kmlTree');
     earthAsyncTest('radioFolder support', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -625,7 +625,7 @@ module('kmlTree');
     earthAsyncTest("toggling parent of radio folder doesn't toggle all radioFolder children.", function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -667,7 +667,7 @@ module('kmlTree');
     earthAsyncTest('<a href="http://code.google.com/apis/kml/documentation/kmlreference.html#liststyle">ListStyle</a> support: checkOffOnly', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -707,7 +707,7 @@ module('kmlTree');
     earthAsyncTest('<a href="http://code.google.com/apis/kml/documentation/kmlreference.html#liststyle">ListStyle</a> support: checkHideChildren', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -757,7 +757,7 @@ module('kmlTree');
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -784,7 +784,7 @@ module('kmlTree');
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -816,7 +816,7 @@ module('kmlTree');
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -845,7 +845,7 @@ module('kmlTree');
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -877,7 +877,7 @@ module('kmlTree');
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -906,7 +906,7 @@ module('kmlTree');
     earthAsyncTest('refresh reloads kml tree', 3, function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -931,7 +931,7 @@ module('kmlTree');
     earthAsyncTest('selectNode', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -963,7 +963,7 @@ module('kmlTree');
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
@@ -1005,7 +1005,7 @@ module('kmlTree');
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kmz'),
+            url: example('kmlForestTest.kml'),
             ge: ge, 
             gex: gex, 
             animate: false, 
