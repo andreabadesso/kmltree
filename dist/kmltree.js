@@ -829,9 +829,7 @@ var kmltree = (function(){
             }
             setModified(node, 'visibility', toggling);
             var o = lookup(node);
-            console.log('toggle item', o, o.getType(), o.getVisibility());
             lookup(node).setVisibility(toggling);
-            console.log('toggle item', o, o.getType(), o.getVisibility());
             node.toggleClass('visible', toggling);
             
             if(node.hasClass('KmlNetworkLink') && node.hasClass('loaded')){
@@ -1009,7 +1007,8 @@ var kmltree = (function(){
                 selectNode(node, kmlObject);
             }else{
                 clearSelection();
-                if(node.hasClass('hasDescription')){
+                if(node.hasClass('hasDescription') || 
+                    kmlObject.getType() === 'KmlPlacemark'){
                     toggleVisibility(node, true);
                     openBalloon(kmlObject, ge, opts['whiteListed']);
                 }                

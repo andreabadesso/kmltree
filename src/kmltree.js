@@ -940,7 +940,8 @@ var kmltree = (function(){
                 selectNode(node, kmlObject);
             }else{
                 clearSelection();
-                if(node.hasClass('hasDescription')){
+                if(node.hasClass('hasDescription') || 
+                    kmlObject.getType() === 'KmlPlacemark'){
                     toggleVisibility(node, true);
                     openBalloon(kmlObject, ge, opts['whiteListed']);
                 }                
