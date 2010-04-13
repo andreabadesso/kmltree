@@ -52,4 +52,5 @@ end
 file "dist/images" => ["src/_sprites.sass"] do
   sh "cp -r src/sprites-url/images dist/"
   sh "rm -rf src/sprites-url"
+  sh "cp src/images/kml-throbber.gif dist/images/"
 end
