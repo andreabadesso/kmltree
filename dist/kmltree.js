@@ -57,12 +57,14 @@ kmldom = (function(){
 })();
 
 
-openBalloon = function(kmlObject, plugin, whitelisted){
-    kmlObject.setVisibility(true);
-    var b = plugin.createHtmlStringBalloon('');
-    b.setFeature(kmlObject); // optional
-    b.setContentString(kmlObject.getDescription());
-    plugin.setBalloon(b);   
+openBalloon = function(kmlObject, ge, whitelisted){
+    if(!kmlObject.getVisibility()){
+        kmlObject.setVisibility(true);
+    }
+    var b = ge.createFeatureBalloon('');
+    b.setFeature(kmlObject);
+    b.setMinWidth(100);
+    ge.setBalloon(b);
 }
 // src/kmltree.js
 
@@ -826,7 +828,10 @@ var kmltree = (function(){
                 return;
             }
             setModified(node, 'visibility', toggling);
+            var o = lookup(node);
+            console.log('toggle item', o, o.getType(), o.getVisibility());
             lookup(node).setVisibility(toggling);
+            console.log('toggle item', o, o.getType(), o.getVisibility());
             node.toggleClass('visible', toggling);
             
             if(node.hasClass('KmlNetworkLink') && node.hasClass('loaded')){
