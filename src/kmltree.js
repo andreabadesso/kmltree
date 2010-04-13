@@ -4,9 +4,6 @@
 var kmltree = (function(){
 
     openBalloon = function(kmlObject, ge, whitelisted){
-        if(!kmlObject.getVisibility()){
-            kmlObject.setVisibility(true);
-        }
         var b = ge.createFeatureBalloon('');
         b.setFeature(kmlObject);
         b.setMinWidth(100);
@@ -875,7 +872,15 @@ var kmltree = (function(){
                 throw('networklink already loaded');
             }else{
                 var NetworkLink = lookup(node);
-                var link = NetworkLink.getLink().getHref();
+                var link = NetworkLink.getLink();
+                if(link){
+                    link = link.getHref();
+                }else{
+                    node.addClass('error');
+                    node.addClass('checkHideChildren');
+                    $(node).trigger('loaded', [node, false]);
+                    return;
+                }
                 if(opts.bustCache){
                     var buster = (new Date()).getTime();
                     if(link.indexOf('?') === -1){
@@ -887,7 +892,7 @@ var kmltree = (function(){
                 node.addClass('loading');
                 google.earth.fetchKml(ge, link, function(kmlObject){
                     if(!kmlObject){
-                        // alert('Error loading ' + link);
+                        alert('Error loading ' + link);
                         node.addClass('error');
                         node.addClass('checkHideChildren');
                         $(that).trigger('kmlLoadError', [kmlObject]);
@@ -950,11 +955,12 @@ var kmltree = (function(){
                 selectNode(node, kmlObject);
             }else{
                 clearSelection();
-                if(node.hasClass('hasDescription') || 
-                    kmlObject.getType() === 'KmlPlacemark'){
-                    toggleVisibility(node, true);
+                if(node.hasClass('hasDescription') || kmlObject.getType() === 'KmlPlacemark'){
+                    if(kmlObject.getType() === 'KmlPlacemark'){
+                        toggleVisibility(node, true);
+                    }
                     openBalloon(kmlObject, ge, opts['whiteListed']);
-                }                
+                }
             }
             $(that).trigger('click', [node[0], kmlObject]);
         });
