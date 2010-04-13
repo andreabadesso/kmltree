@@ -10,7 +10,7 @@ task :default => ["kmltree.tar.gz"]
 
 file "kmltree.tar.gz" => ["dist/kmltree.css", "dist/kmltree.min.js", "dist/images"] do
   sh "cp -r dist kmltree"
-  sh "tar -pczf kmltree.tar.gz kmltree"
+  sh "tar -pczf latest.tar.gz kmltree"
   sh "rm -rf kmltree"
 end
 
