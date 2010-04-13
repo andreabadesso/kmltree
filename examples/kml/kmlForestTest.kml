@@ -32,26 +32,26 @@
 		</IconStyle>
 	</Style>
 	<Folder>
-		<name>kmlForest Test File</name>
-		<open>1</open>
-		<GroundOverlay>
-			<name>PhotoOverlay of South Coast Study Region</name>
-			<visibility>0</visibility>
-			<Snippet maxLines="2">Test that snippet text is displayed in the list. This one is pretty long so it should wrap around. Okay, really really long.</Snippet>
-			<color>7affffff</color>
-			<Icon>
-				<href>http://localhost:8000/media/common/fixtures/kmlForestTest.kmz/files/test.png</href>
-				<viewBoundScale>0.75</viewBoundScale>
-			</Icon>
-			<altitudeMode>clampToGround</altitudeMode>
-			<gx:altitudeMode>clampToSeaFloor</gx:altitudeMode>
-			<LatLonBox>
-				<north>34.86535819647282</north>
-				<south>32.17455714364679</south>
-				<east>-117.016352657917</east>
-				<west>-120.6558430530303</west>
-			</LatLonBox>
-		</GroundOverlay>
+        <name>kmlForest Test File</name>
+        <open>1</open>
+        <GroundOverlay>
+            <name>PhotoOverlay of South Coast Study Region</name>
+            <visibility>0</visibility>
+            <Snippet maxLines="2">Test that snippet text is displayed in the list. This one is pretty long so it should wrap around. Okay, really really long.</Snippet>
+            <color>7affffff</color>
+            <Icon>
+                <href>http://localhost:8000/media/common/fixtures/kmlForestTest.kmz/files/test.png</href>
+                <viewBoundScale>0.75</viewBoundScale>
+            </Icon>
+            <altitudeMode>clampToGround</altitudeMode>
+            <gx:altitudeMode>clampToSeaFloor</gx:altitudeMode>
+            <LatLonBox>
+                <north>34.86535819647282</north>
+                <south>32.17455714364679</south>
+                <east>-117.016352657917</east>
+                <west>-120.6558430530303</west>
+            </LatLonBox>
+        </GroundOverlay>
 		<Placemark>
 			<name>Placemark with description</name>
 			<description>This test is to ensure that features with descriptions have links in the list view to open up said description.</description>
@@ -64,7 +64,6 @@
 				<heading>2.042671098200576</heading>
 				<altitudeMode>relativeToGround</altitudeMode>
 			</LookAt>
-			<styleUrl>#msn_parks1</styleUrl>
 			<Point>
 				<coordinates>-119.258077,34.171327,0</coordinates>
 			</Point>
@@ -80,7 +79,6 @@
 				<heading>2.042671098200576</heading>
 				<altitudeMode>relativeToGround</altitudeMode>
 			</LookAt>
-			<styleUrl>#msn_parks</styleUrl>
 			<Point>
 				<coordinates>-118.4403337321041,33.86599176886639,0</coordinates>
 			</Point>
@@ -97,7 +95,6 @@
 				<heading>2.268305583872094</heading>
 				<altitudeMode>relativeToGround</altitudeMode>
 			</LookAt>
-			<styleUrl>#msn_parks0</styleUrl>
 			<Point>
 				<coordinates>-118.2098650582971,33.75387974113372,0</coordinates>
 			</Point>
