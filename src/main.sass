@@ -18,10 +18,12 @@ div.kmltree
       padding-top: 5px
       display: none
 
+    // allows for folders and networklinks to be opened and closed
     &.open > ul
       display: block
 
 
+// these elements are just used as identifiers and should be hidden
 span
   &.kmlId, &.nlDocId
     display: none
@@ -29,19 +31,21 @@ span
 
 li.kmltree-item
   white-space: nowrap
-  margin: 0em 0
+  margin: 0
   padding: 5px 0
 
+  // using off-blank to make it easy on the eyes
   span.name
     color: #313841
 
+  // act like a link so users know to click
   &.hasDescription > span.name
     color: blue
     text-decoration: underline
     cursor: pointer
 
 
-div.kmltree h4.kmltree-title
+h4.kmltree-title
   color: #6C7C90
   font-weight: bold
   margin: 0 0 -5px 0
@@ -52,6 +56,9 @@ div.kmltree h4.kmltree-title
   float: left
   width: 16px
   height: 16px
+
+
+// Expander sprites
 
 .expander
   +sprite("kml", "arrow-right")
@@ -64,7 +71,7 @@ div.kmltree h4.kmltree-title
     +sprite("kml", "arrow-right-active")
 
     
-div.kmltree li.open > .expander
+li.open > .expander
   +sprite("kml", "arrow-down")
   
   &:hover
@@ -72,6 +79,9 @@ div.kmltree li.open > .expander
 
   &:active
     +sprite("kml", "arrow-down-active")
+
+
+// Toggling Sprites
 
 .toggler
   margin-right: 4px
@@ -133,7 +143,7 @@ li
     &:active
       +sprite("kml", "radio-on-active")
 
-  &.KmlPlacemark .expander, &.KmlPhotoOverlay .expander, &.KmlGroundOverlay .expander, &.KmlTour .expander
+  &.KmlPlacemark > .expander, &.KmlPhotoOverlay > .expander, &.KmlGroundOverlay > .expander, &.KmlTour > .expander
     display: none
 
 
@@ -146,6 +156,8 @@ div.kmltree
     display: none
     padding: 0px
 
+
+// Icon Sprites
 
 li.KmlFolder > .icon, li.KmlNetworkLink > .icon, li.KmlTour > .icon, li.KmlPhotoOverlay >  .icon, li.customIcon > .icon
   margin-right: 4px
@@ -191,7 +203,6 @@ span.name
   position: relative
   top: 1px
 
-
 div
   &.kmltree li.selected
     background-color: #B2E1FF
@@ -205,24 +216,27 @@ div
       &:hover
         border: none
 
-  &.kmltree-loading
-    position: absolute
-    left: 0px
-    top: 0px
-    width: 100%
-    height: 100%
-    background-color: #FFF
-    +opacity(70)
-    text-align: center
 
-    span
-      position: absolute
-      padding-top: 20px
-      top: 0px
-      left: 0px
-      width: 100%
-      +opacity(100)
-      font-weight: bold
-      height: 40px
-      padding-bottom: 15px
-      background: transparent url(images/ajax-loader.gif) no-repeat center bottom
+// Loading throbber
+
+div.kmltree-loading
+  position: absolute
+  left: 0px
+  top: 0px
+  width: 100%
+  height: 100%
+  background-color: #FFF
+  +opacity(70)
+  text-align: center
+
+  span
+    position: absolute
+    padding-top: 20px
+    top: 0px
+    left: 0px
+    width: 100%
+    +opacity(100)
+    font-weight: bold
+    height: 40px
+    padding-bottom: 15px
+    background: transparent url(images/ajax-loader.gif) no-repeat center bottom
