@@ -69,7 +69,7 @@ openBalloon = function(kmlObject, plugin, whitelisted){
 var kmltree = (function(){
 
     // can be removed when the following ticket is resolved:
-    // http://code.google.com/p/earth-api-samples/issues/detail?id=290&q=label%3AType-Defect&sort=-stars%20-status&colspec=ID%20Type%20Summary%20Component%20OpSys%20Browser%20Status%20Stars
+    // http://code.google.com/p/earth-api-samples/issues/detail?id=290
     function qualifyURL(url) {
         var a = document.createElement('a');
         a.href = url;
@@ -161,7 +161,6 @@ var kmltree = (function(){
         '<%= customClass %> ',
         '<%= (visible ? "visible " : "") %>',
         '<%= (customIcon ? "hasIcon " : "") %>',
-        // '<%= (fireEvents ? "fireEvents " : "") %>',
         '<%= (alwaysRenderNodes ? "alwaysRenderNodes " : "") %>',
         '<%= (select ? "select " : "") %>',
         '<%= (open ? "open " : "") %>',
@@ -197,11 +196,9 @@ var kmltree = (function(){
     
     var constructor_defaults = {
         enableSelection: function(){return false;},
-        // fireEvents: function(){return false;},
         visitFunction: function(kmlObject, config){return config},
         openNetworkLinks: true,
         restoreStateOnRefresh: true,
-        // showTitle: true,
         bustCache: false,
         restoreState: false,
         // whiteListed: false,

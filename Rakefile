@@ -6,7 +6,13 @@ CLOBBER.include('compiler')
 SRC = FileList[ 'src/tmpl.js', 'src/kmldom.js', 'src/openBalloon.js', 
   'src/kmltree.js']
 
-task :default => ["dist/kmltree.css", "dist/kmltree.min.js", "dist/images"]
+task :default => ["kmltree.tar.gz"]
+
+file "kmltree.tar.gz" => ["dist/kmltree.css", "dist/kmltree.min.js", "dist/images"] do
+  sh "cp -r dist kmltree"
+  sh "tar -pvczf kmltree.tar.gz kmltree/"
+  sh "rm -rf kmltree"
+end
 
 file "dist/kmltree.css" => ["clean", "src/main.sass", "src/_sprites.sass"] do
   sh "sass src/main.sass dist/kmltree.css"
