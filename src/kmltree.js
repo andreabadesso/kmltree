@@ -3,6 +3,16 @@
 
 var kmltree = (function(){
 
+    openBalloon = function(kmlObject, ge, whitelisted){
+        if(!kmlObject.getVisibility()){
+            kmlObject.setVisibility(true);
+        }
+        var b = ge.createFeatureBalloon('');
+        b.setFeature(kmlObject);
+        b.setMinWidth(100);
+        ge.setBalloon(b);
+    }
+    
     // can be removed when the following ticket is resolved:
     // http://code.google.com/p/earth-api-samples/issues/detail?id=290
     function qualifyURL(url) {

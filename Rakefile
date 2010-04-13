@@ -3,8 +3,7 @@ require 'rake/clean'
 CLEAN.include('dist/kmltree.css', 'dist/kmltree.min.js', 'dist/kmltree.js', 'dist/images', 'src/_sprites.sass', 'sprites-url')
 CLOBBER.include('compiler')
 
-SRC = FileList[ 'src/tmpl.js', 'src/kmldom.js', 'src/openBalloon.js', 
-  'src/kmltree.js']
+SRC = FileList[ 'src/tmpl.js', 'src/kmldom.js', 'src/kmltree.js']
 
 task :default => ["kmltree.tar.gz"]
 
