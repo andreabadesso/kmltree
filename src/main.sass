@@ -37,6 +37,7 @@ li.kmltree-item
   // using off-blank to make it easy on the eyes
   span.name
     color: #313841
+    cursor: default
 
   // act like a link so users know to click
   &.hasDescription > span.name
@@ -145,6 +146,9 @@ li
 
   &.KmlPlacemark > .expander, &.KmlPhotoOverlay > .expander, &.KmlGroundOverlay > .expander, &.KmlTour > .expander
     display: none
+    
+li.KmlPlacemark > span.name, li.select > span.name
+  cursor: pointer
 
 
 div.kmltree
