@@ -10,7 +10,7 @@
         <script src="http://earth-api-utility-library.googlecode.com/svn/trunk/extensions/dist/extensions.pack.js" type="text/javascript" charset="utf-8"></script>
         <!-- kmltree source files -->
         <link rel="stylesheet" href="../dist/kmltree.css" media="screen">
-        <script src="../dist/kmltree.min.js" type="text/javascript"></script>
+        <script src="../dist/kmltree.js" type="text/javascript"></script>
 
         <link rel="stylesheet" href="examples.css" type="text/css" media="screen" title="no title" charset="utf-8">
         
@@ -44,17 +44,27 @@
                             restoreState: false
                         });
                         console.time('load');
-                        tree.load();
+                        // console.profile();
                         $(tree).one('kmlLoaded', function(e, kmlObject){
+                            // console.profileEnd();
                             console.timeEnd('load');
                         });
+                        tree.load();
                         $('#refresh').show();
                     }else{
                         alert('you must enter a url');
                     }
                 });
-                $('#refresh').click(function(){
+                $('#refresh').click(function(e){
+                    // console.profile();
+                    console.time('refresh');
                     tree.refresh();
+                    $(tree).one('kmlLoaded', function(e, kmlObject){
+                        // console.log('loaded');
+                        // console.profileEnd();
+                        console.timeEnd('refresh');
+                    });
+                    e.preventDefault();
                 });
             }
 

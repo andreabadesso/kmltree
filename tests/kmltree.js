@@ -1049,6 +1049,31 @@ module('kmlTree');
         ok(tree !== false, 'Tree initialized');
         tree.load(true);
     });
+    
+    earthAsyncTest("NetworkLinks with open=1 but with a style of checkHideChildren should not be expanded", function(ge, gex){
+        var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('openCheckHideChildrenNL.kml'),
+            ge: ge,
+            gex: gex,
+            animate: false,
+            map_div: $('#map3d'),
+            element: $('.kmltreetest'),
+            bustCache: false,
+            restoreState: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlFolder', 'Kmz loaded correctly');
+            var nlink = $('.kmltreetest').find('span.name:contains(nl)').parent();
+            ok(!nlink.hasClass('loaded'), 'Not loaded');
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
 
 
     earthAsyncTest("tree.walk visits in correct order", function(ge, gex){
@@ -1352,6 +1377,42 @@ module('kmlTree');
         tree.load(true);
     });
     
+    earthAsyncTest("getState: open NetworkLinks, one broken", function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('nlOldStyle.kml'),
+            ge: ge, 
+            gex: gex, 
+            animate: false, 
+            map_div: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlFolder', 'Document loaded correctly');
+            var working = $('.kmltreetest').find('span.name:contains(Working)').parent();
+            var oldstyle = $('.kmltreetest').find('span.name:contains(old-school)').parent();
+            ok(working.length);
+            ok(oldstyle.length);
+            working.find('> .expander').click();
+            // the oldstyle networklink doesn't have to be un-expanded since 
+            // it is open but broken. So when loaded kmltree will close it so 
+            // that future refreshes of the tree won't try to load the broken
+            // link again.
+            var state = tree.getState();
+            equals(state.name, 'root');
+            equals(state.children.length, 2);
+            for(var i=0; i<state.children.length; i++){
+                ok(state.children[i]['modified']['open']['current'] === false);
+            }
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+    
     
 
     earthAsyncTest('refresh tracks previous state', function(ge, gex){
@@ -1645,6 +1706,85 @@ module('kmlTree');
         tree.load(true);
     });
     
+    earthAsyncTest('refreshing with 2 networklinks at root - one has old-school Url tag', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('nlOldStyle.kml'),
+            ge: ge, 
+            gex: gex, 
+            animate: false, 
+            map_div: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            restoreState: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
+            
+            var working = $('.kmltreetest').find('span.name:contains(Working)').parent();
+            var old = $('.kmltreetest').find('span.name:contains(old)').parent();
+            ok(working.length);
+            ok(old.length);
+            ok(working.hasClass('open'));
+            ok(!old.hasClass('open'));
+            $(tree).one('kmlLoaded', function(e, kmlObject){
+                var working = $('.kmltreetest').find('span.name:contains(Working)').parent();
+                var old = $('.kmltreetest').find('span.name:contains(old)').parent();
+                ok(!old.hasClass('open'));
+                ok(working.hasClass('open'));
+                ok(working.hasClass('loaded'));
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            });
+            tree.refresh();
+        });
+        window.tree = tree;
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+
+    earthAsyncTest('supports open networklinks even when refreshing with state', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('nlOldStyle.kml'),
+            ge: ge, 
+            gex: gex, 
+            animate: false, 
+            map_div: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            restoreState: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlFolder', 'KmlDocument loaded correctly');
+            
+            var working = $('.kmltreetest').find('span.name:contains(Working)').parent();
+            var old = $('.kmltreetest').find('span.name:contains(old)').parent();
+            ok(working.length);
+            ok(old.length);
+            ok(working.hasClass('open'));
+            ok(!old.hasClass('open'));
+            working.find('>.toggler').click().click();
+            ok(working.find('>ul>li.visible').length > 1)
+            $(tree).one('kmlLoaded', function(e, kmlObject){
+                var working = $('.kmltreetest').find('span.name:contains(Working)').parent();
+                var old = $('.kmltreetest').find('span.name:contains(old)').parent();
+                ok(!old.hasClass('open'));
+                ok(working.hasClass('open'));
+                ok(working.hasClass('loaded'));
+                ok(working.find('>ul>li.visible').length > 1)
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            });
+            tree.refresh();
+        });
+        window.tree = tree;
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+    
     earthAsyncTest('state tracking can be turned off', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
@@ -1654,7 +1794,7 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            restoreStateOnRefresh: false,
+            refreshWithState: false,
             bustCache: false
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){

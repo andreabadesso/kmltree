@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Folder>
+	<name>open NetworkLink with style of checkHideChildren</name>
+	<NetworkLink>
+		<name>nl checkHideChildren</name>
+        <visibility>1</visibility>
+    	<open>1</open>
+    	<Style>
+			<ListStyle>
+				<listItemType>checkHideChildren</listItemType>
+			</ListStyle>
+		</Style>
+		<Link>
+			<href>http://marinemap.googlecode.com/svn/trunk/media/common/fixtures/earthLayers.kml</href>
+		</Link>
+	</NetworkLink>
+</Folder>
+</kml>
