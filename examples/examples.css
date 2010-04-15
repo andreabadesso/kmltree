@@ -3,7 +3,7 @@ html, body {
     padding:0px;
 }
 
-#tree {
+#tree, .tree {
     position:absolute;
     top:140px;
     left:10px;

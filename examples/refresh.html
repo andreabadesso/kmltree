@@ -31,6 +31,7 @@
                 gex = new GEarthExtensions(ge);
                 $('#submit').show();
                 $('#urlform').submit(function(e){
+                    $('.tree').replaceWith('<div class="tree"></div>');
                     e.preventDefault();
                     var url = $('#url').attr('value');
                     if(url){
@@ -39,11 +40,14 @@
                             ge: ge, 
                             gex: gex, 
                             map_div: $('#map3d'), 
-                            element: $('#tree'),
+                            element: $('.tree'),
                             restoreState: false
                         });
-
+                        console.time('load');
                         tree.load();
+                        $(tree).one('kmlLoaded', function(e, kmlObject){
+                            console.timeEnd('load');
+                        });
                         $('#refresh').show();
                     }else{
                         alert('you must enter a url');
@@ -72,7 +76,7 @@
             <input type="submit" id="submit" name="submit">
             <button id="refresh" style="display:none;">refresh</button>
         </form>
-        <div id="tree"></div>
+        <div class="tree"></div>
         <div id="map3d"></div>
         <br style="clear:both;">
     </body>
