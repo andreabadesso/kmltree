@@ -145,7 +145,8 @@ var kmltree = (function(){
         restoreState: false,
         // whiteListed: false,
         supportItemIcon: false,
-        loadingMsg: 'Loading data'
+        loadingMsg: 'Loading data',
+        setExtent: false
     };
         
         
@@ -415,6 +416,18 @@ var kmltree = (function(){
             var queue = new NetworkLinkQueue({
                 success: function(links){
                     hideLoading();
+                    if(opts.setExtent){
+                        var aspectRatio = null;
+                        var m = $(opts.map_div);
+                        if(m.length){
+                            var aspectRatio = m.width() / m.height();
+                        }
+                        opts.gex.util.flyToObject(kmlObject, {
+                            boundsFallback: true,
+                            aspectRatio: aspectRatio
+                        });
+                        opts.setExtent = false;
+                    }
                     $(that).trigger('kmlLoaded', [kmlObject]);
                 },
                 error: function(links){

@@ -184,6 +184,33 @@ module('kmlTree');
         tree.load(true);
     });
 
+    earthAsyncTest('setExtent option', function(ge, gex){
+        var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('kmlForestTest.kml'),
+            ge: ge, 
+            gex: gex, 
+            animate: false, 
+            map_div: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            setExtent: true
+        });
+        $(tree).bind('kmlLoaded', function(e, kmlObject){
+            setTimeout(function(){
+                var secondLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
+                ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+                ok(secondLat !== firstLat);
+                $('.kmltreetest').remove();
+                tree.destroy();
+                start();
+            }, 500);
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+
     earthAsyncTest('contextmenu events', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
