@@ -42,13 +42,13 @@
                             map_div: $('#map3d'), 
                             element: $('.tree'),
                             restoreState: false,
-                            setExtent: true
+                            setExtent: false
                         });
-                        console.time('load');
+                        // console.time('load');
                         // console.profile();
                         $(tree).one('kmlLoaded', function(e, kmlObject){
                             // console.profileEnd();
-                            console.timeEnd('load');
+                            // console.timeEnd('load');
                         });
                         tree.load();
                         $('#refresh').show();
@@ -58,12 +58,12 @@
                 });
                 $('#refresh').click(function(e){
                     // console.profile();
-                    console.time('refresh');
+                    // console.time('refresh');
                     tree.refresh();
                     $(tree).one('kmlLoaded', function(e, kmlObject){
                         // console.log('loaded');
                         // console.profileEnd();
-                        console.timeEnd('refresh');
+                        // console.timeEnd('refresh');
                     });
                     e.preventDefault();
                 });

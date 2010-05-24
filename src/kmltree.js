@@ -97,7 +97,7 @@ var kmltree = (function(){
     // Returns a jquery object representing a kml file
     
     var template = tmpl([
-        '<li UNSELECTABLE="on" class="',
+        '<li UNSELECTABLE="on" id="<%= id %>" class="',
         '<%= listItemType %> ',
         '<%= type %> ',
         '<%= customClass %> ',
@@ -203,7 +203,7 @@ var kmltree = (function(){
             }
             google.earth.fetchKml(ge, url, function(kmlObject){
                 if(!destroyed){
-                    processKmlObject(kmlObject, url);
+                    processKmlObject(kmlObject, url, opts.url);
                 }
             });
         };
@@ -253,7 +253,6 @@ var kmltree = (function(){
                     && !node.hasClass('loaded');
                 if(state.name !== 'root'){
                     var mods = state['modified'];
-                    // console.log(node, node.find('>span.name').text(), mods);
                     if(mods){
                         var opening = false;
                         if(mods['open'] !== undefined){
@@ -319,7 +318,6 @@ var kmltree = (function(){
                 //     var n = $(this);
                 //     if(!n.hasClass('loading') && !n.hasClass('checkHideChildren')){
                 //         queue.add(n, function(loadedNode){
-                //             console.log('restoreState', loadedNode, state, queue);
                 //             restoreState(loadedNode, state, queue);
                 //             queueOpenNetworkLinks(queue, loadedNode);
                 //             queue.execute();                                    
@@ -330,6 +328,34 @@ var kmltree = (function(){
                 throw('called with invalid arguments');
             }
         }
+        
+        // Returns an ID that is used on the DOM element representing this 
+        // kmlObject. If the kmlObject has it's own ID, the generated ID will
+        // be created from that ID + the kml document's url. If not, the name
+        // of the element and the name of it's parents will be used to 
+        // generate an ID.
+        // 
+        // Arguments: kmlObject, parentID
+        var getID = function(kmlObject, parentID, docUrl){
+            var key;
+            var id = kmlObject.getId();
+            if(id){
+                return "kml" + docUrl.concat(id).replace(/\W/g, '-');
+            }else{
+                var name = kmlObject.getName();
+                if(name){
+                    key = name.replace(/\W/g, '-');
+                    // if(key.length > 16){
+                    //     key = key.slice(0, 7) + key.slice(-8) + 
+                    //         key.charAt(key.length / 2);
+                    // }
+                }else{
+                    key = "blank"
+                }
+                
+            }
+            return parentID + key;
+        };
         
         var showLoading = function(msg){
             hideLoading();
@@ -353,7 +379,8 @@ var kmltree = (function(){
         
         that.hideLoading = hideLoading;
         
-        var processKmlObject = function(kmlObject, url){
+        // url has cachebusting GET vars, original_url does not
+        var processKmlObject = function(kmlObject, url, original_url){
             if (!kmlObject) {
                 if(errorCount === 0){
                     errorCount++;
@@ -365,7 +392,7 @@ var kmltree = (function(){
                                 that.load(true);
                             },
                             error: function(){
-                                processKmlObject(kmlObject, url);
+                                processKmlObject(kmlObject, url, original_url);
                             }
                         });
                         // try to load 
@@ -397,7 +424,7 @@ var kmltree = (function(){
             errorCount = 0;
             that.kmlObject = kmlObject;
             that.kmlObject.setVisibility(true);
-            var options = buildOptions(kmlObject);
+            var options = buildOptions(kmlObject, original_url);
             
             
             var rendered = renderOptions(options.children[0].children);
@@ -437,7 +464,6 @@ var kmltree = (function(){
                 tree: that,
                 my: my
             });
-            // console.log('processKmlHandler: that.previousState: ', that.previousState);
             if(!that.previousState){
                 if(opts.restoreState && !!window.localStorage){
                     that.previousState = getStateFromLocalStorage();
@@ -448,7 +474,6 @@ var kmltree = (function(){
                 // This will need to be altered at some point to run the queue
                 // regardless of previousState, expanding networklinks that 
                 // are set to open within the kml
-                // console.log('restoring state with', that.previousState);
                 restoreState(
                     opts.element.find('div.kmltree'), 
                     that.previousState, 
@@ -464,16 +489,13 @@ var kmltree = (function(){
             // $(that).trigger('kmlLoaded', kmlObject);
             var links = topNode.find('li.KmlNetworkLink.open');
             // links.removeClass('open');
-            // console.log(links);
             links.each(function(){
                 // no need to open if checkHideChildren is set
                 if(!$(this).hasClass('checkHideChildren')){
                     var node = $(this);
-                    // console.log('queueOpenNetworkLinks', '"' + node.find('span.name').text() + '"');
                     // setModified(node, 'open', node.hasClass('open'));
                     node.removeClass('open');
                     queue.add(node, function(loadedNode){
-                        // console.log('loadedNode', loadedNode);
                         loadedNode.addClass('open');
                         setModified(loadedNode, 'open', node.hasClass('open'));
                         // loadedNode.removeClass('open');
@@ -484,10 +506,11 @@ var kmltree = (function(){
             });
         };
         
-        var buildOptions = function(kmlObject){
+        var buildOptions = function(kmlObject, docUrl){
             var docid = addDocLookup(kmlObject);
             var topTreeNode;
-            var options = {name: kmlObject.getName()};
+            var options = {name: kmlObject.getName(), 
+                id: 'kml' + docUrl.replace(/\W/g, '-')};
             google.earth.executeBatch(ge, function(){
                 opts.gex.dom.walk({
                     visitCallback: function(context){
@@ -506,7 +529,7 @@ var kmltree = (function(){
                             visible: !!this.getVisibility(),
                             type: this.getType(),
                             open: this.getOpen(),
-                            id: this.getId().replace(/\//g, '-'),
+                            id: getID(this, parent.id, docUrl),
                             description: this.getDescription(),
                             snippet: snippet,
                             select: opts.enableSelection(this),
@@ -605,9 +628,7 @@ var kmltree = (function(){
         
         var refresh = function(){
             if(opts.refreshWithState){
-                // console.log('should restore state');
                 that.previousState = getState();
-                // console.log('that.previousState=', that.previousState);
             }
             clearLookups();
             clearKmlObjects();
@@ -844,7 +865,6 @@ var kmltree = (function(){
         };
         
         var setModified = function(node, key, value){
-            // console.log('setModified', node, key, value);
             var data = node.data('modified');
             if(!data){
                 data = {};
@@ -941,8 +961,8 @@ var kmltree = (function(){
                 var link = NetworkLink.getLink();
                 if(link){
                     link = link.getHref();
+                    var original_url = link;
                 }else{
-                    // console.log('could not find link: ', '"' + node.find('span.name').text() + '"');
                     node.addClass('error');
                     // setModified(node, 'visibility', false);
                     $(node).trigger('loaded', [node, false]);
@@ -972,7 +992,7 @@ var kmltree = (function(){
                     kmlObject.setVisibility(NetworkLink.getVisibility());
                     var parent = NetworkLink.getParentNode();
                     parent.getFeatures().removeChild(NetworkLink);
-                    var data = buildOptions(kmlObject);
+                    var data = buildOptions(kmlObject, original_url);
                     var html = renderOptions(data.children[0].children);
                     node.append('<ul>'+html+'</ul>');
                     node.addClass('open');

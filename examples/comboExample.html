@@ -17,6 +17,7 @@
         <script src="examples.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
             google.load("earth", "1");
+            var tree;
             
             function init() {
                 google.earth.createInstance('map3d', initCB, failureCB);
@@ -29,12 +30,12 @@
                 
                 var gex = gex = new GEarthExtensions(ge);
                 
-                var tree = kmltree({
+                tree = kmltree({
                     url: './kml/kmlForestTest.kml',
                     ge: ge, 
                     gex: gex, 
                     map_div: $('#map3d'), 
-                    element: $('#tree'),
+                    element: $('#tree')
                 });
                 
                 tree.load();

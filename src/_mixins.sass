@@ -17,4 +17,11 @@
 
 =text-shadow(!color, !x, !y, !blur)
   :text-shadow= !color !x !y "#{!blur}px"
-  :-ms-filter "progid:DXImageTransform.Microsoft.Shadow(Color=#{!color},Direction=135,Strength=#{!blur})"  
+  :-ms-filter "progid:DXImageTransform.Microsoft.Shadow(Color=#{!color},Direction=135,Strength=#{!blur})"
+  
+=background-size( !x, !y )
+  :-moz-background-size= !x, !y
+  :-khtml-background-size= !x, !y
+  :-webkit-background-size= !x, !y
+  :-o-background-size= !x, !y
+  :background-size= !x, !y
