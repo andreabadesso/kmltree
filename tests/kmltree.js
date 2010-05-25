@@ -1101,33 +1101,6 @@ module('kmlTree');
         ok(tree !== false, 'Tree initialized');
         tree.load(true);
     });
-
-
-    earthAsyncTest("tree.walk visits in correct order", function(ge, gex){
-        $(document.body).append('<div class="kmltreetest"></div>');
-        var tree = kmltree({
-            url: example('TreeTraversal.kmz'),
-            ge: ge, 
-            gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
-            element: $('.kmltreetest'),
-            bustCache: false
-        });
-        $(tree).one('kmlLoaded', function(e, kmlObject){
-            ok(kmlObject.getType() === 'KmlFolder', 'Document loaded correctly');
-            var order = '';
-            tree.walk(function(node){
-                order += node.find('>span.name').text();
-            });
-            equals('FJBADCEGIH', order);
-            tree.destroy();
-            $('.kmltreetest').remove();
-            start();
-        });
-        ok(tree !== false, 'Tree initialized');
-        tree.load(true);
-    });
     
     earthAsyncTest("children ignored if callback returns false", function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');

@@ -19,7 +19,7 @@ var kmltree = (function(){
     }
 
     var NetworkLinkQueue = function(opts){
-        if(opts['success'] && opts['error'] && opts['tree'] && opts['my']){
+        if(opts['success'] && opts['error'] && opts['tree']){
             this.queue = [];
             this.opts = opts;
         }else{
@@ -159,13 +159,13 @@ var kmltree = (function(){
         that.lookupTable = lookupTable;
         that.kmlObject = null;
         var docs = {};
-        var my = {};
         var opts = jQuery.extend({}, constructor_defaults, opts);
         var ge = opts.gex.pluginInstance;
         var destroyed = false;
+        var internalState = {};
 
-        if(parseFloat(ge.getPluginVersion()) < 5.1){
-            throw('kmltree requires a google earth plugin version >= 5.1');
+        if(parseFloat(ge.getPluginVersion()) < 5.2){
+            throw('kmltree requires a google earth plugin version >= 5.2');
         }
                 
         if(!opts.url || !opts.gex || !opts.element){
@@ -187,6 +187,58 @@ var kmltree = (function(){
           $(opts.element).css({position: 'relative'});
         }
         
+        var buildOptions = function(kmlObject, docUrl){
+            // var docid = addDocLookup(kmlObject);
+            var topTreeNode;
+            var options = {name: kmlObject.getName(), 
+                id: 'kml' + docUrl.replace(/\W/g, '-')};
+            google.earth.executeBatch(ge, function(){
+                opts.gex.dom.walk({
+                    visitCallback: function(context){
+                        var parent = context.current;
+                        if(!parent.children){
+                            parent.children = [];
+                        }
+                        var name = this.getName();
+                        var id = addLookup(this, parent.id, docUrl, name);
+                        var snippet = this.getSnippet();
+                        // To support generated output from certain software 
+                        // (Arc2Earth, etc)
+                        if(!snippet || snippet === 'empty'){
+                            snippet = false;
+                        }
+                        var style = this.getComputedStyle();
+                        var child = {
+                            renderOptions: renderOptions,
+                            name: name || '&nbsp;',
+                            visible: !!this.getVisibility(),
+                            type: this.getType(),
+                            open: this.getOpen(),
+                            id: id,
+                            description: this.getDescription(),
+                            snippet: snippet,
+                            select: opts.enableSelection(this),
+                            listItemType: getListItemType(style),
+                            customIcon: customIcon(this),
+                            customClass: '',
+                            children: [],
+                            alwaysRenderNodes: false,
+                            kmlId: this.getId().replace(/\W/g, '-')
+                        }
+                        child = opts.visitFunction(this, child);
+                        parent.children.push(child);
+                        if(child.listItemType !== 'checkHideChildren'){
+                            context.child = child;
+                        }else{
+                            context.walkChildren = false;
+                        }
+                    },
+                    rootObject: kmlObject,
+                    rootContext: options
+                });
+            });
+            return options;
+        };
         
         var load = function(cachebust){
             if(that.kmlObject){
@@ -244,87 +296,7 @@ var kmltree = (function(){
         }
         
         that.clearSelection = clearSelection;
-        
-        var restoreState = function(node, state, queue){
-            if(node && state && queue){
-                var unloadedNL = node.hasClass('KmlNetworkLink') 
-                    && !node.hasClass('loaded');
-                if(state.name !== 'root'){
-                    var mods = state['modified'];
-                    if(mods){
-                        var opening = false;
-                        if(mods['open'] !== undefined){
-                            if(unloadedNL){
-                                if(mods['open'].current){
-                                    opening = true;
-                                    queue.add(node, function(loadedNode){
-                                        restoreState(loadedNode, state, queue);
-                                    });                                    
-                                }else{
-                                    if(node.hasClass('open')){
-                                        node.removeClass('open');
-                                        setModified(node, 'open', false);
-                                    }
-                                }
-                            }else{
-                                node.toggleClass('open', mods.open.current);
-                                setModified(node, 'open', mods.open.current);
-                            }
-                        }
-                        if(mods['visibility'] !== undefined){
-                            if(node.hasClass('KmlNetworkLink') 
-                            && node.hasClass('alwaysRenderNodes') 
-                            && mods['visibility'].current
-                            && !opening
-                            && !node.hasClass('loading') 
-                            && !node.hasClass('loaded')){
-                                openNetworkLink(node);
-                                $(node).bind('loaded', function(e, node, kmlObject){
-                                    toggleVisibility(node, true);
-                                    node.removeClass('open');
-                                });                                
-                            }else{
-                                toggleItem(node, mods['visibility'].current);                                
-                            }
-                        }
-                        if(mods['selected'] !== undefined){
-                            selectNode(node, lookup(node));
-                        }
-                    }
-                }else{
-                    node.find('.KmlNetworkLink.open').removeClass('open');
-                }
-                if(!unloadedNL){
-                    for(var i=0; i<state.children.length; i++){
-                        var child = state.children[i];
-                        var n = node.find('>ul>li>span.name:contains(' 
-                            + child.name + ')').parent();
-                        if(n.length === 1){
-                            restoreState(n, child, queue);
-                        }else if(n.length > 1){
-                            n.each(function(){
-                                var name = $(this).find('>span.name').text();
-                                if(name === child.name){
-                                    restoreState($(this), child, queue);
-                                }
-                            });
-                        }
-                    }
-                }
-                // node.find('.KmlNetworkLink.open').each(function(){
-                //     var n = $(this);
-                //     if(!n.hasClass('loading') && !n.hasClass('checkHideChildren')){
-                //         queue.add(n, function(loadedNode){
-                //             restoreState(loadedNode, state, queue);
-                //             queueOpenNetworkLinks(queue, loadedNode);
-                //         });
-                //     }
-                // });                    
-            }else{
-                throw('called with invalid arguments');
-            }
-        }
-                
+                        
         var showLoading = function(msg){
             hideLoading();
             var msg = msg || opts.loadingMsg;
@@ -349,6 +321,7 @@ var kmltree = (function(){
         
         // url has cachebusting GET vars, original_url does not
         var processKmlObject = function(kmlObject, url, original_url){
+            internalState = {};
             if (!kmlObject) {
                 if(errorCount === 0){
                     errorCount++;
@@ -406,6 +379,12 @@ var kmltree = (function(){
                 '</div>'
             ].join(''));
             ge.getFeatures().appendChild(kmlObject);
+            
+            if(!that.previousState){
+                if(opts.restoreState && !!window.localStorage){
+                    that.previousState = getStateFromLocalStorage();
+                }
+            }
             var queue = new NetworkLinkQueue({
                 success: function(links){
                     hideLoading();
@@ -427,102 +406,64 @@ var kmltree = (function(){
                     hideLoading();
                     $(that).trigger('kmlLoadError', [kmlObject]);
                 },
-                tree: that,
-                my: my
+                tree: that
             });
-            if(!that.previousState){
-                if(opts.restoreState && !!window.localStorage){
-                    that.previousState = getStateFromLocalStorage();
-                }
-            }
-            
-            if(that.previousState && that.previousState.children.length){
-                // This will need to be altered at some point to run the queue
-                // regardless of previousState, expanding networklinks that 
-                // are set to open within the kml
-                restoreState(
-                    opts.element.find('div.kmltree'), 
-                    that.previousState, 
-                    queue);
+            if(that.previousState){
+                restoreState(that.previousState, queue);
             }else{
                 queueOpenNetworkLinks(queue, 
                     $('#' + opts.element.attr('id')));
             }
         };
         
-        var queueOpenNetworkLinks = function(queue, topNode){
-            // $(that).trigger('kmlLoaded', kmlObject);
-            var links = topNode.find('li.KmlNetworkLink.open');
-            // links.removeClass('open');
+        var restoreState = function(state, queue){
+            // go thru the whole state, opening, changing visibility, and selecting
+            for(var id in state){
+                var el = $('#'+id);
+                if(el.length === 1){
+                    for(var key in state[id]){
+                        el.toggleClass(key, state[id][key]['value']);
+                        setModified(el, key, state[id][key]['value']);
+                        if(key === 'visible'){
+                            lookup(el).setVisibility(true);
+                        }
+                    }
+                    delete state[id];
+                }
+            }
+            var links = $('#' + opts.element.attr('id')).find('li.KmlNetworkLink.open');
             links.each(function(){
+                var n = $(this);
                 // no need to open if checkHideChildren is set
-                if(!$(this).hasClass('checkHideChildren')){
-                    var node = $(this);
-                    // setModified(node, 'open', node.hasClass('open'));
-                    node.removeClass('open');
-                    queue.add(node, function(loadedNode){
+                if(!n.hasClass('checkHideChildren') && !n.hasClass('loading') 
+                    && !n.hasClass('loaded')){
+                    queue.add(n, function(loadedNode){
+                        restoreState(state, queue);
+                    });                    
+                }
+            });
+            queue.execute();
+        }
+        
+        var queueOpenNetworkLinks = function(queue, topNode){
+            var links = topNode.find('li.KmlNetworkLink.open');
+            links.each(function(){
+                var n = $(this);
+                // no need to open if checkHideChildren is set
+                if(!n.hasClass('checkHideChildren') && !n.hasClass('loading') 
+                    && !n.hasClass('loaded')){
+                    n.removeClass('open');
+                    queue.add(n, function(loadedNode){
                         loadedNode.addClass('open');
                         setModified(loadedNode, 'open', 
-                            node.hasClass('open'));
+                            n.hasClass('open'));
                         queueOpenNetworkLinks(queue, loadedNode);
                     });                    
                 }
             });
+            queue.execute();
         };
-        
-        var buildOptions = function(kmlObject, docUrl){
-            // var docid = addDocLookup(kmlObject);
-            var topTreeNode;
-            var options = {name: kmlObject.getName(), 
-                id: 'kml' + docUrl.replace(/\W/g, '-')};
-            google.earth.executeBatch(ge, function(){
-                opts.gex.dom.walk({
-                    visitCallback: function(context){
-                        var parent = context.current;
-                        if(!parent.children){
-                            parent.children = [];
-                        }
-                        var name = this.getName();
-                        var id = addLookup(this, parent.id, docUrl, name);
-                        var snippet = this.getSnippet();
-                        // To support generated output from certain software 
-                        // (Arc2Earth, etc)
-                        if(!snippet || snippet === 'empty'){
-                            snippet = false;
-                        }
-                        var style = this.getComputedStyle();
-                        var child = {
-                            renderOptions: renderOptions,
-                            name: name || '&nbsp;',
-                            visible: !!this.getVisibility(),
-                            type: this.getType(),
-                            open: this.getOpen(),
-                            id: id,
-                            description: this.getDescription(),
-                            snippet: snippet,
-                            select: opts.enableSelection(this),
-                            listItemType: getListItemType(style),
-                            customIcon: customIcon(this),
-                            customClass: '',
-                            children: [],
-                            alwaysRenderNodes: false,
-                            kmlId: this.getId().replace(/\W/g, '-')
-                        }
-                        child = opts.visitFunction(this, child);
-                        parent.children.push(child);
-                        if(child.listItemType !== 'checkHideChildren'){
-                            context.child = child;
-                        }else{
-                            context.walkChildren = false;
-                        }
-                    },
-                    rootObject: kmlObject,
-                    rootContext: options
-                });
-            });
-            return options;
-        };
-        
+                
         var customIcon = function(kmlObject){
             if(!opts.supportItemIcon){
                 return false;
@@ -594,9 +535,9 @@ var kmltree = (function(){
             if(opts.refreshWithState){
                 that.previousState = getState();
             }
-            clearLookups();
             clearKmlObjects();
             clearNetworkLinks();
+            clearLookups();
             // opts.element.html('');
             ge.setBalloon(null);
             load(true);
@@ -607,8 +548,11 @@ var kmltree = (function(){
         // Deletes references to networklink kmlObjects, removes them from the
         // dom. Prepares for refresh or tree destruction.
         var clearNetworkLinks = function(){
-            $('.KmlNetworkLink loaded').each(function(){
-                opts.gex.dom.removeObject(lookup($(this)));
+            $('.KmlNetworkLink').each(function(){
+                var kmlObject = lookup($(this));
+                if(kmlObject.getParentNode()){
+                    opts.gex.dom.removeObject(lookup($(this)));
+                }
             });
         };
         
@@ -807,93 +751,42 @@ var kmltree = (function(){
             if(node.hasClass('visible') === toggling){
                 return;
             }
-            setModified(node, 'visibility', toggling);
-            var o = lookup(node);
+            setModified(node, 'visible', toggling);
             lookup(node).setVisibility(toggling);
-            node.toggleClass('visible', toggling);
-            
-            // if(node.hasClass('KmlNetworkLink') && node.hasClass('loaded')){
-            //     var doc = lookupNlDoc(node);
-            //     doc.setVisibility(toggling);
-            // }
+            node.toggleClass('visible', toggling);            
         };
         
         var setModified = function(node, key, value){
-            var data = node.data('modified');
-            if(!data){
-                data = {};
+            var id = node.attr('id');
+            if(!internalState[id]){
+                internalState[id] = {};
             }
-            if(!data[key]){
-                data[key] = {};
-                if(key === 'open'){
-                    data[key].original = lookup(node).getOpen();
-                }else if(key === 'visibility'){
-                    data[key].original = lookup(node).getVisibility();
-                }else{
-                    data[key].original = !value;
-                }
+            var record = internalState[id];
+            if(!record[key]){
+                record[key] = {original: !value, value: value}
+            }else{
+                record[key]['value'] = value;
             }
-            data[key].current = value;
-            node.data('modified', data);
         };
         
         var getState = function(){
-            var state = {
-                name: 'root', 
-                remove: false, 
-                children: [], 
-                parent: false
-            };
-            walk(function(node, context){
-                var me = {
-                    name: node.find('>span.name').text(), 
-                    remove: true, 
-                    children: [], 
-                    parent: context
-                };
-                var modified = node.data('modified');
-                var new_modified = {};
-                var anykey = false;
-                for(var key in modified){
-                    if(modified[key].current !== modified[key].original){
-                        new_modified[key] = modified[key];
-                        anykey = key;
+            for(var id in internalState){
+                for(var key in internalState[id]){
+                    if(internalState[id][key]['original'] === internalState[id][key]['value']){
+                        delete internalState[id][key];
                     }
                 }
-                if(anykey){
-                    me.modified = new_modified;
-                    me.remove = false;
-                    var other_context = context;
-                    while(other_context.parent){
-                        other_context.remove = false;
-                        other_context = other_context.parent;
+                var len = 0;
+                for(var key in internalState[id]){
+                    if(internalState[id].hasOwnProperty(key)){
+                        len++;
                     }
                 }
-                context.children.push(me);
-                return me;
-            }, state);
-            
-            // go back and remove any limbs of the tree with remove=true
-            
-            var removeRecursive_ = function(parent){
-                if(parent.remove === true){
-                    return false;
-                }else{
-                    var children = [];
-                    for(var i=0; i<parent.children.length; i++){
-                        var child = removeRecursive_(parent.children[i]);
-                        if(child){
-                            delete child.remove;
-                            delete child.parent;
-                            children.push(child);
-                        }
-                    }
-                    parent.children = children;
-                    return parent;
+                if(len === 0){
+                    delete internalState[id];
                 }
-            };
-            var result = removeRecursive_(state);
-            return result;
+            }
+            return internalState;
         };
         
         that.getState = getState;
@@ -962,29 +855,26 @@ var kmltree = (function(){
         
         that.openNetworkLink = openNetworkLink;
         
-        // Depth-first traversal of all nodes in the tree
-        // Will start out with all the children of the root KmlDocument, but
-        // does not include the KmlDocument itself
-        var walk = function(callback, context, node){
-            var recurse_ = function(node, context){
-                node.find('>ul>li').each(function(){
-                    var el = $(this);
-                    var newcontext = callback(el, context);
-                    if(newcontext === false){
-                        // Don't follow into child nodes
-                        return true;
-                    }else{
-                        recurse_(el, newcontext);
-                    }
-                });
-            };
-            if(!node){
-                node = opts.element.find('div.kmltree');
-            }
-            recurse_(node, context);
-        };
         
-        that.walk = walk;
+        // Creates a new NetworkLinkQueue that simply opens up the given 
+        // NetworkLink and any open NetworkLinks within it.
+        var openNetworkLinkRecursive = function(node){
+            var queue = new NetworkLinkQueue({
+                success: function(links){
+                },
+                error: function(links){
+                },
+                tree: that
+            });
+            queue.add(node, function(loadedNode){
+                loadedNode.addClass('open');
+                setModified(loadedNode, 'open', 
+                    node.hasClass('open'));
+                queueOpenNetworkLinks(queue, loadedNode);
+            });
+            queue.execute();
+        }
+        
         var id = opts.element.attr('id');
         
         $('#'+id+' li > span.name').live('click', function(){
@@ -1036,7 +926,7 @@ var kmltree = (function(){
             var el = $(this).parent();
             if(el.hasClass('KmlNetworkLink') && !el.hasClass('loaded') 
                 && !el.hasClass('loading')){
-                openNetworkLink(el);
+                openNetworkLinkRecursive(el);
             }else{
                 el.toggleClass('open');
                 setModified(el, 'open', el.hasClass('open'));
@@ -1061,7 +951,7 @@ var kmltree = (function(){
                     && !node.hasClass('open') 
                     && !node.hasClass('loading') 
                     && !node.hasClass('loaded')){
-                    openNetworkLink(node);
+                    openNetworkLinkRecursive(node);
                     $(node).bind('loaded', function(e, node, kmlObject){
                         toggleVisibility(node, true);
                         node.removeClass('open');
