@@ -65,6 +65,7 @@ var kmltree = (function(){
         item.loading = false;
         $(node).unbind('loaded');
         item.callback(node);
+        this.execute();
         this.finish(item);
     };
     
@@ -97,7 +98,7 @@ var kmltree = (function(){
     // Returns a jquery object representing a kml file
     
     var template = tmpl([
-        '<li UNSELECTABLE="on" id="<%= id %>" class="',
+        '<li UNSELECTABLE="on" id="<%= id %>" class="kmltree-item ',
         '<%= listItemType %> ',
         '<%= type %> ',
         '<%= customClass %> ',
@@ -109,16 +110,16 @@ var kmltree = (function(){
         '<%= (description ? "hasDescription " : "") %>',
         '<%= (snippet ? "hasSnippet " : "") %>',
         '<%= (customIcon ? "customIcon " : "") %>',
-        'kmltree-id-<%= id %> kmltree-item',
-        '">',
-            '<span class="kmlId"><%= kmlId %></span>',
-            '<span class="nlDocId"></span>',
-            '<div UNSELECTABLE="on" class="expander">',
-                '&nbsp;',
-            '</div>',
-            '<div UNSELECTABLE="on" class="toggler">',
-                '&nbsp;',
-            '</div>',
+        '<% if(kmlId){ %>',
+            '<%= kmlId %>',
+        '<% } %>',
+        '"',
+        '<% if(kmlId){ %>',
+            ' data-id="<%= kmlId %>"',
+        '<% } %>',
+        '>',
+            '<div UNSELECTABLE="on" class="expander">&nbsp;</div>',
+            '<div UNSELECTABLE="on" class="toggler">&nbsp;</div>',
             '<div ',
             '<% if(customIcon){ %>',
                 'style="background:url(<%= customIcon %>);"',
@@ -212,10 +213,7 @@ var kmltree = (function(){
         
         // returns all nodes that represent a kmlObject with a matching ID
         var getNodesById = function(id){
-            if(id){
-                id = id.replace(/\//g, '-');
-                return opts.element.find('.kmltree-id-'+id);
-            }
+            return opts.element.find('.'+id.replace(/\W/g, '-'));
         };
         
         that.getNodesById = getNodesById;
@@ -261,7 +259,6 @@ var kmltree = (function(){
                                     opening = true;
                                     queue.add(node, function(loadedNode){
                                         restoreState(loadedNode, state, queue);
-                                        queue.execute();
                                     });                                    
                                 }else{
                                     if(node.hasClass('open')){
@@ -320,7 +317,6 @@ var kmltree = (function(){
                 //         queue.add(n, function(loadedNode){
                 //             restoreState(loadedNode, state, queue);
                 //             queueOpenNetworkLinks(queue, loadedNode);
-                //             queue.execute();                                    
                 //         });
                 //     }
                 // });                    
@@ -328,35 +324,7 @@ var kmltree = (function(){
                 throw('called with invalid arguments');
             }
         }
-        
-        // Returns an ID that is used on the DOM element representing this 
-        // kmlObject. If the kmlObject has it's own ID, the generated ID will
-        // be created from that ID + the kml document's url. If not, the name
-        // of the element and the name of it's parents will be used to 
-        // generate an ID.
-        // 
-        // Arguments: kmlObject, parentID
-        var getID = function(kmlObject, parentID, docUrl){
-            var key;
-            var id = kmlObject.getId();
-            if(id){
-                return "kml" + docUrl.concat(id).replace(/\W/g, '-');
-            }else{
-                var name = kmlObject.getName();
-                if(name){
-                    key = name.replace(/\W/g, '-');
-                    // if(key.length > 16){
-                    //     key = key.slice(0, 7) + key.slice(-8) + 
-                    //         key.charAt(key.length / 2);
-                    // }
-                }else{
-                    key = "blank"
-                }
                 
-            }
-            return parentID + key;
-        };
-        
         var showLoading = function(msg){
             hideLoading();
             var msg = msg || opts.loadingMsg;
@@ -425,8 +393,6 @@ var kmltree = (function(){
             that.kmlObject = kmlObject;
             that.kmlObject.setVisibility(true);
             var options = buildOptions(kmlObject, original_url);
-            
-            
             var rendered = renderOptions(options.children[0].children);
             opts.element.find('div.kmltree').remove();
             opts.element.find('.kmltree-loading').before([
@@ -482,7 +448,6 @@ var kmltree = (function(){
                 queueOpenNetworkLinks(queue, 
                     $('#' + opts.element.attr('id')));
             }
-            queue.execute();
         };
         
         var queueOpenNetworkLinks = function(queue, topNode){
@@ -497,17 +462,16 @@ var kmltree = (function(){
                     node.removeClass('open');
                     queue.add(node, function(loadedNode){
                         loadedNode.addClass('open');
-                        setModified(loadedNode, 'open', node.hasClass('open'));
-                        // loadedNode.removeClass('open');
+                        setModified(loadedNode, 'open', 
+                            node.hasClass('open'));
                         queueOpenNetworkLinks(queue, loadedNode);
-                        queue.execute();
                     });                    
                 }
             });
         };
         
         var buildOptions = function(kmlObject, docUrl){
-            var docid = addDocLookup(kmlObject);
+            // var docid = addDocLookup(kmlObject);
             var topTreeNode;
             var options = {name: kmlObject.getName(), 
                 id: 'kml' + docUrl.replace(/\W/g, '-')};
@@ -518,28 +482,31 @@ var kmltree = (function(){
                         if(!parent.children){
                             parent.children = [];
                         }
-                        var lookupId = addLookup(docid, this);
+                        var name = this.getName();
+                        var id = addLookup(this, parent.id, docUrl, name);
                         var snippet = this.getSnippet();
+                        // To support generated output from certain software 
+                        // (Arc2Earth, etc)
                         if(!snippet || snippet === 'empty'){
                             snippet = false;
                         }
+                        var style = this.getComputedStyle();
                         var child = {
                             renderOptions: renderOptions,
-                            name: this.getName() || '&nbsp;',
+                            name: name || '&nbsp;',
                             visible: !!this.getVisibility(),
                             type: this.getType(),
                             open: this.getOpen(),
-                            id: getID(this, parent.id, docUrl),
+                            id: id,
                             description: this.getDescription(),
                             snippet: snippet,
                             select: opts.enableSelection(this),
-                            // fireEvents: opts.fireEvents(this),
-                            listItemType: getListItemType(this),
+                            listItemType: getListItemType(style),
                             customIcon: customIcon(this),
                             customClass: '',
                             children: [],
-                            kmlId: lookupId,
-                            alwaysRenderNodes: false
+                            alwaysRenderNodes: false,
+                            kmlId: this.getId().replace(/\W/g, '-')
                         }
                         child = opts.visitFunction(this, child);
                         parent.children.push(child);
@@ -572,27 +539,24 @@ var kmltree = (function(){
         }
         
         // See http://code.google.com/apis/kml/documentation/kmlreference.html#listItemType
-        var getListItemType = function(kmlObject){
+        var getListItemType = function(style){
             var listItemType = 'check';
-            var selector = kmlObject.getStyleSelector();
-            if(selector && selector.getType() === 'KmlStyle'){
-                var lstyle = selector.getListStyle();
-                if(lstyle){
-                    var ltype = lstyle.getListItemType();
-                    switch(ltype){
-                        case 0:
-                            // 'check'
-                            break;
-                        case 5:
-                            listItemType = 'radioFolder';
-                            break;
-                        case 2:
-                            listItemType = 'checkOffOnly';
-                            break;
-                        case 3:
-                            listItemType = 'checkHideChildren';
-                            break;
-                    }
+            var lstyle = style.getListStyle();
+            if(lstyle){
+                var ltype = lstyle.getListItemType();
+                switch(ltype){
+                    case 0:
+                        // 'check'
+                        break;
+                    case 5:
+                        listItemType = 'radioFolder';
+                        break;
+                    case 2:
+                        listItemType = 'checkOffOnly';
+                        break;
+                    case 3:
+                        listItemType = 'checkHideChildren';
+                        break;
                 }
             }
             return listItemType;
@@ -643,14 +607,9 @@ var kmltree = (function(){
         // Deletes references to networklink kmlObjects, removes them from the
         // dom. Prepares for refresh or tree destruction.
         var clearNetworkLinks = function(){
-            for(var key in docs){
-                var nl = docs[key];
-                if(nl && nl.getParentNode()){
-                    opts.gex.dom.removeObject(nl);
-                }
-                // docs[key].release();
-            }
-            docs = {};
+            $('.KmlNetworkLink loaded').each(function(){
+                opts.gex.dom.removeObject(lookup($(this)));
+            });
         };
         
         var clearKmlObjects = function(){
@@ -697,11 +656,8 @@ var kmltree = (function(){
         
         var lookup = function(li){
             var li = $(li);
-            if(li.length && li.find('> .kmlId').length){
-                var ids = $($(li)[0]).find('> .kmlId').text().split('-');
-                var docId = ids[0];
-                var id = parseInt(ids[1]);
-                return lookupTable[docId][id];    
+            if(li.length){
+                return lookupTable[li.attr('id')];
             }else{
                 return false;
             }
@@ -709,38 +665,36 @@ var kmltree = (function(){
         
         that.lookup = lookup;
         
-        var addLookup = function(docid, value){
-            lookupTable[docid].push(value);
-            return docid + '-' + (lookupTable[docid].length - 1);
+        var addLookup = function(kmlObject, parentID, docUrl, name){
+            var id = getID(kmlObject, parentID, docUrl, name);
+            // if(!!lookupTable[id]){
+            //     id = getID(kmlObject, parentID, docUrl, name, true);
+                if(!!lookupTable[id]){
+                    throw('attempting to add lookup that already exists!');
+                }
+            // }
+            lookupTable[id] = kmlObject;
+            return id;
         };
         
-        var lookupDoc = function(li){
-            var li = $(li);
-            if(li.length && li.find('> .kmlId').length){
-                var id = $($(li)[0]).find('> .kmlId').text().split('-')[0];
-                return docs[id];
+        // Returns an ID that is used on the DOM element representing this 
+        // kmlObject. If the kmlObject has it's own ID, the generated ID will
+        // be created from that ID + the kml document's url. If not, the name
+        // of the element and the name of it's parents will be used to 
+        // generate an ID.
+        // 
+        // Arguments: kmlObject, parentID
+        var getID = function(kmlObject, parentID, docUrl, name, ignoreID){
+            if(name){
+                key = name.replace(/\W/g, '-');
             }else{
-                return false;
+                key = "blank"
             }
+            return parentID + key;
         };
-        
-        var lookupNlDoc = function(li){
-            var li = $(li);
-            if(li.length && li.find('> .nlDocId').length){
-                return docs[li.find('> .nlDocId').text()];
-            }else{
-                return false;
-            }
-        };
-        
-        var addDocLookup = function(kmlObject){
-            var docid = kmlObject.getName() + (new Date()).getTime();
-            if(lookupTable[docid]){
-                throw('document already added to lookup');
-            }
-            docs[docid] = kmlObject;
-            lookupTable[docid] = [];
-            return docid;
+
+        var setLookup = function(node, kmlObject){
+            lookupTable[node.attr('id')] = kmlObject;
         };
                 
         var selectNode = function(node, kmlObject){
@@ -858,10 +812,10 @@ var kmltree = (function(){
             lookup(node).setVisibility(toggling);
             node.toggleClass('visible', toggling);
             
-            if(node.hasClass('KmlNetworkLink') && node.hasClass('loaded')){
-                var doc = lookupNlDoc(node);
-                doc.setVisibility(toggling);
-            }
+            // if(node.hasClass('KmlNetworkLink') && node.hasClass('loaded')){
+            //     var doc = lookupNlDoc(node);
+            //     doc.setVisibility(toggling);
+            // }
         };
         
         var setModified = function(node, key, value){
@@ -999,7 +953,7 @@ var kmltree = (function(){
                     setModified(node, 'open', node.hasClass('open'));
                     node.removeClass('loading');
                     node.addClass('loaded');
-                    node.find('.nlDocId').text(getDocId(kmlObject));
+                    setLookup(node, kmlObject);
                     $(node).trigger('loaded', [node, kmlObject]);
                     $(that).trigger('networklinkload', [node, kmlObject]);
                 });
@@ -1115,9 +1069,7 @@ var kmltree = (function(){
                 }else{
                     toggleVisibility(node, toggle);                    
                 }
-                // if(node.hasClass('fireEvents')){
-                    $(that).trigger('toggleItem', [node, toggle]);
-                // }
+                $(that).trigger('toggleItem', [node, toggle]);
             }
         });
         
@@ -1151,23 +1103,12 @@ var kmltree = (function(){
                 if(m.length){
                     var aspectRatio = m.width() / m.height();
                 }
-                if(kmlObject.getType() === 'KmlNetworkLink' 
-                    && node.hasClass('loaded')){
-                    opts.gex.util.flyToObject(lookupNlDoc(node), {
-                        boundsFallback: true,
-                        aspectRatio: aspectRatio
-                    });                    
-                }else{
-                    opts.gex.util.flyToObject(kmlObject, {
-                        boundsFallback: true,
-                        aspectRatio: aspectRatio
-                    });
-                }
+                opts.gex.util.flyToObject(kmlObject, {
+                    boundsFallback: true,
+                    aspectRatio: aspectRatio
+                });
             }
-            // if(node.hasClass('fireEvents')){
-                $(that).trigger('dblclick', [node, kmlObject]);
-            // }
-            
+            $(that).trigger('dblclick', [node, kmlObject]);            
         });
         
         // Google Earth Plugin Events
