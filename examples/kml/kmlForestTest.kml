@@ -577,7 +577,7 @@
 		<name>networklink off</name>
 		<visibility>0</visibility>
 		<Link>
-			<href>http://marinemap.googlecode.com/svn/trunk/media/common/fixtures/linka.kmz</href>
+			<href>http://kmltree.googlecode.com/hg/examples/kml/clickEvents.kml</href>
 		</Link>
 	</NetworkLink>
 	<NetworkLink>
@@ -591,7 +591,7 @@
 			</ListStyle>
 		</Style>
 		<Link>
-			<href>http://marinemap.googlecode.com/svn/trunk/media/common/fixtures/linka.kmz</href>
+			<href>http://kmltree.googlecode.com/hg/examples/kml/clickEvents.kml</href>
 		</Link>
 	</NetworkLink>
 	<Folder>
