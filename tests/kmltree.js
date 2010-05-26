@@ -1102,6 +1102,28 @@ module('kmlTree');
         tree.load(true);
     });
     
+    // Depth-first traversal of all nodes in the tree
+    // Will start out with all the children of the root KmlDocument, but
+    // does not include the KmlDocument itself
+    var walk = function(callback, context, node){
+        var recurse_ = function(node, context){
+            node.find('>ul>li').each(function(){
+                var el = $(this);
+                var newcontext = callback(el, context);
+                if(newcontext === false){
+                    // Don't follow into child nodes
+                    return true;
+                }else{
+                    recurse_(el, newcontext);
+                }
+            });
+        };
+        // if(!node){
+        //     node = opts.element.find('div.kmltree');
+        // }
+        recurse_(node, context);
+    };
+    
     earthAsyncTest("children ignored if callback returns false", function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
@@ -1116,22 +1138,22 @@ module('kmlTree');
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlFolder', 'Document loaded correctly');
             var order = '';
-            tree.walk(function(node){
+            walk(function(node){
                 var name = node.find('>span.name').text();
                 order += name;
                 if(name === 'B'){
                     return false;
                 }
-            });
+            }, {}, $('.kmltreetest').find('div.kmltree'));
             equals(order, 'FJBGIH');
             var order = '';
-            tree.walk(function(node){
+            walk(function(node){
                 var name = node.find('>span.name').text();
                 order += name;
                 if(name === 'D'){
                     return false;
                 }
-            });
+            }, {}, $('.kmltreetest').find('div.kmltree'));
             equals('FJBADGIH', order);
             tree.destroy();
             $('.kmltreetest').remove();
@@ -1553,7 +1575,7 @@ module('kmlTree');
             animate: false, 
             map_div: $('#map3d'), 
             element: $('.kmltreetest'),
-            restoreStateOnRefresh: false,
+            refreshWithState: false,
             restoreState: true,
             bustCache: false
         });
@@ -1563,6 +1585,7 @@ module('kmlTree');
             var E = $('.kmltreetest').find('span.name:contains(E)').parent();
             ok(!E.hasClass('visible'));
             tree.destroy();
+            $('.kmltreetest').remove();
             $(document.body).append('<div class="kmltreetest"></div>');
             var tree2 = kmltree({
                 url: example('TreeTraversal.kmz'),

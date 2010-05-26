@@ -122,7 +122,7 @@ var kmltree = (function(){
             '<div UNSELECTABLE="on" class="toggler">&nbsp;</div>',
             '<div ',
             '<% if(customIcon){ %>',
-                'style="background:url(<%= customIcon %>);"',
+                'style="background:url(<%= customIcon %>); -moz-background-size:16px 16px; -webkit-background-size:16px 16px;"',
             '<% } %>',
             'class="icon">',
                 '&nbsp;',
@@ -186,6 +186,20 @@ var kmltree = (function(){
         if(opts.element.css('position') !== 'absolute'){
           $(opts.element).css({position: 'relative'});
         }
+        
+        // check for background-size support
+        var div = $(['<div class="kmltree" style="',
+            'background-size: 16px 16px; ',
+            '-moz-background-size: 16px 16px; ',
+            '-o-background-size: 16px 16px; ',
+            '-webkit-background-size: 16px 16px; ',
+            '-khtml-background-size: 16px 16px;"></div>'].join(''));
+
+        var supportsBgSize = (div[0].style.backgroundSize !== undefined 
+            || div[0].style.MozBackgroundSize  !== undefined
+            || div[0].style.oBackgroundSize !== undefined
+            || div[0].style.khtmlBackgroundSize !== undefined
+            || div[0].style.webkitBackgroundSize !== undefined);
         
         var buildOptions = function(kmlObject, docUrl){
             // var docid = addDocLookup(kmlObject);
@@ -425,7 +439,7 @@ var kmltree = (function(){
                         el.toggleClass(key, state[id][key]['value']);
                         setModified(el, key, state[id][key]['value']);
                         if(key === 'visible'){
-                            lookup(el).setVisibility(true);
+                            lookup(el).setVisibility(state[id][key]['value']);
                         }
                     }
                     delete state[id];
@@ -436,7 +450,7 @@ var kmltree = (function(){
                 var n = $(this);
                 // no need to open if checkHideChildren is set
                 if(!n.hasClass('checkHideChildren') && !n.hasClass('loading') 
-                    && !n.hasClass('loaded')){
+                    && !n.hasClass('loaded') && !n.hasClass('error')){
                     queue.add(n, function(loadedNode){
                         restoreState(state, queue);
                     });                    
@@ -465,8 +479,13 @@ var kmltree = (function(){
         };
                 
         var customIcon = function(kmlObject){
+            var result = false;
+            
+            if(supportsBgSize && kmlObject.getType() == 'KmlPlacemark'){
+                result = kmlObject.getComputedStyle().getIconStyle().getIcon().getHref();
+            }
             if(!opts.supportItemIcon){
-                return false;
+                return result;
             }
             var doc = kmldom(kmlObject.getKml());
             var root = doc.find('kml>Folder, kml>Document, kml>Placemark, ' + 
