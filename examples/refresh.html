@@ -31,6 +31,9 @@
                 gex = new GEarthExtensions(ge);
                 $('#submit').show();
                 $('#urlform').submit(function(e){
+                    if(tree){
+                        tree.destroy();
+                    }
                     $('.tree').replaceWith('<div class="tree"></div>');
                     e.preventDefault();
                     var url = $('#url').attr('value');

@@ -595,7 +595,6 @@ var kmltree = (function(){
                 that.previousState = getState();
             }
             clearKmlObjects();
-            clearNetworkLinks();
             clearLookups();
             // opts.element.html('');
             ge.setBalloon(null);
@@ -645,8 +644,8 @@ var kmltree = (function(){
             if(opts.restoreState && !!window.localStorage){
                 setStateInLocalStorage();
             }
-            clearLookups();
             clearKmlObjects();
+            clearLookups();
             var id = opts.element.attr('id');
             $('#'+id+' li > span.name').die();
             $('#'+id+' li').die();
