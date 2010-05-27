@@ -168,8 +168,8 @@ var kmltree = (function(){
             throw('kmltree requires a google earth plugin version >= 5.2');
         }
                 
-        if(!opts.url || !opts.gex || !opts.element){
-            throw('kmltree requires options url, gex & element');
+        if(!opts.url || !opts.gex || !opts.element || !opts.mapElement){
+            throw('kmltree requires options url, gex, mapElement & element');
         }
         
         opts.element = $(opts.element);
