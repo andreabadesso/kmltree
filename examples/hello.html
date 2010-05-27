@@ -29,10 +29,9 @@
                 
                 var tree = kmltree({
                     url: './kml/hello.kml',
-                    ge: ge, 
                     gex: gex, 
-                    map_div: $('#map3d'), 
-                    element: $('#tree')
+                    element: $('#tree'),
+                    mapElement: $('#map3d')
                 });
                 
                 tree.load();

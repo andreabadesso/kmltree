@@ -37,7 +37,7 @@ module('kmlTree');
         try{
             var tree = kmltree({
                 gex: gex, 
-                map_div: $('#map3d'), 
+                mapElement: $('#map3d'), 
                 element: $('.kmltreetest'),
                 bustCache: false
             });
@@ -49,7 +49,7 @@ module('kmlTree');
         var tree = kmltree({
             url: example('hello.kml'),
             gex: gex, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -62,10 +62,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('hello.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: true
         });
@@ -83,10 +81,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('clickEvents.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -111,19 +107,15 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest2"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
         var tree2 = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest2'),
             bustCache: false
         });
@@ -161,10 +153,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -189,10 +179,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false,
             setExtent: true
@@ -215,10 +203,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -242,10 +228,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -269,10 +253,8 @@ module('kmlTree');
     //     $(document.body).append('<div class="kmltreetest"></div>');
     //     var tree = kmltree({
     //         url: example('kmlForestTest.kml'),
-    //         ge: ge, 
     //         gex: gex, 
-    //         animate: false, 
-    //         map_div: $('#map3d'), 
+    //         mapElement: $('#map3d'), 
     //         element: $('.kmltreetest'),
     //         title: true,
     //         bustCache: false
@@ -294,10 +276,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -321,10 +301,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -353,10 +331,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -380,10 +356,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -405,10 +379,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -430,10 +402,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -457,10 +427,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -487,10 +455,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -526,10 +492,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -588,10 +552,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -610,10 +572,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -653,10 +613,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -695,10 +653,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -735,10 +691,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -759,10 +713,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('earthLayers.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false,
             supportItemIcon: true
@@ -785,10 +737,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -812,10 +762,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -844,10 +792,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -873,10 +819,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -905,10 +849,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -934,10 +876,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -959,10 +899,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -991,10 +929,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1033,10 +969,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('kmlForestTest.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1057,10 +991,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('openNL.kmz'),
-            ge: ge,
             gex: gex,
-            animate: false,
-            map_div: $('#map3d'),
+            mapElement: $('#map3d'),
             element: $('.kmltreetest'),
             bustCache: false,
             restoreState: false
@@ -1082,10 +1014,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('openCheckHideChildrenNL.kml'),
-            ge: ge,
             gex: gex,
-            animate: false,
-            map_div: $('#map3d'),
+            mapElement: $('#map3d'),
             element: $('.kmltreetest'),
             bustCache: false,
             restoreState: false
@@ -1128,10 +1058,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('TreeTraversal.kmz'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1167,10 +1095,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('TreeTraversal.kmz'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1196,10 +1122,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('TreeTraversal.kmz'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1234,10 +1158,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('TreeTraversal.kmz'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1275,10 +1197,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('NLHistory.kmz'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1312,10 +1232,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('NLHistory.kmz'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1362,10 +1280,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('NLHistory.kmz'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1419,10 +1335,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('2NLAtRoot.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false
         });
@@ -1458,10 +1372,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('nlOldStyle.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false,
             restoreState: false
@@ -1496,10 +1408,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('nlOldStyle.kml'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             bustCache: false,
             restoreState: false
@@ -1537,10 +1447,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('TreeTraversal.kmz'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             refreshWithState: false,
             bustCache: false
@@ -1570,10 +1478,8 @@ module('kmlTree');
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('TreeTraversal.kmz'),
-            ge: ge, 
             gex: gex, 
-            animate: false, 
-            map_div: $('#map3d'), 
+            mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
             refreshWithState: false,
             restoreState: true,
@@ -1589,10 +1495,8 @@ module('kmlTree');
             $(document.body).append('<div class="kmltreetest"></div>');
             var tree2 = kmltree({
                 url: example('TreeTraversal.kmz'),
-                ge: ge, 
                 gex: gex, 
-                animate: false, 
-                map_div: $('#map3d'), 
+                mapElement: $('#map3d'), 
                 element: $('.kmltreetest'),
                 restoreStateOnRefresh: false,
                 restoreState: true,

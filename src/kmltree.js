@@ -172,6 +172,8 @@ var kmltree = (function(){
             throw('kmltree requires options url, gex & element');
         }
         
+        opts.element = $(opts.element);
+        
         if(!opts.element.attr('id')){
             opts.element.attr('id', 'kml-tree'+(new Date()).getTime());
             opts.element.attr('UNSELECTABLE', "on");
@@ -404,7 +406,7 @@ var kmltree = (function(){
                     hideLoading();
                     if(opts.setExtent){
                         var aspectRatio = null;
-                        var m = $(opts.map_div);
+                        var m = $(opts.mapElement);
                         if(m.length){
                             var aspectRatio = m.width() / m.height();
                         }
@@ -1007,7 +1009,7 @@ var kmltree = (function(){
                 ge.getTourPlayer().setTour(kmlObject);
             }else{
                 var aspectRatio = null;
-                var m = $(opts.map_div);
+                var m = $(opts.mapElement);
                 if(m.length){
                     var aspectRatio = m.width() / m.height();
                 }
