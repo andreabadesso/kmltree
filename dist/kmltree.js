@@ -197,9 +197,8 @@ var kmltree = (function(){
     ].join(''));
     
     var constructor_defaults = {
-        enableSelection: function(){return false;},
+        enableSelection: function(kmlObject){return false;},
         visitFunction: function(kmlObject, config){return config},
-        openNetworkLinks: true,
         refreshWithState: true,
         bustCache: false,
         restoreState: false,
