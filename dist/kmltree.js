@@ -541,8 +541,11 @@ var kmltree = (function(){
         var customIcon = function(kmlObject){
             var result = false;
             
-            if(supportsBgSize && kmlObject.getType() == 'KmlPlacemark'){
-                result = kmlObject.getComputedStyle().getIconStyle().getIcon().getHref();
+            if(supportsBgSize && kmlObject.getType() === 'KmlPlacemark' && 
+                kmlObject.getGeometry() && 
+                kmlObject.getGeometry().getType() === 'KmlPoint'){
+                result = kmlObject.getComputedStyle().getIconStyle()
+                    .getIcon().getHref();
             }
             if(!opts.supportItemIcon){
                 return result;
