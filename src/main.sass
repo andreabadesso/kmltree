@@ -1,0 +1,250 @@
+@import sprites.sass
+@import mixins.sass
+
+div.kmltree
+  font-family: sans-serif
+  font-size: 12px
+  +user-select("none")
+
+  p.error
+    +user-select("text")
+
+  ul
+    list-style: none
+    padding-left: 18px
+
+  li
+    ul
+      padding-top: 5px
+      display: none
+
+    // allows for folders and networklinks to be opened and closed
+    &.open > ul
+      display: block
+
+
+// these elements are just used as identifiers and should be hidden
+span
+  &.kmlId, &.nlDocId
+    display: none
+
+
+li.kmltree-item
+  white-space: nowrap
+  margin: 0
+  padding: 5px 0
+
+  // using off-blank to make it easy on the eyes
+  span.name
+    color: #313841
+    cursor: default
+
+  // act like a link so users know to click
+  &.hasDescription > span.name
+    color: blue
+    text-decoration: underline
+    cursor: pointer
+
+
+h4.kmltree-title
+  color: #6C7C90
+  font-weight: bold
+  margin: 0 0 -5px 0
+
+.expander, .toggler, .icon
+  margin: 0
+  padding: 0
+  float: left
+  width: 16px
+  height: 16px
+
+
+// Expander sprites
+
+.expander
+  +sprite("kml", "arrow-right")
+  margin-left: -17px
+
+  &:hover
+    +sprite("kml", "arrow-right-hover")
+
+  &:active
+    +sprite("kml", "arrow-right-active")
+
+    
+li.open > .expander
+  +sprite("kml", "arrow-down")
+  
+  &:hover
+    +sprite("kml", "arrow-down-hover")
+
+  &:active
+    +sprite("kml", "arrow-down-active")
+
+
+// Toggling Sprites
+
+.toggler
+  margin-right: 4px
+  +sprite("kml", "unchecked")
+
+  &:hover
+    +sprite("kml", "unchecked-hover")
+
+  &:active
+    +sprite("kml", "unchecked-active")
+
+li.checkOffOnly > .toggler
+  +sprite("kml", "unchecked-checkOffOnly")
+
+li
+  &.visible > .toggler
+    +sprite("kml", "checked")
+
+    &:hover
+      +sprite("kml", "checked-hover")
+    
+    &:active
+      +sprite("kml", "checked-active")
+
+  &.radioFolder > ul > li
+    > .toggler
+      +sprite("kml", "radio-off")
+
+      &:hover
+        +sprite("kml", "radio-off-hover")
+
+      &:active
+        +sprite("kml", "radio-off-active")
+
+    &.visible > .toggler
+      +sprite("kml", "radio-on")
+
+      &:hover
+        +sprite("kml", "radio-on-hover")
+
+      &:active
+        +sprite("kml", "radio-on-active")
+
+  &.radioFolder > .toggler
+    +sprite("kml", "radio-off")
+    
+    &:hover
+      +sprite("kml", "radio-off-hover")
+
+    &:active
+      +sprite("kml", "radio-off-active")
+
+  &.radioFolder.visible > .toggler
+    +sprite("kml", "radio-on")
+
+    &:hover
+      +sprite("kml", "radio-on-hover")
+
+    &:active
+      +sprite("kml", "radio-on-active")
+
+  &.KmlPlacemark > .expander, &.KmlPhotoOverlay > .expander, &.KmlGroundOverlay > .expander, &.KmlTour > .expander
+    display: none
+    
+li.KmlPlacemark > span.name, li.select > span.name
+  cursor: pointer
+
+
+div.kmltree
+  li.checkHideChildren
+    ul, .expander
+      display: none
+
+  .icon
+    display: none
+    padding: 0px
+
+
+// Icon Sprites
+
+li.KmlFolder > .icon, li.KmlNetworkLink > .icon, li.KmlTour > .icon, li.KmlPhotoOverlay > .icon, li.KmlGroundOverlay > .icon, li.customIcon > .icon
+  margin-right: 4px
+  display: block
+
+li
+  &.KmlFolder > .icon
+    +sprite("kml", "folder")
+
+  &.KmlFolder.open > .icon
+    +sprite("kml", "folder-open")
+
+
+  &.KmlNetworkLink
+    > .icon
+      +sprite("kml", "folder")
+
+    &.loading > .icon
+      background: transparent url(./images/kml-throbber.gif) no-repeat !important
+
+    &.error > .icon
+      +sprite("kml", "folder-error")
+    
+    &.error > .expander
+      display: none
+
+  &.KmlTour > .icon
+    +sprite("kml", "tour")
+
+  &.KmlPhotoOverlay > .icon, &.KmlGroundOverlay > .icon
+    +sprite("kml", "superoverlay")
+
+  &.customIcon > .icon
+    +background-size(16px, 16px)
+    background: transparent no-repeat
+
+  &.kmltree-item p.snippet
+    text-indent: 0px
+    width: 80%
+    margin: 5px 0px 5px 20px
+    color: #6C7C90
+    white-space: normal
+
+
+span.name
+  clear: both
+  position: relative
+  top: 1px
+
+div
+  &.kmltree li.selected
+    background-color: #BEDCED
+    padding-left: 5px
+    margin-left: -5px
+
+    > span.name
+      font-weight: bold
+      border-bottom: none
+
+      &:hover
+        border: none
+
+
+// Loading throbber
+
+div.kmltree-loading
+  position: absolute
+  left: 0px
+  top: 0px
+  width: 100%
+  height: 100%
+  background-color: #FFF
+  +opacity(70)
+  text-align: center
+
+  span
+    position: absolute
+    padding-top: 20px
+    top: 0px
+    left: 0px
+    width: 100%
+    +opacity(100)
+    font-weight: bold
+    height: 40px
+    padding-bottom: 15px
+    background: transparent url(images/ajax-loader.gif) no-repeat center bottom
