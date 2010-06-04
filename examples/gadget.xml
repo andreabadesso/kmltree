@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <Module>
-  <ModulePrefs title="kmltree example" />
-  <UserPref name="kml" display_name="kml" default_value="http://kmltree.googlecode.com/hg/examples/kml/hello.kml"/>
-  <Content type="html">
-     <![CDATA[ 
-       Hello, world!
-     ]]>
-  </Content> 
+    <ModulePrefs title="kmltree example" />
+    <UserPref name="kml" display_name="kml" default_value="http://kmltree.googlecode.com/hg/examples/kml/hello.kml"/>
+    <script type="text/javascript">
+        // Get userprefs
+        var prefs = new gadgets.Prefs();
+        document.getElementById('wrapper').innerHTML = prefs.getString('kml');
+    </script>
+    <Content type="html">
+        <![CDATA[ 
+            <div id="wrapper">
+            </div>
+        ]]>
+    </Content> 
 </Module>
