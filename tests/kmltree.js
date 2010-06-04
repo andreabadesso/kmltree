@@ -58,7 +58,7 @@ module('kmlTree');
         $('.kmltreetest').remove();
     });
 
-    earthAsyncTest('load kml, fire kmlLoaded event. <a href="../examples/kmlLoaded.html">example</a>', 3, function(ge, gex){
+    earthAsyncTest('load kml, fire kmlLoaded event. <a href="../examples/kmlLoaded.html">example</a>', 4, function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('hello.kml'),
@@ -70,6 +70,8 @@ module('kmlTree');
         $(tree).bind('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
             ok(this === tree, '"this" refers to the instance of kmltree');
+            equals(kmlObject.getType(), 'KmlDocument', 
+                'kmlObject refers to the loaded KmlDocument');
             tree.destroy();
             $('.kmltreetest').remove();
             start();
