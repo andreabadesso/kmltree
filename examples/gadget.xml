@@ -5,6 +5,8 @@
     <Content type="html">
         <![CDATA[ 
             <div id="content_div">
+                <div id="wrapper">
+                </div>
                 <script type="text/javascript">
                     console.log('blah!');
                     // Get userprefs
@@ -12,8 +14,6 @@
                     alert(prefs.getString('kml'));
                     document.getElementById('wrapper').innerHTML = prefs.getString('kml');
                 </script>
-                <div id="wrapper">
-                </div>
             </div>
         ]]>
     </Content> 
