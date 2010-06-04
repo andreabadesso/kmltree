@@ -6,6 +6,7 @@
         <![CDATA[ 
             <div id="content_div">
                 <script type="text/javascript">
+                    console.log('blah!');
                     // Get userprefs
                     var prefs = new gadgets.Prefs();
                     alert(prefs.getString('kml'));
