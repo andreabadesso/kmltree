@@ -2,15 +2,17 @@
 <Module>
     <ModulePrefs title="kmltree example" />
     <UserPref name="kml" display_name="kml" default_value="http://kmltree.googlecode.com/hg/examples/kml/hello.kml"/>
-    <script type="text/javascript">
-        // Get userprefs
-        var prefs = new gadgets.Prefs();
-        alert(prefs.getString('kml'));
-        document.getElementById('wrapper').innerHTML = prefs.getString('kml');
-    </script>
     <Content type="html">
         <![CDATA[ 
-            <div id="wrapper">
+            <div id="content_div">
+                <script type="text/javascript">
+                    // Get userprefs
+                    var prefs = new gadgets.Prefs();
+                    alert(prefs.getString('kml'));
+                    document.getElementById('wrapper').innerHTML = prefs.getString('kml');
+                </script>
+                <div id="wrapper">
+                </div>
             </div>
         ]]>
     </Content> 
