@@ -5,6 +5,7 @@
     <script type="text/javascript">
         // Get userprefs
         var prefs = new gadgets.Prefs();
+        alert(prefs.getString('kml'));
         document.getElementById('wrapper').innerHTML = prefs.getString('kml');
     </script>
     <Content type="html">
