@@ -58,7 +58,7 @@ module('kmlTree');
         $('.kmltreetest').remove();
     });
 
-    earthAsyncTest('load kml, fire kmlLoaded event. <a href="../examples/kmlLoaded.html">example</a>', 2, function(ge, gex){
+    earthAsyncTest('load kml, fire kmlLoaded event. <a href="../examples/kmlLoaded.html">example</a>', 3, function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('hello.kml'),
@@ -69,6 +69,7 @@ module('kmlTree');
         });
         $(tree).bind('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            ok(this === tree, '"this" refers to the instance of kmltree');
             tree.destroy();
             $('.kmltreetest').remove();
             start();
@@ -77,7 +78,7 @@ module('kmlTree');
         tree.load();
     });
 
-    earthAsyncTest('click events <a href="../examples/clickEvents.html">example</a>', 4, function(ge, gex){
+    earthAsyncTest('click events <a href="../examples/clickEvents.html">example</a>', 5, function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('clickEvents.kml'),
@@ -94,6 +95,7 @@ module('kmlTree');
         $(tree).bind('click', function(e, node, kmlObject){
             equals(kmlObject.getName(), 'Click Me');
             equals(e.target, tree);
+            equals(this, tree, '"this" refers to the instance of kmltree');
             tree.destroy();
             $('.kmltreetest').remove();
             start();
@@ -166,6 +168,7 @@ module('kmlTree');
         $(tree).bind('dblclick', function(e, node, kmlObject){
             equals(kmlObject.getName(), 'Placemark without description');
             equals(e.target, tree);
+            equals(this, tree, '"this" refers to the instance of kmltree');
             $('.kmltreetest').remove();
             tree.destroy();
             start();
@@ -217,6 +220,7 @@ module('kmlTree');
             equals(kmlObject.getName(), 'Placemark without description');
             equals(e.target, tree);
             $('.kmltreetest').remove();
+            equals(this, tree, '"this" refers to the instance of kmltree');
             tree.destroy();
             start();
         });
