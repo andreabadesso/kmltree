@@ -946,6 +946,7 @@ module('kmlTree');
             var nlinkobject = tree.lookup(nlink);
             $(tree).bind('networklinkload', function(e, node, kmlObject){
                 equals(kmlObject.getName(), 'linka.kmz');
+                equals(kmlObject.getType(), 'KmlDocument', 'kmlObject is a KmlDocument');
                 equals($('.kmltreetest').find('span.name:contains(NetworkLink Content)').length, 1, 'NetworkLink contents displayed.');
                 equals(nlinkobject.getVisibility(), kmlObject.getVisibility());
                 var pmark = $('.kmltreetest').find('li:contains(NetworkLink Content) span.name:contains(Untitled Placemark)');
