@@ -33,7 +33,8 @@
                     url: './kml/clickEvents.kml',
                     gex: gex, 
                     mapElement: $('#map3d'), 
-                    element: $('#tree')
+                    element: $('#tree'),
+                    setExtent: true
                 });
                 
                 $(tree).bind('click', function(event, node, kmlObject){
