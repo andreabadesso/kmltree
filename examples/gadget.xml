@@ -4,6 +4,12 @@
     <UserPref name="kml" display_name="kml" default_value="http://kmltree.googlecode.com/hg/examples/kml/hello.kml"/>
     <Content type="html">
         <![CDATA[ 
+            <style>
+                div {
+                    margin:0;
+                    padding:0;
+                }
+            </style>
             <div id="content_div">
                 <div id="wrapper" style="width:800px;height=600px;border:solid black 1px;">
                     
