@@ -41,6 +41,44 @@
                     var prefs = new gadgets.Prefs();
                     document.getElementById('tree').innerHTML = prefs.getString('kml');
                 </script>
+                <script src="http://www.google.com/jsapi?key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRQPjtdHQ3xdBuNAR-KDFOW1mqdVsRRmZhmrl-MOSGS44M9Gug9FdssEgQ"></script>
+                <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+                <!-- earth-api-utility-library dependencies -->
+                <script src="http://geojs.googlecode.com/svn/trunk/dist/geo.pack.js"></script>
+                <script src="http://earth-api-utility-library.googlecode.com/svn/trunk/extensions/dist/extensions.pack.js"></script>
+                <!-- kmltree source files -->
+                <link rel="stylesheet" href="../dist/kmltree.css" media="screen">
+                <script src="../dist/kmltree.min.js"></script>
+                <script>
+                    google.load("earth", "1");
+
+                    function init() {
+                        google.earth.createInstance('map3d', initCB, failureCB);
+                    }
+
+                    function initCB(instance) {
+                        ge = instance;
+                        ge.getWindow().setVisibility(true);
+
+                        var gex = gex = new GEarthExtensions(ge);
+
+                        var tree = kmltree({
+                            url: 'http://kmltree.googlecode.com/hg/examples/kml/hello.kml',
+                            gex: gex, 
+                            mapElement: $('#map3d'), 
+                            element: $('#tree'),
+                        });
+
+                        tree.load();
+                    }
+
+                    function failureCB(errorCode) {
+                        alert('failed to load plugin');
+                    }
+
+                    $(document).ready(init);
+
+                </script>
             </div>
         ]]>
     </Content> 
