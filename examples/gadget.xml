@@ -14,7 +14,7 @@
                     background-color:yellow;
                     left:0;
                     top:0;
-                    width:400px;
+                    width:50%;
                     height:100%;
                 }
                 #map3d {
@@ -22,8 +22,8 @@
                     left:400px;
                     top:0px;
                     background-color:blue;
-                    width:400px;
-                    height:600px;
+                    width:50%;
+                    height:100%;
                 }
             </style>
             <div id="content_div">
