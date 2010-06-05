@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <Module>
-    <ModulePrefs title="kmltree example" width="810" height="410" />
+    <ModulePrefs title="kmltree example" width="910" height="410" />
     <UserPref name="kml" display_name="kml" default_value="http://kmltree.googlecode.com/hg/examples/kml/hello.kml"/>
     <Content type="html">
         <![CDATA[ 
@@ -21,10 +21,11 @@
                     width:40%;
                     height:398px;
                     border:black 1px solid;
+                    overflow-y:auto;
                 }
                 #map3d {
                     position:absolute;
-                    left:40%;
+                    left:60%;
                     top:0px;
                     width:60%;
                     height:398px;
