@@ -5,7 +5,11 @@
     <Content type="html">
         <![CDATA[ 
             <style>
+                body {
+                    overflow:hidden;
+                }
                 div {
+                    overflow:hidden;
                     margin:0;
                     padding:0;
                 }
