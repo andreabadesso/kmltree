@@ -34,7 +34,7 @@
                 <script type="text/javascript">
                     // Get userprefs
                     var prefs = new gadgets.Prefs();
-                    document.getElementById('wrapper').innerHTML = prefs.getString('kml');
+                    document.getElementById('tree').innerHTML = prefs.getString('kml');
                 </script>
             </div>
         ]]>
