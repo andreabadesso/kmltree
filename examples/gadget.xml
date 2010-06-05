@@ -24,7 +24,7 @@
                 }
                 #map3d {
                     position:absolute;
-                    left:400px;
+                    left:40%;
                     top:0px;
                     background-color:blue;
                     width:60%;
