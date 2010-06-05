@@ -14,7 +14,7 @@
                     background-color:yellow;
                     left:0;
                     top:0;
-                    width:50%;
+                    width:49%;
                     height:100%;
                 }
                 #map3d {
