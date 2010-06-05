@@ -25,7 +25,7 @@
                 }
                 #map3d {
                     position:absolute;
-                    left:60%;
+                    left:40%;
                     top:0px;
                     width:60%;
                     height:398px;
