@@ -15,7 +15,6 @@
                 }
                 #tree {
                     position:absolute;
-                    background-color:yellow;
                     left:0;
                     top:0;
                     overflow:hidden;
@@ -26,7 +25,6 @@
                     position:absolute;
                     left:40%;
                     top:0px;
-                    background-color:blue;
                     width:60%;
                     height:100%;
                 }
