@@ -20,6 +20,7 @@
                     overflow:hidden;
                     width:40%;
                     height:100%;
+                    border:black 1px solid;
                 }
                 #map3d {
                     position:absolute;
