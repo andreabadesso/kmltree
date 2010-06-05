@@ -69,6 +69,7 @@
                             gex: gex, 
                             mapElement: $('#map3d'), 
                             element: $('#tree'),
+                            setExtent: true
                         });
 
                         tree.load();
