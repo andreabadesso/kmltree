@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <Module>
-    <ModulePrefs title="kmltree example" />
+    <ModulePrefs title="kmltree example" width="810" height="610" />
     <UserPref name="kml" display_name="kml" default_value="http://kmltree.googlecode.com/hg/examples/kml/hello.kml"/>
     <Content type="html">
         <![CDATA[ 
