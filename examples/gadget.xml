@@ -5,13 +5,12 @@
     <Content type="html">
         <![CDATA[ 
             <div id="content_div">
-                <div id="wrapper">
+                <div id="wrapper" style="width:800px;height=600px;border:solid black 1px;">
+                    
                 </div>
                 <script type="text/javascript">
-                    console.log('blah!');
                     // Get userprefs
                     var prefs = new gadgets.Prefs();
-                    alert(prefs.getString('kml'));
                     document.getElementById('wrapper').innerHTML = prefs.getString('kml');
                 </script>
             </div>
