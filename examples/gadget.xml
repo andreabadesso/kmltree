@@ -30,6 +30,9 @@
                     width:60%;
                     height:100%;
                 }
+                .kmltree {
+                    margin:10px;
+                }
             </style>
             <div id="content_div">
                 <div id="wrapper" style="width:100%;height=100%;border:solid black 1px;">
