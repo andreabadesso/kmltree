@@ -31,7 +31,8 @@
                     url: './kml/hello.kml',
                     gex: gex, 
                     mapElement: $('#map3d'), 
-                    element: $('#tree')
+                    element: $('#tree'),
+                    setExtent: true
                 });
                 
                 $(tree).bind('kmlLoaded', function(event, kmlObject){
