@@ -278,6 +278,19 @@ var kmltree = (function(){
         
         that.load = load;
         
+        var refresh = function(){
+            if(opts.refreshWithState){
+                that.previousState = getState();
+            }
+            clearKmlObjects();
+            clearLookups();
+            // opts.element.html('');
+            ge.setBalloon(null);
+            load(true);
+        };
+
+        that.refresh = refresh;
+        
         // returns all nodes that represent a kmlObject with a matching ID
         var getNodesById = function(id){
             return opts.element.find('.'+id.replace(/\W/g, '-'));
@@ -557,19 +570,6 @@ var kmltree = (function(){
             lookupTable = null;
             lookupTable = {};
         };
-        
-        var refresh = function(){
-            if(opts.refreshWithState){
-                that.previousState = getState();
-            }
-            clearKmlObjects();
-            clearLookups();
-            // opts.element.html('');
-            ge.setBalloon(null);
-            load(true);
-        };
-
-        that.refresh = refresh;
         
         // Deletes references to networklink kmlObjects, removes them from the
         // dom. Prepares for refresh or tree destruction.
