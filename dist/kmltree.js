@@ -369,8 +369,12 @@ var kmltree = (function(){
             }
         }
         
-        that.clearSelection = clearSelection;
-                        
+        // Don't give external callers access to the keepBalloons and 
+        // dontTriggerEvent arguments
+        that.clearSelection = function(){
+            return clearSelection();
+        };
+                    
         var showLoading = function(msg){
             hideLoading();
             var msg = msg || opts.loadingMsg;
@@ -1045,6 +1049,7 @@ var kmltree = (function(){
         });
         
         $('#'+id+' li').live('dblclick', function(e){
+            console.log('dblclick');
             var target = $(e.target);
             var parent = target.parent();
             if(target.hasClass('expander')

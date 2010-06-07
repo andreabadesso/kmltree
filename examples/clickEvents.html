@@ -40,6 +40,10 @@
                     log.add('clicked "'+kmlObject.getName() + '"');
                 });
                 
+                $(tree).bind('dblclick', function(event, node, kmlObject){
+                    log.add('dblclicked "'+kmlObject.getName() + '"');
+                });
+                
                 tree.load();
             }
 
