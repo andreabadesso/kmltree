@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title>kmlLoaded Event</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRQPjtdHQ3xdBuNAR-KDFOW1mqdVsRRmZhmrl-MOSGS44M9Gug9FdssEgQ"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>
+        <!-- earth-api-utility-library dependencies -->
+        <script src="http://geojs.googlecode.com/svn/trunk/dist/geo.pack.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://earth-api-utility-library.googlecode.com/svn/trunk/extensions/dist/extensions.pack.js" type="text/javascript" charset="utf-8"></script>
+        <!-- kmltree source files -->
+        <link rel="stylesheet" href="../dist/kmltree.css" media="screen">
+        <script src="../dist/kmltree.min.js" type="text/javascript"></script>
+
+        <link rel="stylesheet" href="examples.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        
+        <script src="examples.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+            google.load("earth", "1");
+            
+            function init() {
+                google.earth.createInstance('map3d', initCB, failureCB);
+            }
+
+            function initCB(instance) {
+                var log = new Log();
+                ge = instance;
+                ge.getWindow().setVisibility(true);
+                
+                var gex = gex = new GEarthExtensions(ge);
+                
+                var tree = kmltree({
+                    url: './kml/clickEvents.kml',
+                    gex: gex, 
+                    mapElement: $('#map3d'), 
+                    element: $('#tree')
+                });
+                
+                $(tree).bind('click', function(event, node, kmlObject){
+                    log.add('clicked "'+kmlObject.getName() + '"');
+                });
+                
+                $(tree).bind('dblclick', function(event, node, kmlObject){
+                    log.add('dblclicked "'+kmlObject.getName() + '"');
+                });
+                
+                tree.load();
+            }
+
+            function failureCB(errorCode) {
+                alert('failed to load plugin');
+            }
+
+            $(document).ready(init);
+            
+        </script>
+    </head>
+    <body>
+        <h1><a href="http://code.google.com/p/kmltree/">kmltree</a> > <a href="http://code.google.com/p/kmltree/wiki/ExampleUses">examples</a> > click events</h1>
+        <a class="src" href="kml/clickEvents.kml">source kml</a>
+        <p class="description">
+            Events fired whenever a node is clicked in the tree.
+        </p>
+        <div id="tree"></div>
+        <div id="map3d"></div>
+        <br style="clear:both;">
+    </body>
+</html>

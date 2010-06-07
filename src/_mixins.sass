@@ -1,0 +1,27 @@
+=opacity( !pct )
+  :opacity= !pct/100
+  :-ms-filter "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{!pct})"
+  :filter alpha(opacity='#{!pct}')
+
+=user-select( !user_select )
+  :-moz-user-select= !user_select
+  :-khtml-user-select= !user_select
+  :-webkit-user-select= !user_select
+  :user-select= !user_select
+  
+// from http://gist.github.com/215561
+// Apply a CSS text-shadow cross-browser.
+// There is one todo/gotcha: the direction is hardcoded to towards 
+// the bottom-right for IE, but that's good enough for my use case.
+// Usage example: +text-shadow(#333, 1px, 1px, 1)
+
+=text-shadow(!color, !x, !y, !blur)
+  :text-shadow= !color !x !y "#{!blur}px"
+  :-ms-filter "progid:DXImageTransform.Microsoft.Shadow(Color=#{!color},Direction=135,Strength=#{!blur})"
+  
+=background-size( !x, !y )
+  :-moz-background-size= !x !y
+  :-khtml-background-size= !x, !y
+  :-webkit-background-size= !x, !y
+  :-o-background-size= !x, !y
+  :background-size= !x, !y
