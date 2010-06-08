@@ -174,7 +174,10 @@ var kmltree = (function(){
         '<%= (snippet ? "hasSnippet " : "") %>',
         '<%= (customIcon ? "customIcon " : "") %>',
         '<% if(kmlId){ %>',
-            '<%= kmlId %>',
+            '<%= kmlId %> ',
+        '<% } %>',
+        '<% if(geoType){ %>',
+            '<%= geoType %>',
         '<% } %>',
         '"',
         '<% if(kmlId){ %>',
@@ -288,12 +291,20 @@ var kmltree = (function(){
                         if(!snippet || snippet === 'empty'){
                             snippet = false;
                         }
+                        var type = this.getType();
+                        var geotype = false;
+                        if(type === 'KmlPlacemark'){
+                            var geo = this.getGeometry();
+                            if(geo){
+                                geotype = geo.getType();
+                            }
+                        }
                         var style = this.getComputedStyle();
                         var child = {
                             renderOptions: renderOptions,
                             name: name || '&nbsp;',
                             visible: !!this.getVisibility(),
-                            type: this.getType(),
+                            type: type,
                             open: this.getOpen(),
                             id: id,
                             description: this.getDescription(),
@@ -304,7 +315,8 @@ var kmltree = (function(){
                             customClass: '',
                             children: [],
                             alwaysRenderNodes: false,
-                            kmlId: this.getId().replace(/\W/g, '-')
+                            kmlId: this.getId().replace(/\W/g, '-'),
+                            geoType: geotype
                         }
                         child = opts.visitFunction(this, child);
                         parent.children.push(child);

@@ -163,7 +163,7 @@ div.kmltree
 
 // Icon Sprites
 
-li.KmlFolder > .icon, li.KmlNetworkLink > .icon, li.KmlTour > .icon, li.KmlPhotoOverlay > .icon, li.KmlGroundOverlay > .icon, li.customIcon > .icon
+li.KmlFolder > .icon, li.KmlNetworkLink > .icon, li.KmlTour > .icon, li.KmlPhotoOverlay > .icon, li.KmlGroundOverlay > .icon, li.customIcon > .icon, li.KmlPolygon > .icon, li.KmlLineString > .icon
   margin-right: 4px
   display: block
 
@@ -185,7 +185,6 @@ li
     &.loading > .icon
       position: relative
       +sprite("kml", "networklink-loading")
-      // background: transparent url(./images/kml-throbber.gif) no-repeat !important
 
     &.loading > .icon > .nlSpinner
       width: 8px
@@ -207,6 +206,12 @@ li
 
   &.KmlPhotoOverlay > .icon, &.KmlGroundOverlay > .icon
     +sprite("kml", "superoverlay")
+  
+  &.KmlPolygon > .icon
+    +sprite("kml", "polygon")
+  
+  &.KmlLineString > .icon
+    +sprite("kml", "linestring")
 
   &.customIcon > .icon
     +background-size(16px, 16px)
@@ -218,7 +223,7 @@ li
     margin: 5px 0px 5px 20px
     color: #6C7C90
     white-space: normal
-
+  
 
 span.name
   clear: both
