@@ -41,3 +41,5 @@ images:
       - radio-on-hover.png
       - radio-on-active.png
       - networklink-loading.png
+      - polygon.png
+      - linestring.png
