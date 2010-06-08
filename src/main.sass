@@ -167,6 +167,9 @@ li.KmlFolder > .icon, li.KmlNetworkLink > .icon, li.KmlTour > .icon, li.KmlPhoto
   margin-right: 4px
   display: block
 
+.nlSpinner
+  display: none
+
 li
   &.KmlFolder > .icon
     +sprite("kml", "folder")
@@ -180,7 +183,18 @@ li
       +sprite("kml", "folder")
 
     &.loading > .icon
-      background: transparent url(./images/kml-throbber.gif) no-repeat !important
+      position: relative
+      +sprite("kml", "networklink-loading")
+      // background: transparent url(./images/kml-throbber.gif) no-repeat !important
+
+    &.loading > .icon > .nlSpinner
+      width: 8px
+      height: 8px
+      display: block
+      position: absolute
+      left: 6px
+      top: 6px
+      background: transparent url(./images/networklink-loading-animated.gif) no-repeat !important
 
     &.error > .icon
       +sprite("kml", "folder-error")
