@@ -1,6 +1,10 @@
 
 // src/kmltree.js
 
+// I don't like documentation being in more than one place, and I couldn't 
+// find any javascript documentation tools that I found satisfactory. So,
+// docs can be found on the project page and should be kept up to date there:
+// http://code.google.com/p/kmltree/wiki/ApiReference
 var kmltree = (function(){
 
     openBalloon = function(kmlObject, ge, whitelisted){
