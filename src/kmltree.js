@@ -1008,7 +1008,6 @@ var kmltree = (function(){
         });
         
         $('#'+id+' li').live('dblclick', function(e){
-            console.log('dblclick');
             var target = $(e.target);
             var parent = target.parent();
             if(target.hasClass('expander')
