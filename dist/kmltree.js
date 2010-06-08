@@ -207,7 +207,6 @@ var kmltree = (function(){
     ].join(''));
     
     var constructor_defaults = {
-        enableSelection: function(){return false;},
         visitFunction: function(kmlObject, config){return config},
         refreshWithState: true,
         bustCache: false,
@@ -309,7 +308,7 @@ var kmltree = (function(){
                             id: id,
                             description: this.getDescription(),
                             snippet: snippet,
-                            select: opts.enableSelection(this),
+                            select: false,
                             listItemType: getListItemType(style),
                             customIcon: customIcon(this),
                             customClass: '',
