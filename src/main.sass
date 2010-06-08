@@ -163,7 +163,7 @@ div.kmltree
 
 // Icon Sprites
 
-li.KmlFolder > .icon, li.KmlNetworkLink > .icon, li.KmlTour > .icon, li.KmlPhotoOverlay > .icon, li.KmlGroundOverlay > .icon, li.KmlScreenOverlay > .icon, li.customIcon > .icon, li.KmlPolygon > .icon, li.KmlLineString > .icon
+li.KmlFolder > .icon, li.KmlNetworkLink > .icon, li.KmlTour > .icon, li.KmlPhotoOverlay > .icon, li.KmlGroundOverlay > .icon, li.KmlScreenOverlay > .icon, li.customIcon > .icon, li.KmlPolygon > .icon, li.KmlLineString > .icon, li.KmlMultiGeometry > .icon
   margin-right: 4px
   display: block
 
@@ -216,7 +216,7 @@ li
   &.KmlPolygon > .icon
     +sprite("kml", "polygon")
   
-  &.KmlLineString > .icon
+  &.KmlLineString > .icon, &.KmlMultiGeometry > .icon
     +sprite("kml", "linestring")
 
   &.customIcon > .icon
