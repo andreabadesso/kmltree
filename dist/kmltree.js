@@ -653,7 +653,7 @@ var kmltree = (function(){
         var clearNetworkLinks = function(){
             $('.KmlNetworkLink').each(function(){
                 var kmlObject = lookup($(this));
-                if(kmlObject.getParentNode()){
+                if(kmlObject && kmlObject.getParentNode()){
                     opts.gex.dom.removeObject(lookup($(this)));
                 }
             });
