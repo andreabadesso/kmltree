@@ -971,6 +971,30 @@ module('kmlTree');
         tree.load(true);
     });
     
+    earthAsyncTest('getNetworkLink method', function(ge, gex){
+        var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('kmlForestTest.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            var nlink = $('.kmltreetest').find('.name:contains(networklink a)').parent();
+            var doc = tree.lookup(nlink);
+            equals(doc.getType(), 'KmlDocument');
+            equals(tree.getNetworkLink(nlink).getType(), 'KmlNetworkLink');
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+    
     earthAsyncTest("NetworkLinks with listItemType=checkHideChildren don't expand", function(ge, gex){
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
         $(document.body).append('<div class="kmltreetest"></div>');

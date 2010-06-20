@@ -950,6 +950,7 @@ var kmltree = (function(){
                     node.removeClass('loading');
                     node.addClass('loaded');
                     setLookup(node, kmlObject);
+                    rememberNetworkLink(node, NetworkLink);
                     $(node).trigger('loaded', [node, kmlObject]);
                     $(that).trigger('networklinkload', [node, kmlObject]);
                 });
@@ -958,6 +959,23 @@ var kmltree = (function(){
         
         that.openNetworkLink = openNetworkLink;
         
+        var rememberedLinks = [];
+        
+        var rememberNetworkLink = function(node, networkLink){
+            $(node).attr('data-rememberedLink', rememberedLinks.length.toString());
+            rememberedLinks.push(networkLink);
+        };
+        
+        var getNetworkLink = function(node){
+            var id = $(node).attr('data-rememberedLink');
+            if(id && rememberedLinks.length >= id){
+                return rememberedLinks[id];
+            }else{
+                return false;
+            }
+        };
+        
+        that.getNetworkLink = getNetworkLink;
         
         // Creates a new NetworkLinkQueue that simply opens up the given 
         // NetworkLink and any open NetworkLinks within it.
