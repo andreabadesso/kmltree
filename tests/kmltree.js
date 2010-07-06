@@ -1602,4 +1602,39 @@ module('kmlTree');
         ok(tree !== false, 'Tree initialized');
         tree.load(true);
     });
+    
+    earthAsyncTest('toggle behavior', function(ge, gex){
+        if(!!window.localStorage){
+            window.localStorage.clear();
+        }
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('toggle-behavior.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            refreshWithState: false,
+            restoreState: true,
+            bustCache: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            var parent = $($('.kmltreetest').find('span.name:contains(untoggled)')[0]).parent();
+            equals(parent.hasClass('visible'), false, 'Parent not visible');
+            var toggled = parent.find('>ul>li>span.name:contains(toggled):first').parent();
+            var untoggled = parent.find('>ul>li>span.name:contains(untoggled)').parent();
+            equals(toggled.length, 1);
+            equals(untoggled.length, 1);
+            equals(toggled.hasClass('visible'), true, 'toggled visible');
+            equals(untoggled.hasClass('visible'), false, 'untoggled not visible');
+            parent.find('>.toggler').click();
+            equals(toggled.hasClass('visible'), true, 'toggled visible');
+            equals(untoggled.hasClass('visible'), false, 'untoggled not visible');
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
 })();

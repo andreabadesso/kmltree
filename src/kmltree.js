@@ -787,7 +787,11 @@ var kmltree = (function(){
                 });
             }
             toggleItem(node, toggle);
-            toggleDown(node, toggle);
+            if(toggle && node.find('li.visible').length){
+                // if children are already toggled, do nothing
+            }else{
+                toggleDown(node, toggle);                
+            }
             toggleUp(node, toggle);
         };
         
