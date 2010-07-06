@@ -1417,11 +1417,11 @@ module('kmlTree');
             ok(working.length);
             ok(old.length);
             ok(working.hasClass('open'));
-            ok(!old.hasClass('open'));
+            ok(old.hasClass('open'));
             $(tree).one('kmlLoaded', function(e, kmlObject){
                 var working = $('.kmltreetest').find('span.name:contains(Working)').parent();
                 var old = $('.kmltreetest').find('span.name:contains(old)').parent();
-                ok(!old.hasClass('open'));
+                ok(old.hasClass('open'));
                 ok(working.hasClass('open'));
                 ok(working.hasClass('loaded'));
                 tree.destroy();
@@ -1453,13 +1453,13 @@ module('kmlTree');
             ok(working.length);
             ok(old.length);
             ok(working.hasClass('open'));
-            ok(!old.hasClass('open'));
+            ok(old.hasClass('open'));
             working.find('>.toggler').click().click();
             ok(working.find('>ul>li.visible').length > 1)
             $(tree).one('kmlLoaded', function(e, kmlObject){
                 var working = $('.kmltreetest').find('span.name:contains(Working)').parent();
                 var old = $('.kmltreetest').find('span.name:contains(old)').parent();
-                ok(!old.hasClass('open'));
+                ok(old.hasClass('open'));
                 ok(working.hasClass('open'));
                 ok(working.hasClass('loaded'));
                 ok(working.find('>ul>li.visible').length > 1)
@@ -1637,4 +1637,113 @@ module('kmlTree');
         ok(tree !== false, 'Tree initialized');
         tree.load(true);
     });
+    
+    earthAsyncTest('displayDocumentRoot option - false', function(ge, gex){
+        if(!!window.localStorage){
+            window.localStorage.clear();
+        }
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('pmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            refreshWithState: false,
+            restoreState: true,
+            bustCache: false,
+            displayDocumentRoot: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            var doc = $($('.kmltreetest').find('span.name:contains(pmark.kml)')[0]).parent();
+            equals(doc.length, 0, 'Document root not shown');
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+    
+    earthAsyncTest('displayDocumentRoot option - auto - on', function(ge, gex){
+        if(!!window.localStorage){
+            window.localStorage.clear();
+        }
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('pmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            refreshWithState: false,
+            restoreState: true,
+            bustCache: false,
+            displayDocumentRoot: 'auto'
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            var doc = $($('.kmltreetest').find('span.name:contains(pmark.kml)')[0]).parent();
+            equals(doc.length, 1, 'Document root not shown');
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+    
+    earthAsyncTest('displayDocumentRoot option - auto - off', function(ge, gex){
+        if(!!window.localStorage){
+            window.localStorage.clear();
+        }
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('clickEvents.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            refreshWithState: false,
+            restoreState: true,
+            bustCache: false,
+            displayDocumentRoot: 'auto'
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            var doc = $($('.kmltreetest').find('span.name:contains(clickEvents.kml)')[0]).parent();
+            equals(doc.length, 0, 'Document root not shown');
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+
+    earthAsyncTest('displayDocumentRoot option - true', function(ge, gex){
+        if(!!window.localStorage){
+            window.localStorage.clear();
+        }
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('clickEvents.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            refreshWithState: false,
+            restoreState: true,
+            bustCache: false,
+            displayDocumentRoot: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            var doc = $($('.kmltreetest').find('span.name:contains(clickEvents.kml)')[0]).parent();
+            equals(doc.length, 1, 'Document root not shown');
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+
 })();
