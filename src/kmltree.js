@@ -859,12 +859,19 @@ var kmltree = (function(){
                     link = link.getHref();
                     var original_url = link;
                 }else{
-                    node.addClass('error');
-                    // setModified(node, 'visibility', false);
-                    $(node).trigger('loaded', [node, false]);
-                    node.removeClass('open');
-                    setModified(node, 'open', false);
-                    return;
+                    var dom = kmldom(NetworkLink.getKml());
+                    var href = dom.find('Url>href');
+                    if(href.length){
+                        var link = href.text();
+                        var original_url = link;
+                    }else{
+                        node.addClass('error');
+                        // setModified(node, 'visibility', false);
+                        $(node).trigger('loaded', [node, false]);
+                        node.removeClass('open');
+                        setModified(node, 'open', false);
+                        return;                        
+                    }
                 }
                 var uri = new URI(link);
                 if(uri.getAuthority() === null){
@@ -1079,7 +1086,7 @@ var kmltree = (function(){
                     var aspectRatio = m.width() / m.height();
                 }
                 opts.gex.util.flyToObject(kmlObject, {
-                    boundsFallback: true,
+                    boundsFallback: parent.find('li').length < 1000,
                     aspectRatio: aspectRatio
                 });
             }
