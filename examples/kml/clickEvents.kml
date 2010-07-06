@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>clickEvents.kml</name>
+	<Style id="sh_marina">
+		<IconStyle>
+			<scale>1.77273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/marina.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_man">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_man</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_man</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_man">
+		<IconStyle>
+			<color>ffff8a44</color>
+			<scale>2.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/man.png</href>
+			</Icon>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Style id="sh_man">
+		<IconStyle>
+			<color>ffff8a44</color>
+			<scale>3.42727</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/man.png</href>
+			</Icon>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<StyleMap id="msn_marina">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_marina</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_marina</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_marina">
+		<IconStyle>
+			<scale>1.5</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/marina.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<ListStyle>
+		</ListStyle>
+	</Style>
+	<Folder>
+		<name>click events</name>
+		<open>1</open>
+		<Placemark>
+			<name>Click Me</name>
+			<description>Click Me description</description>
+			<LookAt>
+				<longitude>-119.8440003942549</longitude>
+				<latitude>34.41141125056674</latitude>
+				<altitude>0</altitude>
+				<range>1143.585564348105</range>
+				<tilt>0</tilt>
+				<heading>-7.632337605933921</heading>
+				<altitudeMode>relativeToGround</altitudeMode>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_man</styleUrl>
+			<Point>
+				<coordinates>-119.8422773424899,34.41268540383707,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Me Too</name>
+			<description>Me Too Description</description>
+			<LookAt>
+				<longitude>-119.8440003750448</longitude>
+				<latitude>34.41141122833162</latitude>
+				<altitude>0</altitude>
+				<range>8794.630528161299</range>
+				<tilt>0</tilt>
+				<heading>-7.632337595077736</heading>
+				<altitudeMode>relativeToGround</altitudeMode>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_marina</styleUrl>
+			<Point>
+				<coordinates>-119.8433712877359,34.40473055952362,0</coordinates>
+			</Point>
+		</Placemark>
+	</Folder>
+</Document>
+</kml>

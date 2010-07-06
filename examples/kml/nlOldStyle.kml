@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Folder>
+	<name>Two NetworkLinks at Root - old school link tag</name>
+	<NetworkLink>
+        <visibility>1</visibility>
+    	<open>1</open>
+		<name>Working NL</name>
+		<Link>
+			<href>http://marinemap.googlecode.com/svn/trunk/media/common/fixtures/earthLayers.kml</href>
+		</Link>
+	</NetworkLink>
+	<NetworkLink>
+		<name>NL with old-school Url tag</name>
+        <visibility>1</visibility>
+		<open>1</open>
+		<Url>
+		    <href>http://marinemap.googlecode.com/svn/trunk/media/common/fixtures/earthLayers.kml</href>
+		</Url>
+	</NetworkLink>
+</Folder>
+</kml>

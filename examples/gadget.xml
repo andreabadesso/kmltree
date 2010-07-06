@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+    <ModulePrefs title="kmltree example" width="1010" height="410" />
+    <UserPref name="kml" display_name="kml" default_value="http://kmltree.googlecode.com/hg/examples/kml/hello.kml"/>
+    <Content type="html">
+        <![CDATA[ 
+            <style>
+                body {
+                    overflow:hidden;
+                }
+                div {
+                    overflow:hidden;
+                    margin:0;
+                    padding:0;
+                }
+                #tree {
+                    position:absolute;
+                    left:0;
+                    top:0;
+                    overflow:hidden;
+                    width:50%;
+                    height:398px;
+                    border:black 1px solid;
+                    overflow-y:auto;
+                }
+                #map3d {
+                    position:absolute;
+                    left:50%;
+                    top:0px;
+                    width:50%;
+                    height:398px;
+                }
+                .kmltree {
+                    margin:10px;
+                }
+            </style>
+            <div id="content_div">
+                <div id="wrapper" style="width:100%;height=100%;">
+                    <div id="tree"></div>
+                    <div id="map3d"></div>
+                </div>
+                <script type="text/javascript">
+                    // Get userprefs
+                    
+                    <!-- document.getElementById('tree').innerHTML = prefs.getString('kml'); -->
+                </script>
+                <script src="http://www.google.com/jsapi?key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRQPjtdHQ3xdBuNAR-KDFOW1mqdVsRRmZhmrl-MOSGS44M9Gug9FdssEgQ"></script>
+                <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+                <!-- earth-api-utility-library dependencies -->
+                <script src="http://geojs.googlecode.com/svn/trunk/dist/geo.pack.js"></script>
+                <script src="http://earth-api-utility-library.googlecode.com/svn/trunk/extensions/dist/extensions.pack.js"></script>
+                <!-- kmltree source files -->
+                <link rel="stylesheet" href="http://kmltree.googlecode.com/hg/dist/kmltree.css" media="screen">
+                <script src="http://kmltree.googlecode.com/hg/dist/kmltree.min.js"></script>
+                <script>
+                    google.load("earth", "1");
+
+                    function init() {
+                        google.earth.createInstance('map3d', initCB, failureCB);
+                    }
+
+                    function initCB(instance) {
+                        ge = instance;
+                        ge.getWindow().setVisibility(true);
+
+                        var gex = gex = new GEarthExtensions(ge);
+                        var prefs = new gadgets.Prefs();
+                        var tree = kmltree({
+                            url: prefs.getString('kml'),
+                            gex: gex, 
+                            mapElement: $('#map3d'), 
+                            element: $('#tree'),
+                            setExtent: true
+                        });
+
+                        tree.load();
+                    }
+
+                    function failureCB(errorCode) {
+                        alert('failed to load plugin');
+                    }
+
+                    $(document).ready(init);
+
+                </script>
+            </div>
+        ]]>
+    </Content> 
+</Module>
