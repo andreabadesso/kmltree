@@ -655,12 +655,13 @@ var kmltree = (function(){
         
         var addLookup = function(kmlObject, parentID, docUrl, name){
             var id = getID(kmlObject, parentID, docUrl, name);
-            // if(!!lookupTable[id]){
-            //     id = getID(kmlObject, parentID, docUrl, name, true);
-                if(!!lookupTable[id]){
-                    throw('attempting to add lookup that already exists!');
-                }
-            // }
+            // if the ID exists already, just append the position of the 
+            // repeated name to the id.
+            var tries = 0;
+            while(!!lookupTable[id]){
+                tries++;
+                id = id + tries;
+            }
             lookupTable[id] = kmlObject;
             return id;
         };
@@ -860,6 +861,24 @@ var kmltree = (function(){
                     node.removeClass('open');
                     setModified(node, 'open', false);
                     return;
+                }
+                var uri = new URI(link);
+                if(uri.getAuthority() === null){
+                    var doc = NetworkLink.getOwnerDocument();
+                    if(doc && doc.getUrl){
+                        var base = doc.getUrl();
+                        if(base){
+                            var base = new URI(base);
+                            var new_url = uri.resolve(base);
+                        }
+                    }
+                    if(!new_url){
+                        alert(['Could not resolve relative link in kml ',
+                                'document. You may need to upgrade to the ',
+                                'latest Google Earth Plugin.'].join());
+                    }else{
+                        link = new_url.toString();
+                    }
                 }
                 if(opts.bustCache){
                     var buster = (new Date()).getTime();

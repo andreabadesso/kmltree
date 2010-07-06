@@ -1548,4 +1548,58 @@ module('kmlTree');
         tree.load(true);
     });    
     
+    
+    earthAsyncTest('multiple items with the same name supported', function(ge, gex){
+        if(!!window.localStorage){
+            window.localStorage.clear();
+        }
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('same-name test.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            refreshWithState: false,
+            restoreState: true,
+            bustCache: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            var show = $('.kmltreetest').find('span.name:contains(show)');
+            equals(show.length, 1, 'Item after two networklinks of the same name rendered.');
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+    
+    earthAsyncTest('support for opening networklinks with relative paths', function(ge, gex){
+        if(!!window.localStorage){
+            window.localStorage.clear();
+        }
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('same-name test.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            refreshWithState: false,
+            restoreState: true,
+            bustCache: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            var firstNL = $($('.kmltreetest').find('span.name:contains(same name)')[0]).parent();
+            $(tree).one('networklinkload', function(){
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            });
+            firstNL.find('.expander').click();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
 })();
