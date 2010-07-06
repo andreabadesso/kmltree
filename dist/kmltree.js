@@ -502,7 +502,8 @@ var kmltree = (function(){
         // whiteListed: false,
         supportItemIcon: false,
         loadingMsg: 'Loading data',
-        setExtent: false
+        setExtent: false,
+        displayDocumentRoot: 'auto'
     };
         
         
@@ -763,7 +764,26 @@ var kmltree = (function(){
             that.kmlObject = kmlObject;
             that.kmlObject.setVisibility(true);
             var options = buildOptions(kmlObject, original_url);
-            var rendered = renderOptions(options.children[0].children);
+            var root;
+            if(opts.displayDocumentRoot === false){
+                root = options.children[0].children;
+            }else if(opts.displayDocumentRoot === true){
+                root = options.children[0];
+            }else{ // opts.displayDocumentRoot === 'auto'
+                var children = options.children[0].children;
+                var i = 0;
+                var placemarks = false;
+                while(i < children.length && placemarks === false){
+                    placemarks = children[i].type === 'KmlPlacemark';
+                    i++;
+                }
+                if(placemarks){
+                    root = options.children[0];
+                }else{
+                    root = options.children[0].children;
+                }
+            }
+            var rendered = renderOptions(root);
             opts.element.find('div.kmltree').remove();
             opts.element.find('.kmltree-loading').before([
                 '<div UNSELECTABLE="on" class="kmltree">',
