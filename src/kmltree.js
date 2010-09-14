@@ -1071,7 +1071,7 @@ var kmltree = (function(){
                 }else{
                     toggleVisibility(node, toggle);                    
                 }
-                $(that).trigger('toggleItem', [node, toggle]);
+                $(that).trigger('toggleItem', [node, toggle, lookup(node)]);
             }
         });
         
