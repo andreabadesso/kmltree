@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title>Managing Included Layers</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRSwtTT5GAxiJqzQ69gC1VuJs9XrFRSHtkp9BFyAR6_lVVfY3MBP3uA7Mg"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>
+        <!-- earth-api-utility-library dependencies -->
+        <script src="http://geojs.googlecode.com/svn/trunk/dist/geo.pack.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://earth-api-utility-library.googlecode.com/svn/trunk/extensions/dist/extensions.pack.js" type="text/javascript" charset="utf-8"></script>
+        <!-- kmltree source files -->
+        <link rel="stylesheet" href="../dist/kmltree.css" media="screen">
+        <script src="../dist/kmltree.min.js" type="text/javascript"></script>
+        <script src="../src/googleLayers.js" type="text/javascript"></script>
+        
+        <link rel="stylesheet" href="examples.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        
+        <script type="text/javascript" charset="utf-8">
+            google.load("earth", "1");
+            
+            function init() {
+                google.earth.createInstance('map3d', initCB, failureCB);
+            }
+
+            function initCB(instance) {
+                ge = instance;
+                ge.getWindow().setVisibility(true);
+                
+                var gex = gex = new GEarthExtensions(ge);
+                
+                var layers = kmltree({
+                    url: './kml/includedLayers.kml',
+                    gex: gex, 
+                    element: $('#tree'),
+                    mapElement: $('#map3d'),
+                    setExtent: true,
+                    supportItemIcon: true,
+                    restoreState: true
+                });
+                
+                layers.load();
+
+                var options = kmltree({
+                    url: './kml/displayOptions.kml',
+                    gex: gex, 
+                    element: $('#tree2'),
+                    mapElement: $('#map3d'),
+                    setExtent: true,
+                    supportItemIcon: true,
+                    restoreState: true
+                });
+                
+                options.load();
+                
+                enableGoogleLayersControl(layers, ge);
+                enableGoogleLayersControl(options, ge);
+            }
+
+            function failureCB(errorCode) {
+                alert('failed to load plugin');
+            }
+
+            $(document).ready(init);
+            
+        </script>
+    </head>
+    <body>
+        <h1><a href="http://code.google.com/p/kmltree/">kmltree</a> > <a href="http://code.google.com/p/kmltree/wiki/ExampleUses">examples</a> > Managing Included Layers</h1>
+        <a class="src" href="kml/includedLayers.kml">source kml</a>
+        <p class="description">
+            This example shows how to control the visibility of the built-in 
+            Google layers like Roads and display options like Atmosphere.
+        </p>
+        <div id="tree"></div>
+        <div id="tree2"></div>
+        <div id="map3d"></div>
+        <br style="clear:both;">
+    </body>
+</html>
