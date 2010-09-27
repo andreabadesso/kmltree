@@ -212,11 +212,11 @@ var kmltree = (function(){
             || div[0].style.khtmlBackgroundSize !== undefined
             || div[0].style.webkitBackgroundSize !== undefined);
         
-        var buildOptions = function(kmlObject, docUrl){
-            // var docid = addDocLookup(kmlObject);
-            var topTreeNode;
+        var buildOptions = function(kmlObject, docUrl, extra_scope){
             var options = {name: kmlObject.getName(), 
-                id: 'kml' + docUrl.replace(/\W/g, '-')};
+                id: 'kml' + 
+                (extra_scope ? extra_scope.replace(/\W/g, '-') : '') + 
+                docUrl.replace(/\W/g, '-')};
             google.earth.executeBatch(ge, function(){
                 opts.gex.dom.walk({
                     visitCallback: function(context){
@@ -931,9 +931,11 @@ var kmltree = (function(){
                     }
                     ge.getFeatures().appendChild(kmlObject);
                     kmlObject.setVisibility(NetworkLink.getVisibility());
+                    var extra_scope = NetworkLink.getName();
                     var parent = NetworkLink.getParentNode();
                     parent.getFeatures().removeChild(NetworkLink);
-                    var data = buildOptions(kmlObject, original_url);
+                    var data = buildOptions(kmlObject, original_url, 
+                        extra_scope);
                     var html = renderOptions(data.children[0].children);
                     node.append('<ul>'+html+'</ul>');
                     node.addClass('open');
@@ -1170,7 +1172,9 @@ var kmltree = (function(){
                 }
             }
         });
-        
+
+        // fix for jquery 1.4.2 compatibility. See http://forum.jquery.com/topic/javascript-error-when-unbinding-a-custom-event-using-jquery-1-4-2
+        that.removeEventListener = that.detachEvent = function(){};
         return that;
     };
 })();

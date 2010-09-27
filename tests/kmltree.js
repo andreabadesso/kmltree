@@ -1467,6 +1467,7 @@ module('kmlTree');
                 $('.kmltreetest').remove();
                 start();
             });
+            console.log(tree.getState());
             tree.refresh();
         });
         window.tree = tree;
