@@ -174,7 +174,7 @@ var kmltree = (function(){
         var internalState = {};
 
         if(parseFloat(ge.getPluginVersion()) < 5.2){
-            throw('kmltree requires a google earth plugin version >= 5.2');
+            alert('kmltree requires a google earth plugin version >= 5.2');
         }
                 
         if(!opts.url || !opts.gex || !opts.element || !opts.mapElement){
