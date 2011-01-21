@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>KmlFile</name>
+	<Folder>
+		<name>untoggled</name>
+		<visibility>0</visibility>
+		<open>1</open>
+		<description>
+</description>
+		<Placemark>
+			<name>toggled</name>
+			<visibility>1</visibility>
+			<LookAt>
+				<longitude>-123.4207700648731</longitude>
+				<latitude>37.80144130825806</latitude>
+				<altitude>0</altitude>
+				<heading>0.481685490146847</heading>
+				<tilt>0</tilt>
+				<range>1570139.335143709</range>
+				<altitudeMode>relativeToGround</altitudeMode>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin</styleUrl>
+			<Point>
+				<coordinates>-123.420770064873,37.80144130825806,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>untoggled</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<longitude>-123.4207700648731</longitude>
+				<latitude>37.80144130825806</latitude>
+				<altitude>0</altitude>
+				<heading>0.481685490146847</heading>
+				<tilt>0</tilt>
+				<range>1570139.335143709</range>
+				<altitudeMode>relativeToGround</altitudeMode>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin0</styleUrl>
+			<Point>
+				<coordinates>-123.420770064873,37.80144130825806,0</coordinates>
+			</Point>
+		</Placemark>
+	</Folder>
+</Document>
+</kml>

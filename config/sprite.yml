@@ -1,0 +1,46 @@
+# css sprite generation config
+# for instructions, see http://github.com/merbjedi/sprite
+
+config:
+  style: sass_mixin
+  style_output_path: _sprites
+  public_path: src/
+  sprites_class: 'sprites'
+  image_src_path: images/
+  image_output_path: sprites-url/images/sprites/
+  
+images:
+  # creates a public/images/sprites/blue_stars.png image with 4 sprites in it
+  - name: kml
+    format: png
+    align: horizontal
+    spaced_by: 5
+    sources:
+      - folder.png
+      - folder-open.png
+      - folder-error.png
+      - tour.png
+      - superoverlay.png
+      - arrow-down.png
+      - arrow-down-hover.png
+      - arrow-down-active.png
+      - arrow-right.png
+      - arrow-right-hover.png
+      - arrow-right-active.png
+      - unchecked.png
+      - unchecked-checkOffOnly.png
+      - unchecked-hover.png
+      - unchecked-active.png
+      - checked.png
+      - checked-hover.png
+      - checked-active.png
+      - radio-off.png
+      - radio-off-hover.png
+      - radio-off-active.png
+      - radio-on.png
+      - radio-on-hover.png
+      - radio-on-active.png
+      - networklink-loading.png
+      - polygon.png
+      - linestring.png
+      - screenoverlay.png

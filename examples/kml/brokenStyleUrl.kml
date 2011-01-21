@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>hello.kml</name>
+	<Placemark>
+		<name>Hello!</name>
+		<description>Hello from MSI!</description>
+		<LookAt>
+			<longitude>-119.8418907598242</longitude>
+			<latitude>34.41220709130838</latitude>
+			<altitude>0</altitude>
+			<range>207.8400380931565</range>
+			<tilt>39.0280045871568</tilt>
+			<heading>-53.05688523889484</heading>
+			<altitudeMode>relativeToGround</altitudeMode>
+			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+		</LookAt>
+		<styleUrl>#msn_man</styleUrl>
+		<Point>
+			<coordinates>-119.8424289894842,34.41270692858322,0</coordinates>
+		</Point>
+	</Placemark>
+</Document>
+</kml>

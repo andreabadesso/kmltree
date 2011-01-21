@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title>Simple Example</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRQPjtdHQ3xdBuNAR-KDFOW1mqdVsRRmZhmrl-MOSGS44M9Gug9FdssEgQ"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>
+        <!-- earth-api-utility-library dependencies -->
+        <script src="http://geojs.googlecode.com/svn/trunk/dist/geo.pack.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://earth-api-utility-library.googlecode.com/svn/trunk/extensions/dist/extensions.pack.js" type="text/javascript" charset="utf-8"></script>
+        <!-- kmltree source files -->
+        <link rel="stylesheet" href="../dist/kmltree.css" media="screen">
+        <script src="../dist/kmltree.min.js" type="text/javascript"></script>
+
+        <link rel="stylesheet" href="examples.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        
+        <script type="text/javascript" charset="utf-8">
+            
+            google.load("earth", "1");
+
+            var tree;
+            var gex;
+            
+            function init() {
+                google.earth.createInstance('map3d', initCB, failureCB);
+            }
+
+            function initCB(instance) {
+                ge = instance;
+                ge.getWindow().setVisibility(true);
+                gex = new GEarthExtensions(ge);
+                $('#submit').show();
+                $('#urlform').submit(function(e){
+                    if(tree){
+                        tree.destroy();
+                    }
+                    $('.tree').replaceWith('<div class="tree"></div>');
+                    e.preventDefault();
+                    var url = $('#url').attr('value');
+                    if(url){
+                        tree = kmltree({
+                            url: url,
+                            gex: gex, 
+                            mapElement: $('#map3d'), 
+                            element: $('.tree'),
+                            restoreState: false
+                        });
+                        // console.time('load');
+                        // console.profile();
+                        $(tree).one('kmlLoaded', function(e, kmlObject){
+                            // console.profileEnd();
+                            // console.timeEnd('load');
+                        });
+                        tree.load();
+                        $('#refresh').show();
+                    }else{
+                        alert('you must enter a url');
+                    }
+                });
+                $('#refresh').click(function(e){
+                    // console.profile();
+                    // console.time('refresh');
+                    tree.refresh();
+                    $(tree).one('kmlLoaded', function(e, kmlObject){
+                        // console.log('loaded');
+                        // console.profileEnd();
+                        // console.timeEnd('refresh');
+                    });
+                    e.preventDefault();
+                });
+            }
+
+            function failureCB(errorCode) {
+                alert('failed to load plugin');
+            }
+
+            $(document).ready(init);
+            
+        </script>
+    </head>
+    <body>
+        <h1><a href="http://code.google.com/p/kmltree/">kmltree</a> > <a href="http://code.google.com/p/kmltree/wiki/ExampleUses">examples</a> > hello world</h1>
+        <p class="description" style="margin-bottom:0px;">
+            Copy&paste the url of a kml file below to test.
+        </p>
+        <form style="margin:0px; padding:0;padding-left:10px;" id="urlform">
+            <input style="width:500px;" type="text" name="url" value="http://kmltree.googlecode.com/hg/examples/demo.kmz" id="url" autofocus>
+            <input type="submit" id="submit" name="submit">
+            <button id="refresh" style="display:none;">refresh</button>
+        </form>
+        <div class="tree"></div>
+        <div id="map3d"></div>
+        <br style="clear:both;">
+    </body>
+</html>
