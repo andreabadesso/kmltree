@@ -7,11 +7,34 @@
 // http://code.google.com/p/kmltree/wiki/ApiReference
 var kmltree = (function(){
 
-    openBalloon = function(kmlObject, ge, whitelisted){
-        var b = ge.createFeatureBalloon('');
-        b.setFeature(kmlObject);
-        b.setMinWidth(100);
-        ge.setBalloon(b);
+    openBalloon = function(kmlObject, ge, whitelist){
+        if(safe(kmlObject, whitelist)){
+            console.log("it's okay!");
+            var content = kmlObject.getBalloonHtmlUnsafe();
+            var balloon = ge.createHtmlStringBalloon('');
+            balloon.setFeature(kmlObject);
+            dataUri = "data:text/html;charset=utf-8;base64,"+ Base64.encode('<script>console.log(document.domain); document.domain = "www.notallowed.com"; console.log(document.domain);</script>'+content);
+            console.log(dataUri);
+            balloon.setContentString('<iframe id="kmltree-balloon-iframe" border="0" frameBorder="0" seamless="true" type="content-primary" sandbox="allow-scripts" src="'+dataUri+'"></iframe>');
+            ge.setBalloon(balloon);
+        }else{
+            console.log('not okay');
+            var b = ge.createFeatureBalloon('');
+            b.setFeature(kmlObject);
+            b.setMinWidth(100);
+            ge.setBalloon(b);            
+        }
+    }
+    
+    safe = function(kmlObject, whitelist){
+        var url = kmlObject.getOwnerDocument().getUrl();
+        for(var i=0; i<whitelist.length;i++){
+            console.log(url, whitelist[i]);
+            if(url.match(whitelist[i])){
+                return true;
+            }
+        }
+        return false;
     }
     
     // can be removed when the following ticket is resolved:
@@ -152,11 +175,12 @@ var kmltree = (function(){
         refreshWithState: true,
         bustCache: false,
         restoreState: false,
-        // whiteListed: false,
+        whitelist: [],
         supportItemIcon: false,
         loadingMsg: 'Loading data',
         setExtent: false,
-        displayDocumentRoot: 'auto'
+        displayDocumentRoot: 'auto',
+        whitelist: []
     };
         
         
@@ -715,7 +739,7 @@ var kmltree = (function(){
             node.addClass('selected');
             toggleVisibility(node, true);
             node.addClass('selected');
-            openBalloon(kmlObject, ge);
+            openBalloon(kmlObject, ge, opts['whitelist']);
             
             var parent = node.parent().parent();
             
@@ -1010,7 +1034,7 @@ var kmltree = (function(){
                     if(kmlObject.getType() === 'KmlPlacemark'){
                         toggleVisibility(node, true);
                     }
-                    openBalloon(kmlObject, ge, opts['whiteListed']);
+                    openBalloon(kmlObject, ge, opts['whitelist']);
                 }
             }
             $(that).trigger('click', [node[0], kmlObject]);
@@ -1118,30 +1142,37 @@ var kmltree = (function(){
         // Google Earth Plugin Events
         var geAddListener = google.earth.addEventListener;
         
-        geAddListener(ge.getGlobe(), 'click', function(e, d){
-            if(e.getButton() === -1){
-                // related to scrolling, ignore
-                return;
-            }
-            var target = e.getTarget();
-            var balloon = ge.getBalloon();
-            if(target.getType() === 'GEGlobe' && !balloon){
-                // Seems like this combo makes balloons close when the user 
-                // clicks on the globe. When that !balloon test is not there, 
-                // random click events fired when the user zooms in and out 
-                // close the balloon. Not sure why
-                clearSelection();
-            }else if(target.getType() === 'KmlPlacemark'){
-                var id = target.getId();
-                var nodes = getNodesById(id);
-                if(nodes.length >= 1){
-                    // e.preventDefault();
-                    selectNode(nodes[0], lookup(nodes[0]));
-                }else{
-                    clearSelection();
-                    // there should be an optimal way to handle this.
-                }
-            }
+        // geAddListener(ge.getGlobe(), 'click', function(e, d){
+        //     if(e.getButton() === -1){
+        //         // related to scrolling, ignore
+        //         return;
+        //     }
+        //     var target = e.getTarget();
+        //     var balloon = ge.getBalloon();
+        //     if(target.getType() === 'GEGlobe' && !balloon){
+        //         // Seems like this combo makes balloons close when the user 
+        //         // clicks on the globe. When that !balloon test is not there, 
+        //         // random click events fired when the user zooms in and out 
+        //         // close the balloon. Not sure why
+        //         clearSelection();
+        //     }else if(target.getType() === 'KmlPlacemark'){
+        //         var id = target.getId();
+        //         var nodes = getNodesById(id);
+        //         if(nodes.length >= 1){
+        //             // e.preventDefault();
+        //             selectNode(nodes[0], lookup(nodes[0]));
+        //         }else{
+        //             clearSelection();
+        //             // there should be an optimal way to handle this.
+        //         }
+        //     }
+        // });
+        
+        google.earth.addEventListener(ge, 'balloonopening', function(e){
+            ge.setBalloon(null);
+            e.preventDefault();
+            openBalloon(e.getFeature(), ge, opts.whitelist);
+            return false;
         });
         
         var doubleClicking = false;
