@@ -1,4 +1,145 @@
-
+/**
+*
+*  Base64 encode / decode
+*  http://www.webtoolkit.info/
+*
+**/
+ 
+var Base64 = {
+ 
+	// private property
+	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+ 
+	// public method for encoding
+	encode : function (input) {
+		var output = "";
+		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+		var i = 0;
+ 
+		input = Base64._utf8_encode(input);
+ 
+		while (i < input.length) {
+ 
+			chr1 = input.charCodeAt(i++);
+			chr2 = input.charCodeAt(i++);
+			chr3 = input.charCodeAt(i++);
+ 
+			enc1 = chr1 >> 2;
+			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+			enc4 = chr3 & 63;
+ 
+			if (isNaN(chr2)) {
+				enc3 = enc4 = 64;
+			} else if (isNaN(chr3)) {
+				enc4 = 64;
+			}
+ 
+			output = output +
+			this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
+			this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+ 
+		}
+ 
+		return output;
+	},
+ 
+	// public method for decoding
+	decode : function (input) {
+		var output = "";
+		var chr1, chr2, chr3;
+		var enc1, enc2, enc3, enc4;
+		var i = 0;
+ 
+		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+ 
+		while (i < input.length) {
+ 
+			enc1 = this._keyStr.indexOf(input.charAt(i++));
+			enc2 = this._keyStr.indexOf(input.charAt(i++));
+			enc3 = this._keyStr.indexOf(input.charAt(i++));
+			enc4 = this._keyStr.indexOf(input.charAt(i++));
+ 
+			chr1 = (enc1 << 2) | (enc2 >> 4);
+			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+			chr3 = ((enc3 & 3) << 6) | enc4;
+ 
+			output = output + String.fromCharCode(chr1);
+ 
+			if (enc3 != 64) {
+				output = output + String.fromCharCode(chr2);
+			}
+			if (enc4 != 64) {
+				output = output + String.fromCharCode(chr3);
+			}
+ 
+		}
+ 
+		output = Base64._utf8_decode(output);
+ 
+		return output;
+ 
+	},
+ 
+	// private method for UTF-8 encoding
+	_utf8_encode : function (string) {
+		string = string.replace(/\r\n/g,"\n");
+		var utftext = "";
+ 
+		for (var n = 0; n < string.length; n++) {
+ 
+			var c = string.charCodeAt(n);
+ 
+			if (c < 128) {
+				utftext += String.fromCharCode(c);
+			}
+			else if((c > 127) && (c < 2048)) {
+				utftext += String.fromCharCode((c >> 6) | 192);
+				utftext += String.fromCharCode((c & 63) | 128);
+			}
+			else {
+				utftext += String.fromCharCode((c >> 12) | 224);
+				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+				utftext += String.fromCharCode((c & 63) | 128);
+			}
+ 
+		}
+ 
+		return utftext;
+	},
+ 
+	// private method for UTF-8 decoding
+	_utf8_decode : function (utftext) {
+		var string = "";
+		var i = 0;
+		var c = c1 = c2 = 0;
+ 
+		while ( i < utftext.length ) {
+ 
+			c = utftext.charCodeAt(i);
+ 
+			if (c < 128) {
+				string += String.fromCharCode(c);
+				i++;
+			}
+			else if((c > 191) && (c < 224)) {
+				c2 = utftext.charCodeAt(i+1);
+				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+				i += 2;
+			}
+			else {
+				c2 = utftext.charCodeAt(i+1);
+				c3 = utftext.charCodeAt(i+2);
+				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+				i += 3;
+			}
+ 
+		}
+ 
+		return string;
+	}
+ 
+};
 // src/tmpl.js
 
 // Simple JavaScript Templating
@@ -354,11 +495,34 @@ var URIQuery;
 // http://code.google.com/p/kmltree/wiki/ApiReference
 var kmltree = (function(){
 
-    openBalloon = function(kmlObject, ge, whitelisted){
-        var b = ge.createFeatureBalloon('');
-        b.setFeature(kmlObject);
-        b.setMinWidth(100);
-        ge.setBalloon(b);
+    openBalloon = function(kmlObject, ge, whitelist){
+        if(safe(kmlObject, whitelist)){
+            console.log("it's okay!");
+            var content = kmlObject.getBalloonHtmlUnsafe();
+            var balloon = ge.createHtmlStringBalloon('');
+            balloon.setFeature(kmlObject);
+            dataUri = "data:text/html;charset=utf-8;base64,"+ Base64.encode('<script>console.log(document.domain); document.domain = "www.notallowed.com"; console.log(document.domain);</script>'+content);
+            console.log(dataUri);
+            balloon.setContentString('<iframe id="kmltree-balloon-iframe" border="0" frameBorder="0" seamless="true" type="content-primary" sandbox="allow-scripts" src="'+dataUri+'"></iframe>');
+            ge.setBalloon(balloon);
+        }else{
+            console.log('not okay');
+            var b = ge.createFeatureBalloon('');
+            b.setFeature(kmlObject);
+            b.setMinWidth(100);
+            ge.setBalloon(b);            
+        }
+    }
+    
+    safe = function(kmlObject, whitelist){
+        var url = kmlObject.getOwnerDocument().getUrl();
+        for(var i=0; i<whitelist.length;i++){
+            console.log(url, whitelist[i]);
+            if(url.match(whitelist[i])){
+                return true;
+            }
+        }
+        return false;
     }
     
     // can be removed when the following ticket is resolved:
@@ -499,11 +663,12 @@ var kmltree = (function(){
         refreshWithState: true,
         bustCache: false,
         restoreState: false,
-        // whiteListed: false,
+        whitelist: [],
         supportItemIcon: false,
         loadingMsg: 'Loading data',
         setExtent: false,
-        displayDocumentRoot: 'auto'
+        displayDocumentRoot: 'auto',
+        whitelist: []
     };
         
         
@@ -1062,7 +1227,7 @@ var kmltree = (function(){
             node.addClass('selected');
             toggleVisibility(node, true);
             node.addClass('selected');
-            openBalloon(kmlObject, ge);
+            openBalloon(kmlObject, ge, opts['whitelist']);
             
             var parent = node.parent().parent();
             
@@ -1357,7 +1522,7 @@ var kmltree = (function(){
                     if(kmlObject.getType() === 'KmlPlacemark'){
                         toggleVisibility(node, true);
                     }
-                    openBalloon(kmlObject, ge, opts['whiteListed']);
+                    openBalloon(kmlObject, ge, opts['whitelist']);
                 }
             }
             $(that).trigger('click', [node[0], kmlObject]);
@@ -1465,30 +1630,37 @@ var kmltree = (function(){
         // Google Earth Plugin Events
         var geAddListener = google.earth.addEventListener;
         
-        geAddListener(ge.getGlobe(), 'click', function(e, d){
-            if(e.getButton() === -1){
-                // related to scrolling, ignore
-                return;
-            }
-            var target = e.getTarget();
-            var balloon = ge.getBalloon();
-            if(target.getType() === 'GEGlobe' && !balloon){
-                // Seems like this combo makes balloons close when the user 
-                // clicks on the globe. When that !balloon test is not there, 
-                // random click events fired when the user zooms in and out 
-                // close the balloon. Not sure why
-                clearSelection();
-            }else if(target.getType() === 'KmlPlacemark'){
-                var id = target.getId();
-                var nodes = getNodesById(id);
-                if(nodes.length >= 1){
-                    // e.preventDefault();
-                    selectNode(nodes[0], lookup(nodes[0]));
-                }else{
-                    clearSelection();
-                    // there should be an optimal way to handle this.
-                }
-            }
+        // geAddListener(ge.getGlobe(), 'click', function(e, d){
+        //     if(e.getButton() === -1){
+        //         // related to scrolling, ignore
+        //         return;
+        //     }
+        //     var target = e.getTarget();
+        //     var balloon = ge.getBalloon();
+        //     if(target.getType() === 'GEGlobe' && !balloon){
+        //         // Seems like this combo makes balloons close when the user 
+        //         // clicks on the globe. When that !balloon test is not there, 
+        //         // random click events fired when the user zooms in and out 
+        //         // close the balloon. Not sure why
+        //         clearSelection();
+        //     }else if(target.getType() === 'KmlPlacemark'){
+        //         var id = target.getId();
+        //         var nodes = getNodesById(id);
+        //         if(nodes.length >= 1){
+        //             // e.preventDefault();
+        //             selectNode(nodes[0], lookup(nodes[0]));
+        //         }else{
+        //             clearSelection();
+        //             // there should be an optimal way to handle this.
+        //         }
+        //     }
+        // });
+        
+        google.earth.addEventListener(ge, 'balloonopening', function(e){
+            ge.setBalloon(null);
+            e.preventDefault();
+            openBalloon(e.getFeature(), ge, opts.whitelist);
+            return false;
         });
         
         var doubleClicking = false;
