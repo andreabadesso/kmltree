@@ -2,8 +2,19 @@
 <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
 <Document>
 	<name>pmark.kml</name>
+	<open>1</open>
+	<Style id="sn_ylw-pushpin">
+	</Style>
+	<Style id="sn_ylw-pushpin0">
+	</Style>
 	<Placemark>
 		<name>pmark</name>
+		<description><![CDATA[<div id="clock">clock</div>
+		    <script type="text/javascript" charset="utf-8">
+		        setInterval(function(){
+		            document.getElementById('clock').innerHTML = (new Date()).toString();
+		        }, 100)
+		    </script>]]></description>
 		<LookAt>
 			<longitude>-123.4207700648731</longitude>
 			<latitude>37.80144130825806</latitude>
@@ -18,16 +29,48 @@
 		<Point>
 			<coordinates>-121.9624538041004,36.52604870493431,0</coordinates>
 		</Point>
-		<description><![CDATA[
-		    <div id="clock">clock</div>
-		    <script type="text/javascript" charset="utf-8">
-		        setInterval(function(){
-		            document.getElementById('clock').innerHTML = (new Date()).toString();
-                    //document.getElementById('clock').innerHTML = document.cookie;
-		        }, 100)
-		    </script>
-		]]>
-		</description>
+	</Placemark>
+	<Placemark>
+		<name>no dynamic content</name>
+		<description><![CDATA[<div id="clock">not dynamic</div>]]></description>
+		<LookAt>
+			<gx:TimeStamp><when>1996-01-05</when>
+</gx:TimeStamp>
+			<longitude>-121.9775489923091</longitude>
+			<latitude>36.51993298517915</latitude>
+			<altitude>0</altitude>
+			<heading>-7.78552799061439</heading>
+			<tilt>0</tilt>
+			<range>25963.53744967152</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+		</LookAt>
+		<styleUrl>#sn_ylw-pushpin0</styleUrl>
+		<Point>
+			<altitudeMode>absolute</altitudeMode>
+			<coordinates>-121.9713611111111,36.51774444444445,-261.2036316295045</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>large popup</name>
+		<description><![CDATA[<div style="height:250px;width:300px;background-color:blue;color:white;">Big div!</div>]]></description>
+		<LookAt>
+			<gx:TimeStamp><when>1996-01-05</when>
+</gx:TimeStamp>
+			<longitude>-121.9775489923091</longitude>
+			<latitude>36.51993298517915</latitude>
+			<altitude>0</altitude>
+			<heading>-7.78552799061439</heading>
+			<tilt>0</tilt>
+			<range>25963.53744967152</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+		</LookAt>
+		<styleUrl>#sn_ylw-pushpin</styleUrl>
+		<Point>
+			<altitudeMode>absolute</altitudeMode>
+			<coordinates>-121.9784472222222,36.53310833333333,-261.2036316295045</coordinates>
+		</Point>
 	</Placemark>
 </Document>
 </kml>

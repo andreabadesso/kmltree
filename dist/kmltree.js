@@ -495,39 +495,56 @@ var URIQuery;
 // http://code.google.com/p/kmltree/wiki/ApiReference
 var kmltree = (function(){
 
-    openBalloon = function(kmlObject, ge, whitelist){
-        if(safe(kmlObject, whitelist)){
-            var content = kmlObject.getBalloonHtmlUnsafe();
-            var balloon = ge.createHtmlStringBalloon('');
+    openBalloon = function(kmlObject, ge, displayUnsafeContent, iframe_src){
+        if(displayUnsafeContent){
+            var unsafeHtml = kmlObject.getBalloonHtmlUnsafe();
+            var safeHtml = kmlObject.getBalloonHtml();
+            var safeDiv = document.createElement('div');
+            safeDiv.innerHTML = safeHtml;
+            var unsafeDiv = document.createElement('div');
+            unsafeDiv.innerHTML = unsafeHtml;
+            var safeText = $.trim(
+                $(safeDiv).html().replace(
+                    /\s*<!--\s*Content-type: mhtml-die-die-die\s*-->/, ''));
+            var unsafeText = $.trim(
+                $(unsafeDiv).html().replace(
+                    /\s*<!--\s*Content-type: mhtml-die-die-die\s*-->/, ''));
+            var hasUnsafeContent = safeText != unsafeText;
+        }
+        if(displayUnsafeContent && hasUnsafeContent){
+            var content = unsafeHtml;
+            var balloon = ge.createHtmlDivBalloon('');
             balloon.setFeature(kmlObject);
-            dataUri = "data:text/html;charset=utf-8;base64,"+ Base64.encode('<script>console.log(document.domain); document.domain = "www.notallowed.com"; console.log(document.domain);</script>'+content);
-            if(true){
-                balloon.setContentString('<iframe id="kmltree-balloon-iframe" border="0" frameBorder="0" seamless="true" type="content-primary" sandbox="allow-scripts" src="http://localhost/~cburt/kmltree/src/iframe.html"></iframe>');
-            }else{
-                balloon.setContentString('<iframe id="kmltree-balloon-iframe" border="0" frameBorder="0" seamless="true" type="content-primary" sandbox="allow-scripts" src="'+dataUri+'"></iframe>');                
-            }
+            var iframe = $(
+                ['<iframe id="kmltree-balloon-iframe"',
+                ' border="0" frameBorder="0" seamless="true"',
+                ' sandbox="allow-scripts" src="', iframe_src, '">',
+                '</iframe>'].join(''));
+            var div = document.createElement('div');
+            $(div).append(iframe);
+            iframe.load(function(){
+                this.contentWindow.postMessage(
+                    Base64.encode(content), "*");
+                window.addEventListener('message', resize, false);
+            });
+            balloon.setContentDiv(div);
             ge.setBalloon(balloon);
-            setTimeout(function(){
-                $('#kmltree-balloon-iframe')[0].contentWindow.postMessage(Base64.encode(content), "*");
-            }, 10);
         }else{
-            console.log('not okay');
             var b = ge.createFeatureBalloon('');
             b.setFeature(kmlObject);
             b.setMinWidth(100);
-            ge.setBalloon(b);            
+            ge.setBalloon(b);          
         }
     }
     
-    safe = function(kmlObject, whitelist){
-        var url = kmlObject.getOwnerDocument().getUrl();
-        for(var i=0; i<whitelist.length;i++){
-            console.log(url, whitelist[i]);
-            if(url.match(whitelist[i])){
-                return true;
-            }
-        }
-        return false;
+    function resize(e){
+        var dim = JSON.parse(e.data)
+        console.log('resizing', dim);
+        var el = $('#kmltree-balloon-iframe');
+        var p = el.parent().parent();
+        var pp = p.parent();
+        el.height(dim.height)
+        el.width(dim.width);
     }
     
     // can be removed when the following ticket is resolved:
@@ -673,7 +690,8 @@ var kmltree = (function(){
         loadingMsg: 'Loading data',
         setExtent: false,
         displayDocumentRoot: 'auto',
-        whitelist: []
+        displayUnsafeContent: false,
+        iframeSandbox: 'http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html?'
     };
         
         
@@ -1232,7 +1250,8 @@ var kmltree = (function(){
             node.addClass('selected');
             toggleVisibility(node, true);
             node.addClass('selected');
-            openBalloon(kmlObject, ge, opts['whitelist']);
+            openBalloon(
+                kmlObject, ge, opts.displayUnsafeContent, opts.iframeSandbox);
             
             var parent = node.parent().parent();
             
@@ -1527,7 +1546,8 @@ var kmltree = (function(){
                     if(kmlObject.getType() === 'KmlPlacemark'){
                         toggleVisibility(node, true);
                     }
-                    openBalloon(kmlObject, ge, opts['whitelist']);
+                    openBalloon(kmlObject, ge, opts.displayUnsafeContent, 
+                        opts.iframeSandbox);
                 }
             }
             $(that).trigger('click', [node[0], kmlObject]);
@@ -1664,7 +1684,8 @@ var kmltree = (function(){
         google.earth.addEventListener(ge, 'balloonopening', function(e){
             ge.setBalloon(null);
             e.preventDefault();
-            openBalloon(e.getFeature(), ge, opts.whitelist);
+            openBalloon(e.getFeature(), ge, 
+                opts.displayUnsafeContent, opts.iframeSandbox);
             return false;
         });
         

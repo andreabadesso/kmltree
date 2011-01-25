@@ -1,8 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
     	<meta charset="utf-8">
     	<title></title>
+        <style type="text/css" media="screen">
+            html, body {
+                margin:0;
+                padding:0;
+                font-size:0.9em;
+            }
+
+            .kmlTreeReset {
+              font-family: sans-serif;
+              color: black; }
+              .kmlTreeReset h1 {
+                font-size: 18px; }
+                .kmlTreeReset h1 a {
+                  font-size: 18px; }
+              .kmlTreeReset h2 {
+                font-size: 16px; }
+                .kmlTreeReset h2 a {
+                  font-size: 16px; }
+              .kmlTreeReset h3 {
+                font-size: 14px; }
+                .kmlTreeReset h3 a {
+                  font-size: 14px; }
+              .kmlTreeReset h1, .kmlTreeReset h2, .kmlTreeReset h3 {
+                margin: 1em 0; }
+              .kmlTreeReset h1, .kmlTreeReset h2, .kmlTreeReset h3, .kmlTreeReset h4, .kmlTreeReset h5, .kmlTreeReset h6, .kmlTreeReset strong, .kmlTreeReset dt {
+                font-weight: bold;
+                color: black; }
+              .kmlTreeReset em {
+                font-style: italic; }
+              .kmlTreeReset blockquote, .kmlTreeReset ul, .kmlTreeReset ol, .kmlTreeReset dl {
+                margin: 1em; }
+              .kmlTreeReset ol, .kmlTreeReset ul, .kmlTreeReset dl {
+                margin-left: 2em; }
+              .kmlTreeReset ol li {
+                list-style: decimal outside; }
+              .kmlTreeReset ul li {
+                list-style: disc outside; }
+              .kmlTreeReset dl dd {
+                margin-left: 1em; }
+              .kmlTreeReset th, .kmlTreeReset td {
+                padding: 0em; }
+              .kmlTreeReset th {
+                font-weight: bold;
+                text-align: center; }
+              .kmlTreeReset p, .kmlTreeReset fieldset, .kmlTreeReset table, .kmlTreeReset pre {
+                margin-bottom: 1em; }
+              .kmlTreeReset p, .kmlTreeReset div {
+                font-size: 12px;
+                color: black; }
+              .kmlTreeReset a {
+                font-size: 12px;
+                color: blue;
+                text-decoration: underline; }
+            
+        </style>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     	<script type="text/javascript" charset="utf-8">
     	    /**
             *
@@ -15,16 +72,38 @@
             String.fromCharCode(a>>6|192);else{d+=String.fromCharCode(a>>12|224);d+=String.fromCharCode(a>>6&63|128)}d+=String.fromCharCode(a&63|128)}}return d},_utf8_decode:function(b){for(var d="",c=0,a=c1=c2=0;c<b.length;){a=b.charCodeAt(c);if(a<128){d+=String.fromCharCode(a);c++}else if(a>191&&a<224){c2=b.charCodeAt(c+1);d+=String.fromCharCode((a&31)<<6|c2&63);c+=2}else{c2=b.charCodeAt(c+1);c3=b.charCodeAt(c+2);d+=String.fromCharCode((a&15)<<12|(c2&63)<<6|c3&63);c+=3}}return d}};
             // unencode and display requested content
             window.addEventListener("message", function(e){
-                // console.log(e.data);
-                document.getElementById('content').innerHTML=Base64.decode(e.data);
-                var scripts = document.getElementsByTagName('script');
-                for(var i=0;i<scripts.length;i++){
-                    eval(scripts[i].innerHTML);
+                var html = Base64.decode(e.data);
+                // Check whether the balloon immediately sets a new location, 
+                // like the panoramio layer.
+                var match = html.match(/>\s*window.location.href\s*=\s*["|'](.+)["|']/);
+                if(match && match.length === 2){
+                    var newLocation = match[1];
+                    // If so, grab that content and display it.
+                    $(document.body).append(html);
+                    parent.postMessage(
+                        JSON.stringify({height: 450, width:530}), "*");
+                }else{
+                    $(document.body).append(html);                    
+                    handleContent();                    
                 }
             }, false);
+            
+            function handleContent(){
+                // Link click handling
+                $('a').each(function(){
+                    if(!this.target){
+                        this.target = '_blank';
+                    }
+                });
+                var height = $(document).height() + 5;
+                var width = $(document).width() + 5;
+                parent.postMessage(
+                    JSON.stringify({height: height, width:width}), "*");
+            }
+            
     	</script>
     </head>
-    <body>
+    <body class="kmlTreeReset">
         <div id="content"></div>
     </body>
 </html>
