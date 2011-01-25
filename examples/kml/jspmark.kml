@@ -22,9 +22,8 @@
 		    <div id="clock">clock</div>
 		    <script type="text/javascript" charset="utf-8">
 		        setInterval(function(){
-		            // document.getElementById('clock').innerHTML = (new Date()).toString();
-		            // document.getElementById('clock').innerHTML = document.cookie;
-                    console.log(document.cookie, parent.document.cookie);
+		            document.getElementById('clock').innerHTML = (new Date()).toString();
+                    //document.getElementById('clock').innerHTML = document.cookie;
 		        }, 100)
 		    </script>
 		]]>

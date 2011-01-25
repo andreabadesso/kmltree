@@ -9,14 +9,19 @@ var kmltree = (function(){
 
     openBalloon = function(kmlObject, ge, whitelist){
         if(safe(kmlObject, whitelist)){
-            console.log("it's okay!");
             var content = kmlObject.getBalloonHtmlUnsafe();
             var balloon = ge.createHtmlStringBalloon('');
             balloon.setFeature(kmlObject);
             dataUri = "data:text/html;charset=utf-8;base64,"+ Base64.encode('<script>console.log(document.domain); document.domain = "www.notallowed.com"; console.log(document.domain);</script>'+content);
-            console.log(dataUri);
-            balloon.setContentString('<iframe id="kmltree-balloon-iframe" border="0" frameBorder="0" seamless="true" type="content-primary" sandbox="allow-scripts" src="'+dataUri+'"></iframe>');
+            if(true){
+                balloon.setContentString('<iframe id="kmltree-balloon-iframe" border="0" frameBorder="0" seamless="true" type="content-primary" sandbox="allow-scripts" src="http://localhost/~cburt/kmltree/src/iframe.html"></iframe>');
+            }else{
+                balloon.setContentString('<iframe id="kmltree-balloon-iframe" border="0" frameBorder="0" seamless="true" type="content-primary" sandbox="allow-scripts" src="'+dataUri+'"></iframe>');                
+            }
             ge.setBalloon(balloon);
+            setTimeout(function(){
+                $('#kmltree-balloon-iframe')[0].contentWindow.postMessage(Base64.encode(content), "*");
+            }, 10);
         }else{
             console.log('not okay');
             var b = ge.createFeatureBalloon('');
