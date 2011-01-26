@@ -1467,7 +1467,6 @@ module('kmlTree');
                 $('.kmltreetest').remove();
                 start();
             });
-            console.log(tree.getState());
             tree.refresh();
         });
         window.tree = tree;
@@ -1747,4 +1746,31 @@ module('kmlTree');
         tree.load(true);
     });
 
+
+    earthAsyncTest('onBalloonOpen callback option', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('clickEvents.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            refreshWithState: false,
+            restoreState: true,
+            bustCache: false,
+            displayDocumentRoot: true,
+            onBalloonOpen: function(b){
+                equals(b.getType(), 'GEFeatureBalloon');
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            }
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            $('.kmltreetest').find('span.name:contains(Click Me)')
+                .click();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
 })();
