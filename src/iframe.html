@@ -84,7 +84,62 @@
                     parent.postMessage(
                         JSON.stringify({height: 450, width:530}), "*");
                 }else{
-                    $(document.body).append(html);
+                    var doc = $(html);
+                    // jQuery doesn't execute inline scripts after remote 
+                    // scripts are loaded reliably when using the append 
+                    // method, so here I'm loading them manually.
+                    var inlineScripts = [];
+                    var remoteScripts = false;
+                    var waiting = 0;
+                    
+                    var done = function(){
+                        waiting--;
+                        if(waiting <= 0){
+                            $.each(inlineScripts, function(i, elem){
+                                jQuery.globalEval(elem.text || elem.textContent || elem.innerHTML || "" );
+                            });
+                        }                        
+                    }
+                    
+                    // Get all script tags
+                    doc.each(function(i, v){
+                        if($.nodeName(this, 'script')){
+                            if(!this.type || this.type.toLowerCase() === "text/javascript"){
+                                // If of type text/javascript and has src, add
+                                // to a queue to fetch
+                                if(!this.src){
+                                    inlineScripts.push(this);
+                                }else{
+                                // otherwise wait to run inline scripts until
+                                // remote scripts are fetched.
+                                    remoteScripts = true;
+                                    waiting++;
+                                    $.ajax({
+                                        cache: true,
+                                        url: this.src,
+                                        dataType: 'script',
+                                        success: done,
+                                        error: done
+                                    });
+                                }                                
+                                doc.splice(i, 1);
+                            }                            
+                        }
+                    });
+                    
+                    // Don't forget there might be only inline scripts!
+                    if(!remoteScripts){
+                        done();
+                    }
+                    
+                    if(doc.find('body').length){
+                        doc = doc.find('body').children();
+                    }
+                    $(document.body).append(doc);
+                    var height = $(document.body).height() + 30;
+                    var width = $(document.body).width() + 15;
+                    parent.postMessage(
+                        JSON.stringify({height: height, width:width}), '*');
                     handleContent();
                 }
             }, false);
@@ -96,15 +151,10 @@
                         this.target = '_blank';
                     }
                 });
-                var height = $(document.body).height() + 30;
-                var width = $(document.body).width() + 15;
-                parent.postMessage(
-                    JSON.stringify({height: height, width:width}), '*');
             }
             
     	</script>
     </head>
     <body class="kmlTreeReset">
-        <div id="content"></div>
     </body>
 </html>

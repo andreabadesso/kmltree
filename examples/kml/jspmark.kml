@@ -11,12 +11,20 @@
 		<name>pmark</name>
 		<description><![CDATA[
 		    <html><body>
+		    <link rel="stylesheet" href="http://10.0.1.5/~cburt/kmltree/examples/remote.css" type="text/css" media="screen" title="no title" charset="utf-8">
+		    <div>
+		        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		    </div>
+		    <script src="http://vis.stanford.edu/protovis/protovis-r3.2.js" type="text/javascript" charset="utf-8"></script>
 		    <div id="clock">clock</div>
 		    <script type="text/javascript" charset="utf-8">
-		        setInterval(function(){
-		            document.getElementById('clock').innerHTML = (new Date()).toString();
-		        }, 100)
-		    </script></body></html>]]></description>
+		        $(document).ready(function(){
+    		        setInterval(function(){
+    		            document.getElementById('clock').innerHTML = (new Date()).toString();
+    		        }, 100)		            
+		        });
+		    </script>
+		    </body></html>]]></description>
 		<LookAt>
 			<longitude>-123.4207700648731</longitude>
 			<latitude>37.80144130825806</latitude>

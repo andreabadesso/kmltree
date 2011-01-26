@@ -536,6 +536,7 @@ var kmltree = (function(){
     }
     
     function resize(e){
+        console.log('resize', e.origin);
         var dim = JSON.parse(e.data)
         if(dim.width && dim.height){
             var el = $('#kmltree-balloon-iframe');
