@@ -495,59 +495,60 @@ var URIQuery;
 // http://code.google.com/p/kmltree/wiki/ApiReference
 var kmltree = (function(){
 
-    openBalloon = function(kmlObject, ge, displayUnsafeContent, iframe_src){
+    openBalloon = function(kmlObject, ge, opts){
         // Compare getBalloonHtmlUnsafe to getBalloonHtml to determine whether
         // there is even any need to use an iframe to display unsafe content
-        if(displayUnsafeContent){
+        if(opts.displayEnhancedContent){
             // don't bother checking if not going to display
             var unsafeHtml = kmlObject.getBalloonHtmlUnsafe();
             var safeHtml = kmlObject.getBalloonHtml();
-            // var safeDiv = document.createElement('div');
-            // safeDiv.innerHTML = safeHtml;
-            // var unsafeDiv = document.createElement('div');
-            // unsafeDiv.innerHTML = unsafeHtml;
             var safeHtml = $.trim(
                 safeHtml.replace(
                     /\s*<!--\s*Content-type: mhtml-die-die-die\s*-->/, ''));
             var hasUnsafeContent = safeHtml != $.trim(unsafeHtml);
         }
-        if(displayUnsafeContent && hasUnsafeContent){
-            var content = unsafeHtml;
+        if(opts.displayEnhancedContent && hasUnsafeContent){
             var balloon = ge.createHtmlDivBalloon('');
             balloon.setFeature(kmlObject);
             var iframe = $(
                 ['<iframe id="kmltree-balloon-iframe"',
-                ' border="0" frameBorder="0" seamless="true"',
-                ' sandbox="allow-scripts" src="', iframe_src, '">',
+                ' border="0" frameBorder="0"',
+                ' src="', opts.iframeSandbox, '">',
                 '</iframe>'].join(''));
             var div = document.createElement('div');
             $(div).append(iframe);
             iframe.load(function(){
-                this.contentWindow.postMessage(
-                    Base64.encode(content), iframe_src);
+                var msg = JSON.stringify({
+                    html: Base64.encode(unsafeHtml),
+                    callback: Base64.encode(
+                        opts.sandboxedBalloonCallback.toString())
+                });
+                this.contentWindow.postMessage(msg, opts.iframeSandbox);
             });
             balloon.setContentDiv(div);
             ge.setBalloon(balloon);
+            opts.onBalloonOpen(balloon, true);
         }else{
             var b = ge.createFeatureBalloon('');
             b.setFeature(kmlObject);
             ge.setBalloon(b);
+            opts.onBalloonOpen(b, false);
         }
     }
     
-    function resize(e){
-        console.log('resize', e.origin);
+    function resize(e, defaultDimensions){
         var dim = JSON.parse(e.data)
-        if(dim.width && dim.height){
-            var el = $('#kmltree-balloon-iframe');
-            var b = ge.getBalloon();
-            b.setMinWidth(dim.width);
-            b.setMaxWidth(dim.width + (dim.width * .1));
-            b.setMinHeight(dim.height);
-            b.setMaxHeight(dim.height + (dim.height * .1));
-            el.height(dim.height);
-            el.width(dim.width);            
+        if(dim.unknownIframeDimensions){
+            dim = defaultDimensions;
         }
+        var el = $('#kmltree-balloon-iframe');
+        var b = ge.getBalloon();
+        b.setMinWidth(dim.width);
+        b.setMaxWidth(dim.width + (dim.width * .1));
+        b.setMinHeight(dim.height);
+        b.setMaxHeight(dim.height + (dim.height * .1));
+        el.height(dim.height);
+        el.width(dim.width);            
     }
     
     // can be removed when the following ticket is resolved:
@@ -693,8 +694,11 @@ var kmltree = (function(){
         loadingMsg: 'Loading data',
         setExtent: false,
         displayDocumentRoot: 'auto',
-        displayUnsafeContent: false,
-        iframeSandbox: 'http://10.0.1.5/~cburt/kmltree/src/iframe.html'
+        displayEnhancedContent: false,
+        iframeSandbox: 'http://10.0.1.5/~cburt/kmltree/src/iframe.html',
+        unknownIframeDimensionsDefault: {height: 450, width:530},
+        sandboxedBalloonCallback: function(){},
+        onBalloonOpen: function(b){}
     };
         
         
@@ -750,9 +754,14 @@ var kmltree = (function(){
             || div[0].style.khtmlBackgroundSize !== undefined
             || div[0].style.webkitBackgroundSize !== undefined);
         
-        if(opts.displayUnsafeContent){
+        
+        
+        if(opts.displayEnhancedContent){
             window.addEventListener("message", function(e){
-                resize(e);
+                // Verify that message came from the correct source
+                if(e.source=== $('#kmltree-balloon-iframe')[0].contentWindow){
+                    resize(e, opts.unknownIframeDimensionsDefault);                    
+                }
             }, false);
         }
         
@@ -928,7 +937,8 @@ var kmltree = (function(){
                                 that.load(true);
                             },
                             error: function(){
-                                processKmlObject(kmlObject, url, original_url);
+                                processKmlObject(
+                                    kmlObject, url, original_url);
                             }
                         });
                         // try to load 
@@ -1031,7 +1041,8 @@ var kmltree = (function(){
         };
         
         var restoreState = function(state, queue){
-            // go thru the whole state, opening, changing visibility, and selecting
+            // go thru the whole state, opening, changing visibility, 
+            // and selecting
             for(var id in state){
                 var el = $('#'+id);
                 if(el.length === 1){
@@ -1045,7 +1056,8 @@ var kmltree = (function(){
                     delete state[id];
                 }
             }
-            var links = $('#' + opts.element.attr('id')).find('li.KmlNetworkLink.open');
+            var links = $('#' + opts.element.attr('id')).find(
+                'li.KmlNetworkLink.open');
             links.each(function(){
                 var n = $(this);
                 // no need to open if checkHideChildren is set
@@ -1260,7 +1272,7 @@ var kmltree = (function(){
             toggleVisibility(node, true);
             node.addClass('selected');
             openBalloon(
-                kmlObject, ge, opts.displayUnsafeContent, opts.iframeSandbox);
+                kmlObject, ge, opts);
             
             var parent = node.parent().parent();
             
@@ -1500,7 +1512,8 @@ var kmltree = (function(){
         var rememberedLinks = [];
         
         var rememberNetworkLink = function(node, networkLink){
-            $(node).attr('data-rememberedLink', rememberedLinks.length.toString());
+            $(node).attr(
+                'data-rememberedLink', rememberedLinks.length.toString());
             rememberedLinks.push(networkLink);
         };
         
@@ -1555,8 +1568,7 @@ var kmltree = (function(){
                     if(kmlObject.getType() === 'KmlPlacemark'){
                         toggleVisibility(node, true);
                     }
-                    openBalloon(kmlObject, ge, opts.displayUnsafeContent, 
-                        opts.iframeSandbox);
+                    openBalloon(kmlObject, ge, opts);
                 }
             }
             $(that).trigger('click', [node[0], kmlObject]);
@@ -1693,8 +1705,7 @@ var kmltree = (function(){
         google.earth.addEventListener(ge, 'balloonopening', function(e){
             ge.setBalloon(null);
             e.preventDefault();
-            openBalloon(e.getFeature(), ge, 
-                opts.displayUnsafeContent, opts.iframeSandbox);
+            openBalloon(e.getFeature(), ge, opts);
             return false;
         });
         

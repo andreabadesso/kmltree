@@ -73,7 +73,11 @@
 
             // unencode and display requested content
             window.addEventListener("message", function(e){
-                var html = Base64.decode(e.data);
+                if(e.source !== parent){return;};
+                var msg = JSON.parse(e.data);
+                var html = Base64.decode(msg.html);
+                var callback = Base64.decode(msg.callback);
+                eval('var callback = '+callback);
                 // Check whether the balloon immediately sets a new location, 
                 // like the panoramio layer.
                 var match = html.match(/>\s*window.location.href\s*=\s*["|'](.+)["|']/);
@@ -82,7 +86,7 @@
                     // If so, grab that content and display it.
                     $(document.body).append(html);
                     parent.postMessage(
-                        JSON.stringify({height: 450, width:530}), "*");
+                        JSON.stringify({unknownIframeDimensions: true}), "*");
                 }else{
                     var doc = $(html);
                     // jQuery doesn't execute inline scripts after remote 
@@ -98,7 +102,8 @@
                             $.each(inlineScripts, function(i, elem){
                                 jQuery.globalEval(elem.text || elem.textContent || elem.innerHTML || "" );
                             });
-                        }                        
+                        }
+                        callback();                       
                     }
                     
                     // Get all script tags
@@ -136,13 +141,17 @@
                         doc = doc.find('body').children();
                     }
                     $(document.body).append(doc);
-                    var height = $(document.body).height() + 30;
-                    var width = $(document.body).width() + 15;
-                    parent.postMessage(
-                        JSON.stringify({height: height, width:width}), '*');
+                    parentResize();
                     handleContent();
                 }
             }, false);
+            
+            function parentResize(){
+                var height = $(document.body).height() + 30;
+                var width = $(document.body).width() + 15;
+                parent.postMessage(
+                    JSON.stringify({height: height, width:width}), '*');
+            }
             
             function handleContent(){
                 // Link click handling
