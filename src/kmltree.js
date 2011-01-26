@@ -783,8 +783,10 @@ var kmltree = (function(){
             node.addClass('selected');
             toggleVisibility(node, true);
             node.addClass('selected');
-            openBalloon(
-                kmlObject, ge, opts);
+            google.earth.removeEventListener(ge, 'balloonopening', balloonOpening);
+            openBalloon(kmlObject, ge, opts);
+            google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
+            
             
             var parent = node.parent().parent();
             
@@ -1061,7 +1063,8 @@ var kmltree = (function(){
         
         var id = opts.element.attr('id');
         
-        $('#'+id+' li > span.name').live('click', function(){
+        $('#'+id+' li > span.name').live('click', function(e){
+            e.stopPropagation();
             var node = $(this).parent();
             var kmlObject = lookup(node);
             if(node.hasClass('error') && node.hasClass('KmlNetworkLink')){
@@ -1080,7 +1083,9 @@ var kmltree = (function(){
                     if(kmlObject.getType() === 'KmlPlacemark'){
                         toggleVisibility(node, true);
                     }
+                    google.earth.removeEventListener(ge, 'balloonopening', balloonOpening);
                     openBalloon(kmlObject, ge, opts);
+                    google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
                 }
             }
             $(that).trigger('click', [node[0], kmlObject]);
@@ -1148,6 +1153,7 @@ var kmltree = (function(){
         });
         
         $('#'+id+' li').live('dblclick', function(e){
+            e.stopPropagation();
             var target = $(e.target);
             var parent = target.parent();
             if(target.hasClass('expander')
@@ -1188,37 +1194,18 @@ var kmltree = (function(){
         // Google Earth Plugin Events
         var geAddListener = google.earth.addEventListener;
         
-        // geAddListener(ge.getGlobe(), 'click', function(e, d){
-        //     if(e.getButton() === -1){
-        //         // related to scrolling, ignore
-        //         return;
-        //     }
-        //     var target = e.getTarget();
-        //     var balloon = ge.getBalloon();
-        //     if(target.getType() === 'GEGlobe' && !balloon){
-        //         // Seems like this combo makes balloons close when the user 
-        //         // clicks on the globe. When that !balloon test is not there, 
-        //         // random click events fired when the user zooms in and out 
-        //         // close the balloon. Not sure why
-        //         clearSelection();
-        //     }else if(target.getType() === 'KmlPlacemark'){
-        //         var id = target.getId();
-        //         var nodes = getNodesById(id);
-        //         if(nodes.length >= 1){
-        //             // e.preventDefault();
-        //             selectNode(nodes[0], lookup(nodes[0]));
-        //         }else{
-        //             clearSelection();
-        //             // there should be an optimal way to handle this.
-        //         }
-        //     }
-        // });
         
-        google.earth.addEventListener(ge, 'balloonopening', function(e){
-            ge.setBalloon(null);
+        var balloonOpening = function(e){
             e.preventDefault();
+            ge.setBalloon(null);
             openBalloon(e.getFeature(), ge, opts);
             return false;
+        }
+        
+        google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
+        
+        geAddListener(ge, 'balloonclose', function(e){
+            clearSelection();
         });
         
         var doubleClicking = false;
