@@ -9,12 +9,14 @@
 	</Style>
 	<Placemark>
 		<name>pmark</name>
-		<description><![CDATA[<div id="clock">clock</div>
+		<description><![CDATA[
+		    <html><body>
+		    <div id="clock">clock</div>
 		    <script type="text/javascript" charset="utf-8">
 		        setInterval(function(){
 		            document.getElementById('clock').innerHTML = (new Date()).toString();
 		        }, 100)
-		    </script>]]></description>
+		    </script></body></html>]]></description>
 		<LookAt>
 			<longitude>-123.4207700648731</longitude>
 			<latitude>37.80144130825806</latitude>
@@ -53,7 +55,7 @@
 	</Placemark>
 	<Placemark>
 		<name>large popup</name>
-		<description><![CDATA[<div style="height:250px;width:300px;background-color:blue;color:white;">Big div!</div>]]></description>
+		<description><![CDATA[<div style="height:250px;width:300px;background-color:blue;color:white;">Big div!</div><a href="http://marinemap.org">this link should open in a new tab/window</a>]]></description>
 		<LookAt>
 			<gx:TimeStamp><when>1996-01-05</when>
 </gx:TimeStamp>
