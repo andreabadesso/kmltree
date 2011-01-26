@@ -496,20 +496,20 @@ var URIQuery;
 var kmltree = (function(){
 
     openBalloon = function(kmlObject, ge, displayUnsafeContent, iframe_src){
+        // Compare getBalloonHtmlUnsafe to getBalloonHtml to determine whether
+        // there is even any need to use an iframe to display unsafe content
         if(displayUnsafeContent){
+            // don't bother checking if not going to display
             var unsafeHtml = kmlObject.getBalloonHtmlUnsafe();
             var safeHtml = kmlObject.getBalloonHtml();
-            var safeDiv = document.createElement('div');
-            safeDiv.innerHTML = safeHtml;
-            var unsafeDiv = document.createElement('div');
-            unsafeDiv.innerHTML = unsafeHtml;
-            var safeText = $.trim(
-                $(safeDiv).html().replace(
+            // var safeDiv = document.createElement('div');
+            // safeDiv.innerHTML = safeHtml;
+            // var unsafeDiv = document.createElement('div');
+            // unsafeDiv.innerHTML = unsafeHtml;
+            var safeHtml = $.trim(
+                safeHtml.replace(
                     /\s*<!--\s*Content-type: mhtml-die-die-die\s*-->/, ''));
-            var unsafeText = $.trim(
-                $(unsafeDiv).html().replace(
-                    /\s*<!--\s*Content-type: mhtml-die-die-die\s*-->/, ''));
-            var hasUnsafeContent = safeText != unsafeText;
+            var hasUnsafeContent = safeHtml != $.trim(unsafeHtml);
         }
         if(displayUnsafeContent && hasUnsafeContent){
             var content = unsafeHtml;
@@ -524,27 +524,29 @@ var kmltree = (function(){
             $(div).append(iframe);
             iframe.load(function(){
                 this.contentWindow.postMessage(
-                    Base64.encode(content), "*");
-                window.addEventListener('message', resize, false);
+                    Base64.encode(content), iframe_src);
             });
             balloon.setContentDiv(div);
             ge.setBalloon(balloon);
         }else{
             var b = ge.createFeatureBalloon('');
             b.setFeature(kmlObject);
-            b.setMinWidth(100);
-            ge.setBalloon(b);          
+            ge.setBalloon(b);
         }
     }
     
     function resize(e){
         var dim = JSON.parse(e.data)
-        console.log('resizing', dim);
-        var el = $('#kmltree-balloon-iframe');
-        var p = el.parent().parent();
-        var pp = p.parent();
-        el.height(dim.height)
-        el.width(dim.width);
+        if(dim.width && dim.height){
+            var el = $('#kmltree-balloon-iframe');
+            var b = ge.getBalloon();
+            b.setMinWidth(dim.width);
+            b.setMaxWidth(dim.width + (dim.width * .1));
+            b.setMinHeight(dim.height);
+            b.setMaxHeight(dim.height + (dim.height * .1));
+            el.height(dim.height);
+            el.width(dim.width);            
+        }
     }
     
     // can be removed when the following ticket is resolved:
@@ -691,7 +693,7 @@ var kmltree = (function(){
         setExtent: false,
         displayDocumentRoot: 'auto',
         displayUnsafeContent: false,
-        iframeSandbox: 'http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html?'
+        iframeSandbox: 'http://10.0.1.5/~cburt/kmltree/src/iframe.html'
     };
         
         
@@ -746,6 +748,12 @@ var kmltree = (function(){
             || div[0].style.oBackgroundSize !== undefined
             || div[0].style.khtmlBackgroundSize !== undefined
             || div[0].style.webkitBackgroundSize !== undefined);
+        
+        if(opts.displayUnsafeContent){
+            window.addEventListener("message", function(e){
+                resize(e);
+            }, false);
+        }
         
         var buildOptions = function(kmlObject, docUrl, extra_scope){
             var options = {name: kmlObject.getName(), 
