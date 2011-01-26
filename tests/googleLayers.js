@@ -193,9 +193,9 @@ module('enableGoogleLayersControl');
     };
     
     var r = new Runner('displayOptions.kml');
+    r.testOption('Scale Legend', false);
     r.testOption('Status Bar', true);
     r.testOption('Overview Map', false);
-    r.testOption('Scale Legend', false);
     r.testOption('Atmosphere', true);    
     r.testLayer('3d Terrain and Ocean Surface', true, 'LAYER_TERRAIN');
     r.testSpecial('Sun', false, function(ge){
