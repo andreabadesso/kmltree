@@ -1773,4 +1773,61 @@ module('kmlTree');
         ok(tree !== false, 'Tree initialized');
         tree.load(true);
     });
+    
+    // first test that kmltree can differenciate between popup types
+    earthAsyncTest('displayEnhancedContent option - uses different methods for unsafe vs safe content', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                console.log('balloonopen heard');
+                equals(balloon.getType(), 'GEFeatureBalloon');
+                equals($('#map3d iframe').length, 1, 'Basic popup not loaded into iframe.');
+                $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                    console.log('balloonopen heard again');
+                    equals(balloon.getType(), 'GEHtmlDivBalloon');
+                    console.log($('#map3d iframe'));
+                    equals($('#map3d iframe').length, 2, 'Enhanced popup displayed in iframe sandbox.');
+                    tree.destroy();
+                    $('.kmltreetest').remove();
+                    start();
+                });
+                console.log('clicking');
+                $('.kmltreetest').find('span.name:contains(pmark)')
+                    .click();                
+            });
+            $('.kmltreetest').find('span.name:contains(no dynamic content)')
+                .click();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
+    
+    // test that support for it can be turned off
+        
+    // test that sandboxedBalloonCallback works
+    
+    // test that a custom iframeSandbox option can be used
+    
+    // test that the size is correct
+    
+    // test that window.location type balloons get a default size
+    
+    // test that the default size can be changed
+    
+    // test that remote and inline css is employed
+    
+    // test that remote and inline javascript is employed, and in the right 
+    // order
+    
+    // test that content can't get access to parent iframe's data - need to deploy?
+    
 })();
