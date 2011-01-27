@@ -495,7 +495,9 @@ var URIQuery;
 // http://code.google.com/p/kmltree/wiki/ApiReference
 var kmltree = (function(){
 
-    openBalloon = function(kmlObject, ge, opts){
+    openBalloon = function(kmlObject, ge, opts, that){
+        console.log('open balloon');
+        var balloon;
         // Compare getBalloonHtmlUnsafe to getBalloonHtml to determine whether
         // there is even any need to use an iframe to display unsafe content
         if(opts.displayEnhancedContent){
@@ -508,8 +510,7 @@ var kmltree = (function(){
             var hasUnsafeContent = safeHtml != $.trim(unsafeHtml);
         }
         if(opts.displayEnhancedContent && hasUnsafeContent){
-            var balloon = ge.createHtmlDivBalloon('');
-            balloon.setFeature(kmlObject);
+            balloon = ge.createHtmlDivBalloon('');
             var iframe = $(
                 ['<iframe id="kmltree-balloon-iframe"',
                 ' border="0" frameBorder="0"',
@@ -526,17 +527,26 @@ var kmltree = (function(){
                 this.contentWindow.postMessage(msg, opts.iframeSandbox);
             });
             balloon.setContentDiv(div);
-            ge.setBalloon(balloon);
-            opts.onBalloonOpen(balloon, true);
         }else{
-            var b = ge.createFeatureBalloon('');
-            b.setFeature(kmlObject);
-            ge.setBalloon(b);
-            opts.onBalloonOpen(b, false);
+            balloon = ge.createFeatureBalloon('');
         }
+        console.log('before setFeature');
+        balloon.setFeature(kmlObject);
+        var needToKnowWhenOpen = function(){
+            console.log('open!');
+            google.earth.removeEventListener(ge, 'balloonopening', needToKnowWhenOpen);
+            console.log('after remove', needToKnowWhenOpen);
+            $(that).trigger('balloonopen', [balloon, kmlObject]);
+            console.log('after trigger');
+        }
+        console.log('adding event listener')
+        google.earth.addEventListener(ge, 'balloonopening', needToKnowWhenOpen);
+        console.log('setting balloon');
+        ge.setBalloon(balloon);
+        console.log('done setting balloon');
     }
     
-    function resize(e, defaultDimensions){
+    function resize(e, ge, defaultDimensions){
         var dim = JSON.parse(e.data)
         if(dim.unknownIframeDimensions){
             dim = defaultDimensions;
@@ -697,8 +707,7 @@ var kmltree = (function(){
         displayEnhancedContent: false,
         iframeSandbox: 'http://10.0.1.5/~cburt/kmltree/src/iframe.html',
         unknownIframeDimensionsDefault: {height: 450, width:530},
-        sandboxedBalloonCallback: function(){},
-        onBalloonOpen: function(b){}
+        sandboxedBalloonCallback: function(){}
     };
         
         
@@ -760,7 +769,7 @@ var kmltree = (function(){
             window.addEventListener("message", function(e){
                 // Verify that message came from the correct source
                 if(e.source=== $('#kmltree-balloon-iframe')[0].contentWindow){
-                    resize(e, opts.unknownIframeDimensionsDefault);                    
+                    resize(e, ge, opts.unknownIframeDimensionsDefault);                    
                 }
             }, false);
         }
@@ -1272,7 +1281,7 @@ var kmltree = (function(){
             toggleVisibility(node, true);
             node.addClass('selected');
             google.earth.removeEventListener(ge, 'balloonopening', balloonOpening);
-            openBalloon(kmlObject, ge, opts);
+            openBalloon(kmlObject, ge, opts, that);
             google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
             
             
@@ -1572,7 +1581,7 @@ var kmltree = (function(){
                         toggleVisibility(node, true);
                     }
                     google.earth.removeEventListener(ge, 'balloonopening', balloonOpening);
-                    openBalloon(kmlObject, ge, opts);
+                    openBalloon(kmlObject, ge, opts, that);
                     google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
                 }
             }
@@ -1686,7 +1695,7 @@ var kmltree = (function(){
         var balloonOpening = function(e){
             e.preventDefault();
             ge.setBalloon(null);
-            openBalloon(e.getFeature(), ge, opts);
+            openBalloon(e.getFeature(), ge, opts, that);
             return false;
         }
         
