@@ -1747,7 +1747,7 @@ module('kmlTree');
     });
 
 
-    earthAsyncTest('onBalloonOpen callback option', function(ge, gex){
+    earthAsyncTest('balloonopen event', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('clickEvents.kml'),
@@ -1757,16 +1757,16 @@ module('kmlTree');
             refreshWithState: false,
             restoreState: true,
             bustCache: false,
-            displayDocumentRoot: true,
-            onBalloonOpen: function(b){
+            displayDocumentRoot: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            $(tree).one('balloonopen', function(e, b, kmlObject){
                 equals(b.getType(), 'GEFeatureBalloon');
                 tree.destroy();
                 $('.kmltreetest').remove();
                 start();
-            }
-        });
-        $(tree).one('kmlLoaded', function(e, kmlObject){
-            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            });
             $('.kmltreetest').find('span.name:contains(Click Me)')
                 .click();
         });
@@ -1788,19 +1788,16 @@ module('kmlTree');
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
             $(tree).one('balloonopen', function(e, balloon, kmlObject){
-                console.log('balloonopen heard');
                 equals(balloon.getType(), 'GEFeatureBalloon');
                 equals($('#map3d iframe').length, 1, 'Basic popup not loaded into iframe.');
                 $(tree).one('balloonopen', function(e, balloon, kmlObject){
-                    console.log('balloonopen heard again');
                     equals(balloon.getType(), 'GEHtmlDivBalloon');
-                    console.log($('#map3d iframe'));
                     equals($('#map3d iframe').length, 2, 'Enhanced popup displayed in iframe sandbox.');
+                    $('#kmltree-balloon-iframe').remove();
                     tree.destroy();
                     $('.kmltreetest').remove();
                     start();
                 });
-                console.log('clicking');
                 $('.kmltreetest').find('span.name:contains(pmark)')
                     .click();                
             });
@@ -1811,9 +1808,68 @@ module('kmlTree');
         tree.load(true);
     });
     
-    // test that support for it can be turned off
+    earthAsyncTest('displayEnhancedContent option - is optional and turned off by default', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                equals(balloon.getType(), 'GEFeatureBalloon');
+                equals($('#map3d iframe').length, 1, 'No extra iframes since enhanced content is not shown.');
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            });
+            $('.kmltreetest').find('span.name:contains(pmark)')
+                .click();                
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
         
-    // test that sandboxedBalloonCallback works
+    earthAsyncTest('displayEnhancedContent option - sandboxedBalloonCallback works', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true,
+            sandboxedBalloonCallback: function(){
+                parent.postMessage('hi there', '*');
+            }
+        });
+        $(window).bind('message', function(e){
+            var e = e.originalEvent;
+            if(e.data.match(/width/)){
+                // just standard message passing for kmltree
+                return;
+            }else{
+                equals(e.data, 'hi there');
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();                    
+            }
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                equals(balloon.getType(), 'GEHtmlDivBalloon');
+                equals($('#map3d iframe').length, 2, 'Enhanced popup displayed in iframe sandbox.');
+            });
+            $('.kmltreetest').find('span.name:contains(pmark)')
+                .click();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
     
     // test that a custom iframeSandbox option can be used
     
