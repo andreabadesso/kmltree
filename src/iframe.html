@@ -85,9 +85,9 @@
                 if(match && match.length === 2){
                     var newLocation = match[1];
                     // If so, grab that content and display it.
-                    $(document.body).append(html);
                     parent.postMessage(
                         JSON.stringify({unknownIframeDimensions: true}), "*");
+                    $(document.body).append(html);
                 }else{
                     var doc = $(html);
                     // jQuery doesn't execute inline scripts after remote 
