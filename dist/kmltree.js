@@ -496,7 +496,6 @@ var URIQuery;
 var kmltree = (function(){
 
     openBalloon = function(kmlObject, ge, opts, that){
-        console.log('open balloon');
         var balloon;
         // Compare getBalloonHtmlUnsafe to getBalloonHtml to determine whether
         // there is even any need to use an iframe to display unsafe content
@@ -529,36 +528,47 @@ var kmltree = (function(){
             balloon.setContentDiv(div);
         }else{
             balloon = ge.createFeatureBalloon('');
+            // callback for normal popups. Enhanced popup balloonopen event is 
+            // triggered by resize function
+            var boCallback = function(e){
+                // This has to be done within a setTimeout call. Otherwise you 
+                // can't open another balloon using an event listener and 
+                // count on that event to fire. I think this is so you can 
+                // have callbacks like balloonOpening that don't go into an 
+                // infinite loop
+                setTimeout(function(){
+                    $(that).trigger('balloonopen', [
+                        e.getBalloon(), e.getFeature()]);
+                }, 1);
+                google.earth.removeEventListener(
+                    ge, 'balloonopening', boCallback);
+            };
+            google.earth.addEventListener(ge, 'balloonopening', boCallback);
         }
-        console.log('before setFeature');
         balloon.setFeature(kmlObject);
-        var needToKnowWhenOpen = function(){
-            console.log('open!');
-            google.earth.removeEventListener(ge, 'balloonopening', needToKnowWhenOpen);
-            console.log('after remove', needToKnowWhenOpen);
-            $(that).trigger('balloonopen', [balloon, kmlObject]);
-            console.log('after trigger');
-        }
-        console.log('adding event listener')
-        google.earth.addEventListener(ge, 'balloonopening', needToKnowWhenOpen);
-        console.log('setting balloon');
         ge.setBalloon(balloon);
-        console.log('done setting balloon');
     }
     
-    function resize(e, ge, defaultDimensions){
+    function resize(e, ge, defaultDimensions, that){
+        var b = ge.getBalloon();
+        if(!e.data.match(/width/) || b.getType() !== 'GEHtmlDivBalloon' || $(
+            b.getContentDiv()).find('iframe')[0].contentWindow !== e.source){
+            // Oooooo... A zombie Iframe!!!
+            // don't do anything, that balloon has already closed
+            return;
+        }
         var dim = JSON.parse(e.data)
         if(dim.unknownIframeDimensions){
             dim = defaultDimensions;
         }
         var el = $('#kmltree-balloon-iframe');
-        var b = ge.getBalloon();
         b.setMinWidth(dim.width);
         b.setMaxWidth(dim.width + (dim.width * .1));
         b.setMinHeight(dim.height);
         b.setMaxHeight(dim.height + (dim.height * .1));
         el.height(dim.height);
-        el.width(dim.width);            
+        el.width(dim.width);
+        $(that).trigger('balloonopen', [b, b.getFeature()]);
     }
     
     // can be removed when the following ticket is resolved:
@@ -766,12 +776,14 @@ var kmltree = (function(){
         
         
         if(opts.displayEnhancedContent){
-            window.addEventListener("message", function(e){
+            $(window).bind("message", function(e){
                 // Verify that message came from the correct source
-                if(e.source=== $('#kmltree-balloon-iframe')[0].contentWindow){
-                    resize(e, ge, opts.unknownIframeDimensionsDefault);                    
+                var e = e.originalEvent;
+                var iframe = $('#kmltree-balloon-iframe');
+                if(iframe.length && e.source === iframe[0].contentWindow){
+                    resize(e, ge, opts.unknownIframeDimensionsDefault, that);
                 }
-            }, false);
+            });
         }
         
         var buildOptions = function(kmlObject, docUrl, extra_scope){
@@ -1222,7 +1234,11 @@ var kmltree = (function(){
             $('#'+id+' li').die();
             $('#'+id+' li > .expander').die();
             opts.element.html('');
-            // $(that).unbind();
+            google.earth.removeEventListener(
+                ge, 'balloonopening', balloonOpening);
+            google.earth.removeEventListener(
+                ge, 'balloonclose', balloonClose);
+            $('#kmltree-balloon-iframe').remove();
         };
         
         that.destroy = destroy;
@@ -1280,9 +1296,11 @@ var kmltree = (function(){
             node.addClass('selected');
             toggleVisibility(node, true);
             node.addClass('selected');
-            google.earth.removeEventListener(ge, 'balloonopening', balloonOpening);
+            google.earth.removeEventListener(
+                ge, 'balloonopening', balloonOpening);
             openBalloon(kmlObject, ge, opts, that);
-            google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
+            google.earth.addEventListener(
+                ge, 'balloonopening', balloonOpening);
             
             
             var parent = node.parent().parent();
@@ -1409,7 +1427,8 @@ var kmltree = (function(){
         var getState = function(){
             for(var id in internalState){
                 for(var key in internalState[id]){
-                    if(internalState[id][key]['original'] === internalState[id][key]['value']){
+                    if(internalState[id][key]['original'] === 
+                        internalState[id][key]['value']){
                         delete internalState[id][key];
                     }
                 }
@@ -1576,13 +1595,16 @@ var kmltree = (function(){
                 selectNode(node, kmlObject);
             }else{
                 clearSelection();
-                if(node.hasClass('hasDescription') || kmlObject.getType() === 'KmlPlacemark'){
+                if(node.hasClass('hasDescription') || kmlObject.getType() === 
+                    'KmlPlacemark'){
                     if(kmlObject.getType() === 'KmlPlacemark'){
                         toggleVisibility(node, true);
                     }
-                    google.earth.removeEventListener(ge, 'balloonopening', balloonOpening);
+                    google.earth.removeEventListener(
+                        ge, 'balloonopening', balloonOpening);
                     openBalloon(kmlObject, ge, opts, that);
-                    google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
+                    google.earth.addEventListener(
+                        ge, 'balloonopening', balloonOpening);
                 }
             }
             $(that).trigger('click', [node[0], kmlObject]);
@@ -1701,9 +1723,12 @@ var kmltree = (function(){
         
         google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
         
-        geAddListener(ge, 'balloonclose', function(e){
-            clearSelection();
-        });
+        var balloonClose = function(e){
+            $('#kmltree-balloon-iframe').remove();
+            clearSelection();            
+        }
+        
+        geAddListener(ge, 'balloonclose', balloonClose);
         
         var doubleClicking = false;
         
