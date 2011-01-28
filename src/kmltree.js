@@ -35,6 +35,9 @@ var kmltree = (function(){
                     callback: Base64.encode(
                         opts.sandboxedBalloonCallback.toString())
                 });
+                // Posting to any domain since iframe popups may have their
+                // window.location changed by javascript code in the 
+                // description.
                 this.contentWindow.postMessage(msg, '*');
             });
             balloon.setContentDiv(div);
