@@ -523,7 +523,7 @@ var kmltree = (function(){
                     callback: Base64.encode(
                         opts.sandboxedBalloonCallback.toString())
                 });
-                this.contentWindow.postMessage(msg, opts.iframeSandbox);
+                this.contentWindow.postMessage(msg, '*');
             });
             balloon.setContentDiv(div);
         }else{
@@ -551,8 +551,12 @@ var kmltree = (function(){
     
     function resize(e, ge, defaultDimensions, that){
         var b = ge.getBalloon();
-        if(!e.data.match(/width/) || b.getType() !== 'GEHtmlDivBalloon' || $(
-            b.getContentDiv()).find('iframe')[0].contentWindow !== e.source){
+        var iframe = $('#kmltree-balloon-iframe');
+        var bi = e.source.frameElement;
+        window.w = e.source;
+        // TODO: Document this crap
+        if(!iframe.length || !(e.data.match(/width/) || e.data.match(/unknownIframeDimensions/)) || b.getType() !== 
+            'GEHtmlDivBalloon' || $(b.getContentDiv()).find('iframe')[0] !== frameElement(e.source)){
             // Oooooo... A zombie Iframe!!!
             // don't do anything, that balloon has already closed
             return;
@@ -569,6 +573,15 @@ var kmltree = (function(){
         el.height(dim.height);
         el.width(dim.width);
         $(that).trigger('balloonopen', [b, b.getFeature()]);
+    }
+    
+    function frameElement(win){
+        var iframes = document.getElementsByTagName('iframe');
+        for(var i =0;i<iframes.length;i++){
+            if(iframes[0].contentWindow === win){
+                return iframes[i];
+            }
+        }
     }
     
     // can be removed when the following ticket is resolved:
@@ -777,12 +790,8 @@ var kmltree = (function(){
         
         if(opts.displayEnhancedContent){
             $(window).bind("message", function(e){
-                // Verify that message came from the correct source
                 var e = e.originalEvent;
-                var iframe = $('#kmltree-balloon-iframe');
-                if(iframe.length && e.source === iframe[0].contentWindow){
-                    resize(e, ge, opts.unknownIframeDimensionsDefault, that);
-                }
+                resize(e, ge, opts.unknownIframeDimensionsDefault, that);
             });
         }
         

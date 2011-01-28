@@ -1872,10 +1872,56 @@ module('kmlTree');
     });
     
     // test that a custom iframeSandbox option can be used
+    earthAsyncTest('displayEnhancedContent option - custom iframeSandbox url', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true,
+            iframeSandbox: 'http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html'
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                equals($('#map3d iframe[src="http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html"]').length, 1);
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            });
+            $('.kmltreetest').find('span.name:contains(pmark)')
+                .click();
+        });
+        tree.load(true);
+    });
     
     // test that the size is correct
+    earthAsyncTest('displayEnhancedContent option - dynamic height', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                ok($('#kmltree-balloon-iframe').height() > 200);
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            });
+            $('.kmltreetest').find('span.name:contains(large)')
+                .click();
+        });
+        tree.load(true);
+    });
     
     // test that window.location type balloons get a default size
+    
     
     // test that the default size can be changed
     
