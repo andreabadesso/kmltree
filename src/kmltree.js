@@ -69,9 +69,20 @@ var kmltree = (function(){
         var iframe = $('#kmltree-balloon-iframe');
         var bi = e.source.frameElement;
         window.w = e.source;
-        // TODO: Document this crap
-        if(!iframe.length || !(e.data.match(/width/) || e.data.match(/unknownIframeDimensions/)) || b.getType() !== 
-            'GEHtmlDivBalloon' || $(b.getContentDiv()).find('iframe')[0] !== frameElement(e.source)){
+        if(
+            // There should at least be an iframe present
+            !iframe.length || 
+            // Message must include a new dimension or specify that none could
+            // be calculated
+            !(e.data.match(/width/) || e.data.match(/unknownIframeDimensions/)
+            ) || 
+            // Make sure the current popup is an HtmlDivBalloon
+            b.getType() !== 'GEHtmlDivBalloon' || 
+            // And make sure that the window that sent the message is the 
+            // right one - Security check
+            $(b.getContentDiv()).find('iframe')[0] !== frameElement(e.source))
+            {
+            // and if all those conditions aren't met...
             // Oooooo... A zombie Iframe!!!
             // don't do anything, that balloon has already closed
             return;
@@ -90,6 +101,8 @@ var kmltree = (function(){
         $(that).trigger('balloonopen', [b, b.getFeature()]);
     }
     
+    // Implemented this because call window.frameElement on a cross-origin 
+    // iframe results in a security exception.
     function frameElement(win){
         var iframes = document.getElementsByTagName('iframe');
         for(var i =0;i<iframes.length;i++){
@@ -243,7 +256,7 @@ var kmltree = (function(){
         setExtent: false,
         displayDocumentRoot: 'auto',
         displayEnhancedContent: false,
-        iframeSandbox: 'http://10.0.1.5/~cburt/kmltree/src/iframe.html',
+        iframeSandbox: 'http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html',
         unknownIframeDimensionsDefault: {height: 450, width:530},
         sandboxedBalloonCallback: function(){}
     };
@@ -256,7 +269,7 @@ var kmltree = (function(){
         var lookupTable = {};
         that.lookupTable = lookupTable;
         that.kmlObject = null;
-        var docs = {};
+        var docs = [];
         var opts = jQuery.extend({}, constructor_defaults, opts);
         var ge = opts.gex.pluginInstance;
         var destroyed = false;
@@ -514,6 +527,7 @@ var kmltree = (function(){
             }
             errorCount = 0;
             that.kmlObject = kmlObject;
+            docs.push(kmlObject);
             that.kmlObject.setVisibility(true);
             var options = buildOptions(kmlObject, original_url);
             var root;
@@ -728,6 +742,7 @@ var kmltree = (function(){
                 // that.kmlObject.release();
             }
             that.kmlObject = null;
+            docs = [];
         };
         
         var getStateFromLocalStorage = function(){
@@ -971,15 +986,6 @@ var kmltree = (function(){
         
         that.getState = getState;
         
-        var getDocId = function(kmlObject){
-            for(var key in docs){
-                if(docs[key] === kmlObject){
-                    return key;
-                }
-            }
-            throw('could not getDocId');
-        }
-        
         var openNetworkLink = function(node){
             if(node.find('> ul').length){
                 throw('networklink already loaded');
@@ -1054,6 +1060,7 @@ var kmltree = (function(){
                     node.removeClass('loading');
                     node.addClass('loaded');
                     setLookup(node, kmlObject);
+                    docs.push(kmlObject);
                     rememberNetworkLink(node, NetworkLink);
                     $(node).trigger('loaded', [node, kmlObject]);
                     $(that).trigger('networklinkload', [node, kmlObject]);
@@ -1239,10 +1246,14 @@ var kmltree = (function(){
         
         
         var balloonOpening = function(e){
-            e.preventDefault();
-            ge.setBalloon(null);
-            openBalloon(e.getFeature(), ge, opts, that);
-            return false;
+            var f = e.getFeature();
+            if(inMyDocuments(f)){
+                e.preventDefault();
+                e.stopPropagation();
+                ge.setBalloon(null);
+                openBalloon(f, ge, opts, that);
+                return false;                
+            }
         }
         
         google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
@@ -1282,6 +1293,26 @@ var kmltree = (function(){
                 }
             }
         });
+        
+        var inMyDocuments = function(feature){
+            var top = feature.getOwnerDocument();
+            if(!top){
+                // Have to do this because getOwnerDocument does not seem to work
+                var next = feature;
+                while(next.getType() !== 'GEGlobe'){
+                    top = next;
+                    next = next.getParentNode();
+                }                
+            }
+            var matches = false;
+            for(var i =0; i<docs.length;i++){
+                var doc = docs[i];
+                if(doc.getUrl() === top.getUrl()){
+                    return true;
+                }
+            }
+            return false;
+        };
 
         // fix for jquery 1.4.2 compatibility. See http://forum.jquery.com/topic/javascript-error-when-unbinding-a-custom-event-using-jquery-1-4-2
         that.removeEventListener = that.detachEvent = function(){};

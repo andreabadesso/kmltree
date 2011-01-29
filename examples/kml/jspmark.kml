@@ -82,5 +82,26 @@
 			<coordinates>-121.9784472222222,36.53310833333333,-261.2036316295045</coordinates>
 		</Point>
 	</Placemark>
+		<Placemark>
+    		<name>window.location change</name>
+    		<description><![CDATA[<html><body><script type="text/javascript" charset="utf-8">
+    		    window.location.href = 'http://marinemap.org/';
+		    </script></body></html>]]></description>
+    		<LookAt>
+    			<longitude>-121.9601683190722</longitude>
+    			<latitude>36.5426530777744</latitude>
+    			<altitude>0</altitude>
+    			<heading>-24.50917293476412</heading>
+    			<tilt>0</tilt>
+    			<range>15269.28569414323</range>
+    			<altitudeMode>relativeToGround</altitudeMode>
+    			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+    		</LookAt>
+    		<styleUrl>#msn_ylw-pushpin</styleUrl>
+    		<Point>
+    			<altitudeMode>absolute</altitudeMode>
+    			<coordinates>-121.9601694444444,36.54265277777777,-156.46566322397</coordinates>
+    		</Point>
+    	</Placemark>
 </Document>
 </kml>

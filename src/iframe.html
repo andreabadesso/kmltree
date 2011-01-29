@@ -81,9 +81,8 @@
                 eval('var callback = '+callback);
                 // Check whether the balloon immediately sets a new location, 
                 // like the panoramio layer.
-                var match = html.match(/>\s*window.location.href\s*=\s*["|'](.+)["|']/);
-                if(match && match.length === 2){
-                    var newLocation = match[1];
+                var match = html.match(/window.location[.href]*\s*=\s*/);
+                if(match){
                     // If so, grab that content and display it.
                     parent.postMessage(
                         JSON.stringify({unknownIframeDimensions: true}), "*");

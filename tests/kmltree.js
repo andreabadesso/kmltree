@@ -1852,10 +1852,11 @@ module('kmlTree');
                 // just standard message passing for kmltree
                 return;
             }else{
+                $(window).unbind('message');
                 equals(e.data, 'hi there');
                 tree.destroy();
                 $('.kmltreetest').remove();
-                start();                    
+                start();
             }
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
@@ -1921,15 +1922,105 @@ module('kmlTree');
     });
     
     // test that window.location type balloons get a default size
-    
+    earthAsyncTest('displayEnhancedContent option - content that sets window.location gets default balloon dimensions', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                equals($('#kmltree-balloon-iframe').height(), 450);
+                equals($('#kmltree-balloon-iframe').width(), 530);
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            });
+            $('.kmltreetest').find('span.name:contains(window.location)')
+                .click();
+        });
+        tree.load(true);
+    });
     
     // test that the default size can be changed
+    earthAsyncTest('displayEnhancedContent option - unknownIframeDimensionsDefault setting', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true,
+            unknownIframeDimensionsDefault: {height: 45, width:53},
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                equals($('#kmltree-balloon-iframe').height(), 45);
+                equals($('#kmltree-balloon-iframe').width(), 53);
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            });
+            $('.kmltreetest').find('span.name:contains(window.location)')
+                .click();
+        });
+        tree.load(true);
+    });
     
     // test that remote and inline css is employed
+    // TODO: change path to files
+    earthAsyncTest('displayEnhancedContent option - remote and inline css works as expected.', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true,
+            sandboxedBalloonCallback: function(){
+                parent.postMessage('hi there', '*');
+            }
+        });
+        $(window).bind('message', function(e){
+            var e = e.originalEvent;
+            if(e.data.match(/width/)){
+                // just standard message passing for kmltree
+                return;
+            }else{
+                $(window).unbind('message');
+                equals(e.data, 'inline css okay, remote css okay');
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            }
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            $('.kmltreetest').find('span.name:contains(css test)')
+                .click();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
     
     // test that remote and inline javascript is employed, and in the right 
     // order
+    // TODO: change path to files
     
     // test that content can't get access to parent iframe's data - need to deploy?
+    // TODO: change path to files
+    
+    // Make sure multiple instances of kmltree don't clobber each other's 
+    // popup window handling events
+
+    // test panoramio and youtube example for unexpanded networklinks
+
+    // combo example for expanded networklinks
     
 })();
