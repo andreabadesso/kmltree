@@ -2023,4 +2023,7 @@ module('kmlTree');
 
     // combo example for expanded networklinks
     
+    // displayEnhancedContent as a callable option
+    
+    // unknownIframeDimensionsDefault as callable
 })();

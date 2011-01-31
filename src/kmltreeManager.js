@@ -49,29 +49,38 @@ var kmltreeManager = (function(){
     
     that.pauseListeners = pauseListeners;
     
+    var getApi = function(tree){
+        for(var i=0;i<trees.length;i++){
+            if(trees[i].instance === tree){
+                return trees[i].api;
+            }
+        }
+    };
     
     var balloonOpening = function(e){
         var f = e.getFeature();
         var tree = getOwner(f);
-        console.log('balloonopening');
-        // e.preventDefault();
-        // e.stopPropagation();
-        // ge.setBalloon(null);
-        // openBalloon(f, ge, opts, that);
-        // return false;                
+        if(tree){
+            e.preventDefault();
+            ge.setBalloon(null);
+            openBalloon(f, tree);
+            return false;
+        } // otherwise feature likely loaded outside of a kmltree instance
     }
         
     var balloonClose = function(e){
-        // $('#kmltree-balloon-iframe').remove();
-        // clearSelection();         
+        $('#kmltree-balloon-iframe').remove();
+        for(var i=0;i<trees.length;i++){
+            trees[i].instance.clearSelection();
+        }
     }
         
     var ownsUrl = function(doc, url){
         if(doc.getUrl() === url){
-            return tree;
+            return true;
         }
         if(doc.getElementByUrl(url)){
-            return tree;
+            return true;
         }
     }
 
@@ -79,10 +88,7 @@ var kmltreeManager = (function(){
         var url = kmlObject.getUrl();
         var urlWithoutId = url.split('#')[0];
         if(cache[urlWithoutId]){
-            console.log('cache hit');
             return cache[urlWithoutId];
-        }else{
-            console.log('cache miss', urlWithoutId, url);            
         }
         // First check if url matches root element
         for(var i=0;i<trees.length;i++){
@@ -110,14 +116,77 @@ var kmltreeManager = (function(){
         return false;
     };
     
+    var openBalloon = function(kmlObject, tree){
+        var balloon;
+        var tree = tree.instance ? tree.instance : tree;
+        var api = tree.api ? tree.api : getApi(tree);
+        // Compare getBalloonHtmlUnsafe to getBalloonHtml to determine whether
+        // there is even any need to use an iframe to display unsafe content
+        var allow = api.opts.displayEnhancedContent;
+        if(typeof allow === 'function'){
+            allow = allow(kmlObject);
+        }
+        if(allow){
+            // don't bother checking if not going to display
+            var unsafeHtml = kmlObject.getBalloonHtmlUnsafe();
+            var safeHtml = kmlObject.getBalloonHtml();
+            var safeHtml = $.trim(
+                safeHtml.replace(
+                    /\s*<!--\s*Content-type: mhtml-die-die-die\s*-->/, ''));
+            var hasUnsafeContent = safeHtml != $.trim(unsafeHtml);
+        }
+        if(allow && hasUnsafeContent){
+            balloon = ge.createHtmlDivBalloon('');
+            var iframe = $(
+                ['<iframe id="kmltree-balloon-iframe"',
+                ' border="0" frameBorder="0"',
+                ' src="', api.opts.iframeSandbox, '">',
+                '</iframe>'].join(''));
+            var div = document.createElement('div');
+            $(div).append(iframe);
+            iframe.load(function(){
+                var msg = JSON.stringify({
+                    html: Base64.encode(unsafeHtml),
+                    callback: Base64.encode(
+                        api.opts.sandboxedBalloonCallback.toString())
+                });
+                // Posting to any domain since iframe popups may have their
+                // window.location changed by javascript code in the 
+                // description.
+                this.contentWindow.postMessage(msg, '*');
+            });
+            balloon.setContentDiv(div);
+        }else{
+            balloon = ge.createFeatureBalloon('');
+            // callback for normal popups. Enhanced popup balloonopen event is 
+            // triggered by resize function
+            var boCallback = function(e){
+                // This has to be done within a setTimeout call. Otherwise you 
+                // can't open another balloon using an event listener and 
+                // count on that event to fire. I think this is so you can 
+                // have callbacks like balloonOpening that don't go into an 
+                // infinite loop
+                setTimeout(function(){
+                    $(tree).trigger('balloonopen', [
+                        e.getBalloon(), e.getFeature()]);
+                }, 1);
+                google.earth.removeEventListener(
+                    ge, 'balloonopening', boCallback);
+            };
+            google.earth.addEventListener(ge, 'balloonopening', boCallback);
+        }
+        balloon.setFeature(kmlObject);
+        ge.setBalloon(balloon);
+    };
+    
+    that.openBalloon = openBalloon;
+    
     $(window).bind("message", function(e){
         var e = e.originalEvent;
         resize(e);
     });
     
-    
     function resize(e){
-        console.log('resize');
         var b = ge.getBalloon();
         var f = b.getFeature();
         var iframe = $('#kmltree-balloon-iframe');
@@ -142,8 +211,10 @@ var kmltreeManager = (function(){
         var tree = getOwner(f);
         var dim = JSON.parse(e.data)
         if(dim.unknownIframeDimensions){
-            dim = tree.api.opts.unknownIframeDimensionsDefault;
-            console.log(dim);
+            var dim = tree.api.opts.unknownIframeDimensionsDefault;
+            if(typeof dim === 'function'){
+                dim = dim(f);
+            }
         }
         var el = $('#kmltree-balloon-iframe');
         b.setMinWidth(dim.width);
@@ -152,7 +223,6 @@ var kmltreeManager = (function(){
         b.setMaxHeight(dim.height + (dim.height * .1));
         el.height(dim.height);
         el.width(dim.width);
-        console.log('set dimensions');
         $(tree.instance).trigger('balloonopen', [b, f]);
     }
     
