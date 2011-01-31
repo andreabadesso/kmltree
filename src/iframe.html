@@ -102,7 +102,11 @@
                             $.each(inlineScripts, function(i, elem){
                                 jQuery.globalEval(elem.text || elem.textContent || elem.innerHTML || "" );
                             });
-                            callback();                       
+                            // Needed for Firefox to execute callbacks after 
+                            // scripts are Eval'd. Not sure why
+                            setTimeout(function(){
+                                callback();                                
+                            }, 1)
                         }
                     }
                     

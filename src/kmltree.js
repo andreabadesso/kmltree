@@ -1,4 +1,3 @@
-
 // src/kmltree.js
 
 // I don't like documentation being in more than one place, and I couldn't 

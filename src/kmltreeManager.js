@@ -117,6 +117,7 @@ var kmltreeManager = (function(){
     };
     
     var openBalloon = function(kmlObject, tree){
+        $(window).unbind("message.kmlTreeIframeEvents");
         var balloon;
         var tree = tree.instance ? tree.instance : tree;
         var api = tree.api ? tree.api : getApi(tree);
@@ -137,14 +138,19 @@ var kmltreeManager = (function(){
         }
         if(allow && hasUnsafeContent){
             balloon = ge.createHtmlDivBalloon('');
-            var iframe = $(
-                ['<iframe id="kmltree-balloon-iframe"',
-                ' border="0" frameBorder="0"',
-                ' src="', api.opts.iframeSandbox, '">',
-                '</iframe>'].join(''));
+            var iframe = document.createElement('iframe');
+            iframe.setAttribute('src', api.opts.iframeSandbox);
+            iframe.setAttribute('frameBorder', '0'); 
+            iframe.setAttribute('id', 'kmltree-balloon-iframe');
             var div = document.createElement('div');
             $(div).append(iframe);
-            iframe.load(function(){
+            $(iframe).one('load', function(){
+                $(window).bind("message.kmlTreeIframeEvents", {'window': iframe.contentWindow}, function(e){
+                    var ev = e.originalEvent;
+                    if(ev.source === e.data.window){
+                        resize(ev);                        
+                    }
+                });
                 var msg = JSON.stringify({
                     html: Base64.encode(unsafeHtml),
                     callback: Base64.encode(
@@ -180,12 +186,7 @@ var kmltreeManager = (function(){
     };
     
     that.openBalloon = openBalloon;
-    
-    $(window).bind("message", function(e){
-        var e = e.originalEvent;
-        resize(e);
-    });
-    
+        
     function resize(e){
         var b = ge.getBalloon();
         var f = b.getFeature();
@@ -198,11 +199,7 @@ var kmltreeManager = (function(){
             !(e.data.match(/width/) || e.data.match(/unknownIframeDimensions/)
             ) || 
             // Make sure the current popup is an HtmlDivBalloon
-            b.getType() !== 'GEHtmlDivBalloon' || 
-            // And make sure that the window that sent the message is the 
-            // right one - Security check
-            $(b.getContentDiv()).find('iframe')[0] !== frameElement(e.source))
-            {
+            b.getType() !== 'GEHtmlDivBalloon'){
             // and if all those conditions aren't met...
             // Oooooo... A zombie Iframe!!!
             // don't do anything, that balloon has already closed
