@@ -8,16 +8,50 @@
 	<Style id="sn_ylw-pushpin0">
 	</Style>
 	<Placemark>
+		<name>cookie hack</name>
+		<LookAt>
+			<longitude>-121.9980677195956</longitude>
+			<latitude>36.53754985311043</latitude>
+			<altitude>0</altitude>
+			<heading>-0.003896984897747902</heading>
+			<tilt>0</tilt>
+			<range>33599.89926699058</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+		</LookAt>
+		<styleUrl>#msn_ylw-pushpin</styleUrl>
+		<Point>
+			<altitudeMode>absolute</altitudeMode>
+			<coordinates>-121.9980677195956,36.53754985311043,-592.3897041955205</coordinates>
+		</Point>
+		<description><![CDATA[
+		    <html><body><script type="text/javascript" charset="utf-8">
+		        if(parent.document){
+    		        window.stolenCookies = parent.document.cookie;		            
+		        }
+		        if(window.stolenCookies){
+    		        document.getElementById('hack').innerHTML = widthndow.stolenCookies;		            
+		        }
+		    </script><div id="hack">SAFE! - failed to grab cookies.</div></body></html>
+		]]></description>
+	</Placemark>
+	<Placemark>
 		<name>pmark</name>
 		<description><![CDATA[
 		    <html><body>
 		    <link rel="stylesheet" href="http://underbluewaters-try-unsafe-popups.googlecode.com/hg/examples/remote.css" type="text/css" media="screen" title="no title" charset="utf-8">
+		    <style type="text/css" media="screen">
+		      #clock {
+		          text-decoration: underline;
+		      }
+		    </style>
 		    <div>
 		        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		    </div>
 		    <script src="http://vis.stanford.edu/protovis/protovis-r3.2.js" type="text/javascript" charset="utf-8"></script>
 		    <div id="clock">clock</div>
 		    <script type="text/javascript" charset="utf-8">
+		        window.copy_of_pv = pv;
 		        $(document).ready(function(){
     		        setInterval(function(){
     		            document.getElementById('clock').innerHTML = (new Date()).toString();

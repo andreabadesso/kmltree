@@ -1973,7 +1973,6 @@ module('kmlTree');
     });
     
     // test that remote and inline css is employed
-    // TODO: change path to files
     earthAsyncTest('displayEnhancedContent option - remote and inline css works as expected.', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
@@ -1984,7 +1983,22 @@ module('kmlTree');
             displayDocumentRoot: true,
             displayEnhancedContent: true,
             sandboxedBalloonCallback: function(){
-                parent.postMessage('hi there', '*');
+                setTimeout(function(){
+                    // wait for remote css to load
+                    // - it's okay that this is async
+                    var message = '';
+                    if($('#clock').css('text-decoration') === 'underline'){
+                        message += 'inline css okay';
+                    }else{
+                        message += 'inline css failed';
+                    }
+                    if($('#clock').css('background-color') === 'rgb(255, 0, 0)'){
+                        message += ', remote css okay';                        
+                    }else{
+                        message += ', remote css failed';
+                    }
+                    parent.postMessage(message, '*');
+                }, 500);
             }
         });
         $(window).bind('message', function(e){
@@ -2002,7 +2016,7 @@ module('kmlTree');
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(css test)')
+            $('.kmltreetest').find('span.name:contains(pmark)')
                 .click();
         });
         ok(tree !== false, 'Tree initialized');
@@ -2011,15 +2025,136 @@ module('kmlTree');
     
     // test that remote and inline javascript is employed, and in the right 
     // order
-    // TODO: change path to files
+    earthAsyncTest('displayEnhancedContent option - remote and inline js works as expected.', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true,
+            iframeSandbox: 'http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html',
+            sandboxedBalloonCallback: function(){
+                var message = '';
+                if(typeof pv === 'object'){
+                    message += 'remote js okay';
+                }else{
+                    message += 'remote js failed';
+                }
+                if(typeof window.copy_of_pv === 'object'){
+                    message += ', inline js okay';
+                }else{
+                    message += ', inline js failed';
+                }
+                parent.postMessage(message, '*');
+            }
+        });
+        $(window).bind('message', function(e){
+            var e = e.originalEvent;
+            if(e.data.match(/width/)){
+                // just standard message passing for kmltree
+                return;
+            }else{
+                $(window).unbind('message');
+                equals(e.data, 'remote js okay, inline js okay');
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            }
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            $('.kmltreetest').find('span.name:contains(pmark)')
+                .click();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
     
     // test that content can't get access to parent iframe's data - need to deploy?
     // TODO: change path to files
+    earthAsyncTest("displayEnhancedContent option - sandboxed content shouldn't be able to access parent cookies and session info.", function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true,
+            sandboxedBalloonCallback: function(){
+                if(window.stolenCookies){
+                    var message = 'failed. cookie data stolen.';
+                }else{
+                    var message = 'okay. cookie data not accessible.';                    
+                }
+                parent.postMessage(message, '*');
+            }
+        });
+        $(window).bind('message', function(e){
+            var e = e.originalEvent;
+            if(e.data.match(/width/)){
+                // just standard message passing for kmltree
+                return;
+            }else{
+                $(window).unbind('message');
+                equals(e.data, 'okay. cookie data not accessible.');
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            }
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            $('.kmltreetest').find('span.name:contains(cookie)')
+                .click();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
     
     // Make sure multiple instances of kmltree don't clobber each other's 
     // popup window handling events
-
-    // test panoramio and youtube example for unexpanded networklinks
+    // earthAsyncTest("displayEnhancedContent option - multiple kmltrees can exist side-by-side.", function(ge, gex){
+    //     $(document.body).append('<div class="kmltreetest"></div>');
+    //     var tree = kmltree({
+    //         url: example('jspmark.kml'),
+    //         gex: gex, 
+    //         mapElement: $('#map3d'), 
+    //         element: $('.kmltreetest'),
+    //         displayDocumentRoot: true,
+    //         displayEnhancedContent: true,
+    //         sandboxedBalloonCallback: function(){
+    //             if(window.stolenCookies){
+    //                 var message = 'failed. cookie data stolen.';
+    //             }else{
+    //                 var message = 'okay. cookie data not accessible.';                    
+    //             }
+    //             parent.postMessage(message, '*');
+    //         }
+    //     });
+    //     $(window).bind('message', function(e){
+    //         var e = e.originalEvent;
+    //         if(e.data.match(/width/)){
+    //             // just standard message passing for kmltree
+    //             return;
+    //         }else{
+    //             $(window).unbind('message');
+    //             equals(e.data, 'okay. cookie data not accessible.');
+    //             tree.destroy();
+    //             $('.kmltreetest').remove();
+    //             start();
+    //         }
+    //     });
+    //     $(tree).one('kmlLoaded', function(e, kmlObject){
+    //         ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+    //         $('.kmltreetest').find('span.name:contains(cookie)')
+    //             .click();
+    //     });
+    //     ok(tree !== false, 'Tree initialized');
+    //     tree.load(true);
+    // });
 
     // combo example for expanded networklinks
     
