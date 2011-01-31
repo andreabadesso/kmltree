@@ -1,4 +1,172 @@
-/**
+var kmltreeManager = (function(){
+    that = {};
+    var trees = [];
+    var ge;
+    var cache = {};
+    
+    function init(earthInstance){
+        ge = earthInstance;
+        google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
+        google.earth.addEventListener(ge, 'balloonclose', balloonClose);
+    }
+    
+    var register = function(tree, privilegedApi){
+        if(trees.length === 0){
+            init(privilegedApi.opts.gex.pluginInstance);
+        }
+        trees.push({
+            key: 'kmltree-tree-' + trees.length.toString(),
+            instance: tree,
+            api: privilegedApi
+        });
+    };
+    
+    that.register = register;
+    
+    var remove = function(tree){
+        for(var i = 0; i<trees.length; i++){
+            if(trees[i].instance === tree){
+                trees.splice(i, 1);
+                break;
+            }
+        }
+        return tree;
+    };
+    
+    that.remove = remove;
+    
+    var pauseListeners = function(callable){
+        google.earth.removeEventListener(
+            ge, 'balloonopening', balloonOpening);
+        google.earth.removeEventListener(
+            ge, 'balloonclose', balloonClose);
+        callable();
+        google.earth.addEventListener(
+            ge, 'balloonopening', balloonOpening);
+        google.earth.addEventListener(
+            ge, 'balloonclose', balloonClose);        
+    };
+    
+    that.pauseListeners = pauseListeners;
+    
+    
+    var balloonOpening = function(e){
+        var f = e.getFeature();
+        var tree = getOwner(f);
+        console.log('balloonopening');
+        // e.preventDefault();
+        // e.stopPropagation();
+        // ge.setBalloon(null);
+        // openBalloon(f, ge, opts, that);
+        // return false;                
+    }
+        
+    var balloonClose = function(e){
+        // $('#kmltree-balloon-iframe').remove();
+        // clearSelection();         
+    }
+        
+    var ownsUrl = function(doc, url){
+        if(doc.getUrl() === url){
+            return tree;
+        }
+        if(doc.getElementByUrl(url)){
+            return tree;
+        }
+    }
+
+    var getOwner = function(kmlObject){
+        var url = kmlObject.getUrl();
+        var urlWithoutId = url.split('#')[0];
+        if(cache[urlWithoutId]){
+            console.log('cache hit');
+            return cache[urlWithoutId];
+        }else{
+            console.log('cache miss');            
+        }
+        // First check if url matches root element
+        for(var i=0;i<trees.length;i++){
+            if(ownsUrl(trees[i].instance.kmlObject, url)){
+                cache[urlWithoutId] = trees[i];
+                return trees[i];
+            }
+        }
+        // Then check each tree's expanded NetworkLinks
+        // TODO: Test if this works
+        for(var i=0;i<trees.length;i++){
+            var tree = trees[i].instance;
+            var api = trees[i].api;
+            for(doc in trees[i].api.docs){
+                if(ownsUrl(doc, url)){
+                    cache[urlWithoutId] = trees[i];
+                    return trees[i];
+                }
+            }
+        }
+        // Couldn't find. Could be content loaded outside kmltree. 
+        // In any case, ignore
+        return false;
+    };
+    
+    $(window).bind("message", function(e){
+        var e = e.originalEvent;
+        resize(e);
+    });
+    
+    
+    function resize(e){
+        console.log('resize');
+        var b = ge.getBalloon();
+        var f = b.getFeature();
+        var iframe = $('#kmltree-balloon-iframe');
+        if(
+            // There should at least be an iframe present
+            !iframe.length || 
+            // Message must include a new dimension or specify that none could
+            // be calculated
+            !(e.data.match(/width/) || e.data.match(/unknownIframeDimensions/)
+            ) || 
+            // Make sure the current popup is an HtmlDivBalloon
+            b.getType() !== 'GEHtmlDivBalloon' || 
+            // And make sure that the window that sent the message is the 
+            // right one - Security check
+            $(b.getContentDiv()).find('iframe')[0] !== frameElement(e.source))
+            {
+            // and if all those conditions aren't met...
+            // Oooooo... A zombie Iframe!!!
+            // don't do anything, that balloon has already closed
+            return;
+        }
+        var tree = getOwner(f);
+        var dim = JSON.parse(e.data)
+        if(dim.unknownIframeDimensions){
+            dim = tree.api.opts.unknownIframeDimensionsDefault;
+            console.log(dim);
+        }
+        var el = $('#kmltree-balloon-iframe');
+        b.setMinWidth(dim.width);
+        b.setMaxWidth(dim.width + (dim.width * .1));
+        b.setMinHeight(dim.height);
+        b.setMaxHeight(dim.height + (dim.height * .1));
+        el.height(dim.height);
+        el.width(dim.width);
+        console.log('set dimensions');
+        $(tree.instance).trigger('balloonopen', [b, f]);
+    }
+    
+    // Implemented this because call window.frameElement on a cross-origin 
+    // iframe results in a security exception.
+    function frameElement(win){
+        var iframes = document.getElementsByTagName('iframe');
+        for(var i =0;i<iframes.length;i++){
+            if(iframes[0].contentWindow === win){
+                return iframes[i];
+            }
+        }
+    }
+    
+    return that;
+})();/**
 *
 *  Base64 encode / decode
 *  http://www.webtoolkit.info/
@@ -550,13 +718,14 @@ var kmltree = (function(){
         }
         balloon.setFeature(kmlObject);
         ge.setBalloon(balloon);
+        setTimeout(function(){
+            window.kmltreeAlreadyGotItMkay = false;            
+        }, 1);
     }
     
     function resize(e, ge, defaultDimensions, that){
         var b = ge.getBalloon();
         var iframe = $('#kmltree-balloon-iframe');
-        var bi = e.source.frameElement;
-        window.w = e.source;
         if(
             // There should at least be an iframe present
             !iframe.length || 
@@ -573,6 +742,9 @@ var kmltree = (function(){
             // and if all those conditions aren't met...
             // Oooooo... A zombie Iframe!!!
             // don't do anything, that balloon has already closed
+            return;
+        }
+        if(!that.ownsFeature(b.getFeature())){
             return;
         }
         var dim = JSON.parse(e.data)
@@ -744,7 +916,7 @@ var kmltree = (function(){
         setExtent: false,
         displayDocumentRoot: 'auto',
         displayEnhancedContent: false,
-        iframeSandbox: 'http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html',
+        iframeSandbox: 'http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html',
         unknownIframeDimensionsDefault: {height: 450, width:530},
         sandboxedBalloonCallback: function(){}
     };
@@ -804,12 +976,12 @@ var kmltree = (function(){
         
         
         
-        if(opts.displayEnhancedContent){
-            $(window).bind("message", function(e){
-                var e = e.originalEvent;
-                resize(e, ge, opts.unknownIframeDimensionsDefault, that);
-            });
-        }
+        // if(opts.displayEnhancedContent){
+            // $(window).bind("message", function(e){
+            //     var e = e.originalEvent;
+            //     resize(e, ge, opts.unknownIframeDimensionsDefault, that);
+            // });
+        // }
         
         var buildOptions = function(kmlObject, docUrl, extra_scope){
             var options = {name: kmlObject.getName(), 
@@ -1251,6 +1423,7 @@ var kmltree = (function(){
         
         var destroy = function(){
             destroyed = true;
+            kmltreeManager.remove(that);
             if(opts.restoreState && !!window.localStorage){
                 setStateInLocalStorage();
             }
@@ -1734,13 +1907,20 @@ var kmltree = (function(){
         
         
         var balloonOpening = function(e){
-            var f = e.getFeature();
-            if(inMyDocuments(f)){
-                e.preventDefault();
-                e.stopPropagation();
-                ge.setBalloon(null);
-                openBalloon(f, ge, opts, that);
-                return false;                
+            if(!window.kmltreeAlreadyGotItMkay){
+                var f = e.getFeature();
+                if(ownsFeature(f)){
+                    // Can't stop other kmltrees from catching event, so have to
+                    // flag them somehow
+                    window.kmltreeAlreadyGotItMkay = that;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    ge.setBalloon(null);
+                    openBalloon(f, ge, opts, that);
+                    return false;                
+                }                
+            }else{
+                console.log('somebody already has it', window.kmltreeAlreadyGotItMkay);
             }
         }
         
@@ -1782,7 +1962,7 @@ var kmltree = (function(){
             }
         });
         
-        var inMyDocuments = function(feature){
+        var ownsFeature = function(feature){
             var top = feature.getOwnerDocument();
             if(!top){
                 // Have to do this because getOwnerDocument does not seem to work
@@ -1801,9 +1981,18 @@ var kmltree = (function(){
             }
             return false;
         };
+        
+        that.ownsFeature = ownsFeature;
 
         // fix for jquery 1.4.2 compatibility. See http://forum.jquery.com/topic/javascript-error-when-unbinding-a-custom-event-using-jquery-1-4-2
         that.removeEventListener = that.detachEvent = function(){};
+
+        var privilegedApi = {
+            opts: opts,
+            docs: docs
+        };
+        
+        kmltreeManager.register(that, privilegedApi);
         return that;
     };
 })();var enableGoogleLayersControl = (function(){

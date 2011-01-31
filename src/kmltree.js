@@ -62,13 +62,14 @@ var kmltree = (function(){
         }
         balloon.setFeature(kmlObject);
         ge.setBalloon(balloon);
+        setTimeout(function(){
+            window.kmltreeAlreadyGotItMkay = false;            
+        }, 1);
     }
     
     function resize(e, ge, defaultDimensions, that){
         var b = ge.getBalloon();
         var iframe = $('#kmltree-balloon-iframe');
-        var bi = e.source.frameElement;
-        window.w = e.source;
         if(
             // There should at least be an iframe present
             !iframe.length || 
@@ -85,6 +86,9 @@ var kmltree = (function(){
             // and if all those conditions aren't met...
             // Oooooo... A zombie Iframe!!!
             // don't do anything, that balloon has already closed
+            return;
+        }
+        if(!that.ownsFeature(b.getFeature())){
             return;
         }
         var dim = JSON.parse(e.data)
@@ -256,7 +260,7 @@ var kmltree = (function(){
         setExtent: false,
         displayDocumentRoot: 'auto',
         displayEnhancedContent: false,
-        iframeSandbox: 'http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html',
+        iframeSandbox: 'http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html',
         unknownIframeDimensionsDefault: {height: 450, width:530},
         sandboxedBalloonCallback: function(){}
     };
@@ -316,12 +320,12 @@ var kmltree = (function(){
         
         
         
-        if(opts.displayEnhancedContent){
-            $(window).bind("message", function(e){
-                var e = e.originalEvent;
-                resize(e, ge, opts.unknownIframeDimensionsDefault, that);
-            });
-        }
+        // if(opts.displayEnhancedContent){
+            // $(window).bind("message", function(e){
+            //     var e = e.originalEvent;
+            //     resize(e, ge, opts.unknownIframeDimensionsDefault, that);
+            // });
+        // }
         
         var buildOptions = function(kmlObject, docUrl, extra_scope){
             var options = {name: kmlObject.getName(), 
@@ -763,6 +767,7 @@ var kmltree = (function(){
         
         var destroy = function(){
             destroyed = true;
+            kmltreeManager.remove(that);
             if(opts.restoreState && !!window.localStorage){
                 setStateInLocalStorage();
             }
@@ -1246,13 +1251,20 @@ var kmltree = (function(){
         
         
         var balloonOpening = function(e){
-            var f = e.getFeature();
-            if(inMyDocuments(f)){
-                e.preventDefault();
-                e.stopPropagation();
-                ge.setBalloon(null);
-                openBalloon(f, ge, opts, that);
-                return false;                
+            if(!window.kmltreeAlreadyGotItMkay){
+                var f = e.getFeature();
+                if(ownsFeature(f)){
+                    // Can't stop other kmltrees from catching event, so have to
+                    // flag them somehow
+                    window.kmltreeAlreadyGotItMkay = that;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    ge.setBalloon(null);
+                    openBalloon(f, ge, opts, that);
+                    return false;                
+                }                
+            }else{
+                console.log('somebody already has it', window.kmltreeAlreadyGotItMkay);
             }
         }
         
@@ -1294,7 +1306,7 @@ var kmltree = (function(){
             }
         });
         
-        var inMyDocuments = function(feature){
+        var ownsFeature = function(feature){
             var top = feature.getOwnerDocument();
             if(!top){
                 // Have to do this because getOwnerDocument does not seem to work
@@ -1313,9 +1325,18 @@ var kmltree = (function(){
             }
             return false;
         };
+        
+        that.ownsFeature = ownsFeature;
 
         // fix for jquery 1.4.2 compatibility. See http://forum.jquery.com/topic/javascript-error-when-unbinding-a-custom-event-using-jquery-1-4-2
         that.removeEventListener = that.detachEvent = function(){};
+
+        var privilegedApi = {
+            opts: opts,
+            docs: docs
+        };
+        
+        kmltreeManager.register(that, privilegedApi);
         return that;
     };
 })();

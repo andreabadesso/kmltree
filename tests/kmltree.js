@@ -1882,11 +1882,11 @@ module('kmlTree');
             element: $('.kmltreetest'),
             displayDocumentRoot: true,
             displayEnhancedContent: true,
-            iframeSandbox: 'http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html'
+            iframeSandbox: 'http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html'
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             $(tree).one('balloonopen', function(e, balloon, kmlObject){
-                equals($('#map3d iframe[src="http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html"]').length, 1);
+                equals($('#map3d iframe[src="http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html"]').length, 1);
                 tree.destroy();
                 $('.kmltreetest').remove();
                 start();

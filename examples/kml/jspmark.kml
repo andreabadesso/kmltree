@@ -11,7 +11,7 @@
 		<name>pmark</name>
 		<description><![CDATA[
 		    <html><body>
-		    <link rel="stylesheet" href="http://10.0.1.5/~cburt/kmltree/examples/remote.css" type="text/css" media="screen" title="no title" charset="utf-8">
+		    <link rel="stylesheet" href="http://underbluewaters-try-unsafe-popups.googlecode.com/hg/examples/remote.css" type="text/css" media="screen" title="no title" charset="utf-8">
 		    <div>
 		        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		    </div>

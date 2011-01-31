@@ -16,6 +16,7 @@
         
         <script type="text/javascript" charset="utf-8">
             google.load("earth", "1");
+            var tree;
             
             function init() {
                 google.earth.createInstance('map3d', initCB, failureCB);
@@ -27,7 +28,7 @@
                 
                 var gex = new GEarthExtensions(ge);
                 
-                var tree = kmltree({
+                tree = kmltree({
                     url: 'http://localhost/~cburt/kmltree/examples/kml/jspmark.kml',
                     // url: 'http://www.panoramio.com/panoramio.kml',
                     gex: gex, 
