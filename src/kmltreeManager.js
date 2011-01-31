@@ -82,7 +82,7 @@ var kmltreeManager = (function(){
             console.log('cache hit');
             return cache[urlWithoutId];
         }else{
-            console.log('cache miss');            
+            console.log('cache miss', urlWithoutId, url);            
         }
         // First check if url matches root element
         for(var i=0;i<trees.length;i++){
@@ -96,7 +96,9 @@ var kmltreeManager = (function(){
         for(var i=0;i<trees.length;i++){
             var tree = trees[i].instance;
             var api = trees[i].api;
-            for(doc in trees[i].api.docs){
+            var docs = trees[i].api.docs;
+            for(var j = 0; j<docs.length;j++){
+                var doc = docs[j];
                 if(ownsUrl(doc, url)){
                     cache[urlWithoutId] = trees[i];
                     return trees[i];
