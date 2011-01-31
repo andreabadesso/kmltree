@@ -16,7 +16,8 @@
         
         <script type="text/javascript" charset="utf-8">
             google.load("earth", "1");
-            
+            var panoramio;
+            var youtube;
             function init() {
                 google.earth.createInstance('map3d', initCB, failureCB);
             }
@@ -27,7 +28,7 @@
                 
                 var gex = gex = new GEarthExtensions(ge);
                 
-                var tree = kmltree({
+                panoramio = kmltree({
                     url: 'http://panoramio.com/kml',
                     gex: gex, 
                     element: $('#tree'),
@@ -36,9 +37,9 @@
                     displayEnhancedContent: true
                 });
                 
-                tree.load();
+                panoramio.load();
                 
-                var youtube = kmltree({
+                youtube = kmltree({
                     url: 'http://mw2.google.com/mw-earth-vectordb/gallery_website/en/YouTube.kml',
                     gex: gex, 
                     element: $('#tree'),
