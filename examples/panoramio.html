@@ -16,8 +16,7 @@
         
         <script type="text/javascript" charset="utf-8">
             google.load("earth", "1");
-            var panoramio;
-            var youtube;
+            var tree;
             function init() {
                 google.earth.createInstance('map3d', initCB, failureCB);
             }
@@ -28,28 +27,23 @@
                 
                 var gex = gex = new GEarthExtensions(ge);
                 
-                panoramio = kmltree({
-                    url: 'http://panoramio.com/kml',
-                    gex: gex, 
-                    element: $('#tree'),
-                    mapElement: $('#map3d'),
-                    setExtent: true,
-                    displayEnhancedContent: true
-                });
-                
-                panoramio.load();
-                
-                youtube = kmltree({
-                    url: 'http://mw2.google.com/mw-earth-vectordb/gallery_website/en/YouTube.kml',
+                tree = kmltree({
+                    url: './kml/youtube_panoramio.kmz',
                     gex: gex, 
                     element: $('#tree'),
                     mapElement: $('#map3d'),
                     setExtent: true,
                     displayEnhancedContent: true,
-                    unknownIframeDimensionsDefault: {height: 330, width:330},
+                    unknownIframeDimensionsDefault: function(kmlObject){
+                        if(kmlObject.getUrl().match(/youtube/)){
+                            return {height: 330, width:330};
+                        }else{
+                            return {height: 450, width:530};
+                        }
+                    }
                 });
                 
-                youtube.load();
+                tree.load();
             }
 
             function failureCB(errorCode) {
