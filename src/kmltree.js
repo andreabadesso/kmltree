@@ -6,116 +6,7 @@
 // docs can be found on the project page and should be kept up to date there:
 // http://code.google.com/p/kmltree/wiki/ApiReference
 var kmltree = (function(){
-
-    openBalloon = function(kmlObject, ge, opts, that){
-        var balloon;
-        // Compare getBalloonHtmlUnsafe to getBalloonHtml to determine whether
-        // there is even any need to use an iframe to display unsafe content
-        if(opts.displayEnhancedContent){
-            // don't bother checking if not going to display
-            var unsafeHtml = kmlObject.getBalloonHtmlUnsafe();
-            var safeHtml = kmlObject.getBalloonHtml();
-            var safeHtml = $.trim(
-                safeHtml.replace(
-                    /\s*<!--\s*Content-type: mhtml-die-die-die\s*-->/, ''));
-            var hasUnsafeContent = safeHtml != $.trim(unsafeHtml);
-        }
-        if(opts.displayEnhancedContent && hasUnsafeContent){
-            balloon = ge.createHtmlDivBalloon('');
-            var iframe = $(
-                ['<iframe id="kmltree-balloon-iframe"',
-                ' border="0" frameBorder="0"',
-                ' src="', opts.iframeSandbox, '">',
-                '</iframe>'].join(''));
-            var div = document.createElement('div');
-            $(div).append(iframe);
-            iframe.load(function(){
-                var msg = JSON.stringify({
-                    html: Base64.encode(unsafeHtml),
-                    callback: Base64.encode(
-                        opts.sandboxedBalloonCallback.toString())
-                });
-                // Posting to any domain since iframe popups may have their
-                // window.location changed by javascript code in the 
-                // description.
-                this.contentWindow.postMessage(msg, '*');
-            });
-            balloon.setContentDiv(div);
-        }else{
-            balloon = ge.createFeatureBalloon('');
-            // callback for normal popups. Enhanced popup balloonopen event is 
-            // triggered by resize function
-            var boCallback = function(e){
-                // This has to be done within a setTimeout call. Otherwise you 
-                // can't open another balloon using an event listener and 
-                // count on that event to fire. I think this is so you can 
-                // have callbacks like balloonOpening that don't go into an 
-                // infinite loop
-                setTimeout(function(){
-                    $(that).trigger('balloonopen', [
-                        e.getBalloon(), e.getFeature()]);
-                }, 1);
-                google.earth.removeEventListener(
-                    ge, 'balloonopening', boCallback);
-            };
-            google.earth.addEventListener(ge, 'balloonopening', boCallback);
-        }
-        balloon.setFeature(kmlObject);
-        ge.setBalloon(balloon);
-        setTimeout(function(){
-            window.kmltreeAlreadyGotItMkay = false;            
-        }, 1);
-    }
-    
-    function resize(e, ge, defaultDimensions, that){
-        var b = ge.getBalloon();
-        var iframe = $('#kmltree-balloon-iframe');
-        if(
-            // There should at least be an iframe present
-            !iframe.length || 
-            // Message must include a new dimension or specify that none could
-            // be calculated
-            !(e.data.match(/width/) || e.data.match(/unknownIframeDimensions/)
-            ) || 
-            // Make sure the current popup is an HtmlDivBalloon
-            b.getType() !== 'GEHtmlDivBalloon' || 
-            // And make sure that the window that sent the message is the 
-            // right one - Security check
-            $(b.getContentDiv()).find('iframe')[0] !== frameElement(e.source))
-            {
-            // and if all those conditions aren't met...
-            // Oooooo... A zombie Iframe!!!
-            // don't do anything, that balloon has already closed
-            return;
-        }
-        if(!that.ownsFeature(b.getFeature())){
-            return;
-        }
-        var dim = JSON.parse(e.data)
-        if(dim.unknownIframeDimensions){
-            dim = defaultDimensions;
-        }
-        var el = $('#kmltree-balloon-iframe');
-        b.setMinWidth(dim.width);
-        b.setMaxWidth(dim.width + (dim.width * .1));
-        b.setMinHeight(dim.height);
-        b.setMaxHeight(dim.height + (dim.height * .1));
-        el.height(dim.height);
-        el.width(dim.width);
-        $(that).trigger('balloonopen', [b, b.getFeature()]);
-    }
-    
-    // Implemented this because call window.frameElement on a cross-origin 
-    // iframe results in a security exception.
-    function frameElement(win){
-        var iframes = document.getElementsByTagName('iframe');
-        for(var i =0;i<iframes.length;i++){
-            if(iframes[0].contentWindow === win){
-                return iframes[i];
-            }
-        }
-    }
-    
+        
     // can be removed when the following ticket is resolved:
     // http://code.google.com/p/earth-api-samples/issues/detail?id=290
     function qualifyURL(url) {
@@ -319,13 +210,6 @@ var kmltree = (function(){
             || div[0].style.webkitBackgroundSize !== undefined);
         
         
-        
-        // if(opts.displayEnhancedContent){
-            // $(window).bind("message", function(e){
-            //     var e = e.originalEvent;
-            //     resize(e, ge, opts.unknownIframeDimensionsDefault, that);
-            // });
-        // }
         
         var buildOptions = function(kmlObject, docUrl, extra_scope){
             var options = {name: kmlObject.getName(), 
@@ -778,11 +662,6 @@ var kmltree = (function(){
             $('#'+id+' li').die();
             $('#'+id+' li > .expander').die();
             opts.element.html('');
-            google.earth.removeEventListener(
-                ge, 'balloonopening', balloonOpening);
-            google.earth.removeEventListener(
-                ge, 'balloonclose', balloonClose);
-            $('#kmltree-balloon-iframe').remove();
         };
         
         that.destroy = destroy;
@@ -840,13 +719,9 @@ var kmltree = (function(){
             node.addClass('selected');
             toggleVisibility(node, true);
             node.addClass('selected');
-            google.earth.removeEventListener(
-                ge, 'balloonopening', balloonOpening);
-            openBalloon(kmlObject, ge, opts, that);
-            google.earth.addEventListener(
-                ge, 'balloonopening', balloonOpening);
-            
-            
+            kmltreeManager.pauseListeners(function(){
+                kmltreeManager.openBalloon(kmlObject, that);
+            });            
             var parent = node.parent().parent();
             
             while(!parent.hasClass('kmltree') 
@@ -1136,11 +1011,9 @@ var kmltree = (function(){
                     if(kmlObject.getType() === 'KmlPlacemark'){
                         toggleVisibility(node, true);
                     }
-                    google.earth.removeEventListener(
-                        ge, 'balloonopening', balloonOpening);
-                    openBalloon(kmlObject, ge, opts, that);
-                    google.earth.addEventListener(
-                        ge, 'balloonopening', balloonOpening);
+                    kmltreeManager.pauseListeners(function(){
+                        kmltreeManager.openBalloon(kmlObject, that);
+                    });
                 }
             }
             $(that).trigger('click', [node[0], kmlObject]);
@@ -1246,40 +1119,9 @@ var kmltree = (function(){
             $(that).trigger('dblclick', [node, kmlObject]);            
         });
         
-        // Google Earth Plugin Events
-        var geAddListener = google.earth.addEventListener;
-        
-        
-        var balloonOpening = function(e){
-            if(!window.kmltreeAlreadyGotItMkay){
-                var f = e.getFeature();
-                if(ownsFeature(f)){
-                    // Can't stop other kmltrees from catching event, so have to
-                    // flag them somehow
-                    window.kmltreeAlreadyGotItMkay = that;
-                    e.preventDefault();
-                    e.stopPropagation();
-                    ge.setBalloon(null);
-                    openBalloon(f, ge, opts, that);
-                    return false;                
-                }                
-            }else{
-                console.log('somebody already has it', window.kmltreeAlreadyGotItMkay);
-            }
-        }
-        
-        google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
-        
-        var balloonClose = function(e){
-            $('#kmltree-balloon-iframe').remove();
-            clearSelection();            
-        }
-        
-        geAddListener(ge, 'balloonclose', balloonClose);
-        
         var doubleClicking = false;
         
-        geAddListener(ge.getGlobe(), 'dblclick', function(e, d){
+        google.earth.addEventListener(ge.getGlobe(),'dblclick',function(e, d){
             if(e.getButton() === -1){
                 // related to scrolling, ignore
                 return;
@@ -1306,28 +1148,6 @@ var kmltree = (function(){
             }
         });
         
-        var ownsFeature = function(feature){
-            var top = feature.getOwnerDocument();
-            if(!top){
-                // Have to do this because getOwnerDocument does not seem to work
-                var next = feature;
-                while(next.getType() !== 'GEGlobe'){
-                    top = next;
-                    next = next.getParentNode();
-                }                
-            }
-            var matches = false;
-            for(var i =0; i<docs.length;i++){
-                var doc = docs[i];
-                if(doc.getUrl() === top.getUrl()){
-                    return true;
-                }
-            }
-            return false;
-        };
-        
-        that.ownsFeature = ownsFeature;
-
         // fix for jquery 1.4.2 compatibility. See http://forum.jquery.com/topic/javascript-error-when-unbinding-a-custom-event-using-jquery-1-4-2
         that.removeEventListener = that.detachEvent = function(){};
 
