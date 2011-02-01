@@ -2066,7 +2066,7 @@ module('kmlTree');
             element: $('.kmltreetest'),
             displayDocumentRoot: true,
             displayEnhancedContent: true,
-            iframeSandbox: 'http://mm-01.msi.ucsb.edu/~cburt/kmltree/src/iframe.html',
+            iframeSandbox: 'http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html',
             sandboxedBalloonCallback: function(){
                 var message = '';
                 if(typeof pv === 'object'){
@@ -2167,7 +2167,7 @@ module('kmlTree');
             displayDocumentRoot: true,
             displayEnhancedContent: true,
             unknownIframeDimensionsDefault: {height: 330, width:330},
-            iframeSandbox: 'http://localhost/~cburt/kmltree/src/iframe.html'
+            iframeSandbox: 'http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html'
         });
         var waiting = 2
         var loaded = function(){
