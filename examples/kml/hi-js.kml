@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Placemark>
+	<name>Rotorua, New Zealand</name>
+	<description><![CDATA[<html><body onload="window.location.href='http://marinemap.org'"><div id="hithere"></div></body></html>
+	]]></description>
+	<Point>
+		<coordinates>176.2371826,-38.1377983,0</coordinates>
+	</Point>
+</Placemark>
+</kml>
