@@ -719,7 +719,7 @@ var kmltree = (function(){
             toggleVisibility(node, true);
             node.addClass('selected');
             kmltreeManager.pauseListeners(function(){
-                kmltreeManager.openBalloon(kmlObject, that);
+                kmltreeManager._openBalloon(kmlObject, that);
             });            
             var parent = node.parent().parent();
             
@@ -942,7 +942,7 @@ var kmltree = (function(){
                     docs.push(kmlObject);
                     rememberNetworkLink(node, NetworkLink);
                     $(node).trigger('loaded', [node, kmlObject]);
-                    $(that).trigger('networklinkload', [node, kmlObject]);
+                    $(that).trigger('networklinkload', [node, kmlObject]);                        
                 });
             }
         };
@@ -1011,7 +1011,7 @@ var kmltree = (function(){
                         toggleVisibility(node, true);
                     }
                     kmltreeManager.pauseListeners(function(){
-                        kmltreeManager.openBalloon(kmlObject, that);
+                        kmltreeManager._openBalloon(kmlObject, that);
                     });
                 }
             }

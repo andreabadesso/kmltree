@@ -1956,7 +1956,39 @@ module('kmlTree');
             element: $('.kmltreetest'),
             displayDocumentRoot: true,
             displayEnhancedContent: true,
-            unknownIframeDimensionsDefault: {height: 45, width:53},
+            unknownIframeDimensionsDefault: {height: 45, width:53}
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                equals($('#kmltree-balloon-iframe').height(), 45);
+                equals($('#kmltree-balloon-iframe').width(), 53);
+                tree.destroy();
+                $('.kmltreetest').remove();
+                start();
+            });
+            $('.kmltreetest').find('span.name:contains(window.location)')
+                .click();
+        });
+        tree.load(true);
+    });
+    
+    // unknownIframeDimensionsDefault as callable
+    earthAsyncTest('displayEnhancedContent option - unknownIframeDimensionsDefault can be a callable', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true,
+            unknownIframeDimensionsDefault: function(kmlObject){
+                if(kmlObject.getType() === 'KmlPlacemark'){
+                    return {height: 45, width:53};
+                }else{
+                    return {height: 450, width:530};
+                }
+            }
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
             $(tree).one('balloonopen', function(e, balloon, kmlObject){
@@ -2116,49 +2148,80 @@ module('kmlTree');
     
     // Make sure multiple instances of kmltree don't clobber each other's 
     // popup window handling events
-    // earthAsyncTest("displayEnhancedContent option - multiple kmltrees can exist side-by-side.", function(ge, gex){
-    //     $(document.body).append('<div class="kmltreetest"></div>');
-    //     var tree = kmltree({
-    //         url: example('jspmark.kml'),
-    //         gex: gex, 
-    //         mapElement: $('#map3d'), 
-    //         element: $('.kmltreetest'),
-    //         displayDocumentRoot: true,
-    //         displayEnhancedContent: true,
-    //         sandboxedBalloonCallback: function(){
-    //             if(window.stolenCookies){
-    //                 var message = 'failed. cookie data stolen.';
-    //             }else{
-    //                 var message = 'okay. cookie data not accessible.';                    
-    //             }
-    //             parent.postMessage(message, '*');
-    //         }
-    //     });
-    //     $(window).bind('message', function(e){
-    //         var e = e.originalEvent;
-    //         if(e.data.match(/width/)){
-    //             // just standard message passing for kmltree
-    //             return;
-    //         }else{
-    //             $(window).unbind('message');
-    //             equals(e.data, 'okay. cookie data not accessible.');
-    //             tree.destroy();
-    //             $('.kmltreetest').remove();
-    //             start();
-    //         }
-    //     });
-    //     $(tree).one('kmlLoaded', function(e, kmlObject){
-    //         ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
-    //         $('.kmltreetest').find('span.name:contains(cookie)')
-    //             .click();
-    //     });
-    //     ok(tree !== false, 'Tree initialized');
-    //     tree.load(true);
-    // });
+    earthAsyncTest("displayEnhancedContent option - multiple kmltrees can exist side-by-side.", function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        $(document.body).append('<div class="kmltreetest2"></div>');
+        var tree1 = kmltree({
+            url: example('jspmark.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true
+        });
+        var tree2 = kmltree({
+            url: example('hi-js.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest2'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true,
+            unknownIframeDimensionsDefault: {height: 330, width:330},
+            iframeSandbox: 'http://localhost/~cburt/kmltree/src/iframe.html'
+        });
+        var waiting = 2
+        var loaded = function(){
+            waiting--;
+            if(waiting === 0){
+                $(tree1).one('balloonopen', function(e, balloon, kmlObject){
+                    ok($('#kmltree-balloon-iframe').height() < 330);
+                    $(tree2).one('balloonopen', function(e, balloon, kmlObject){
+                        ok($('#kmltree-balloon-iframe').height() > 200);
+                        tree1.destroy();
+                        tree2.destroy();
+                        $('.kmltreetest').remove();
+                        $('.kmltreetest2').remove();
+                        start();
+                    });
+                    $('.kmltreetest2').find('span.name:contains(Rotorua)')
+                        .click();
+                });
+                $('.kmltreetest').find('span.name:contains(large)')
+                    .click();
+            }
+        }
+        $(tree1).one('kmlLoaded', loaded);
+        $(tree2).one('kmlLoaded', loaded);
+        tree1.load(true);
+        tree2.load(true);
+    });
 
     // combo example for expanded networklinks
-    
-    // displayEnhancedContent as a callable option
-    
-    // unknownIframeDimensionsDefault as callable
+    earthAsyncTest('displayEnhancedContent option - expanded networklinks can display sandboxed content too', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('kmlForestTest.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            displayDocumentRoot: true,
+            displayEnhancedContent: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            // this example contains some other networklinks that automatically load, so wait until they are done
+            setTimeout(function(){
+                $(tree).one('networklinkload', function(e, node, kmlObject){
+                    $(tree).one('balloonopen', function(e, balloon, kmlObject){
+                        ok($('#kmltree-balloon-iframe').length === 1);
+                        tree.destroy();
+                        $('.kmltreetest').remove();
+                        start();
+                    });
+                    $('.kmltreetest').find('span.name:contains(enhanced content)').click()
+                });
+                $('.kmltreetest').find('span.name:contains(networklink off)').parent().find('>.expander').click();
+            }, 1000);
+        });
+        tree.load(true);
+    });
 })();

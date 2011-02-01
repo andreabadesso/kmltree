@@ -185,7 +185,7 @@ var kmltreeManager = (function(){
         ge.setBalloon(balloon);
     };
     
-    that.openBalloon = openBalloon;
+    that._openBalloon = openBalloon;
         
     function resize(e){
         var b = ge.getBalloon();
@@ -220,7 +220,7 @@ var kmltreeManager = (function(){
         b.setMaxHeight(dim.height + (dim.height * .1));
         el.height(dim.height);
         el.width(dim.width);
-        $(tree.instance).trigger('balloonopen', [b, f]);
+        $(tree.instance).trigger('balloonopen', [b, f]);            
     }
     
     // Implemented this because call window.frameElement on a cross-origin 

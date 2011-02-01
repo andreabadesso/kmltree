@@ -185,7 +185,7 @@ var kmltreeManager = (function(){
         ge.setBalloon(balloon);
     };
     
-    that.openBalloon = openBalloon;
+    that._openBalloon = openBalloon;
         
     function resize(e){
         var b = ge.getBalloon();
@@ -220,7 +220,7 @@ var kmltreeManager = (function(){
         b.setMaxHeight(dim.height + (dim.height * .1));
         el.height(dim.height);
         el.width(dim.width);
-        $(tree.instance).trigger('balloonopen', [b, f]);
+        $(tree.instance).trigger('balloonopen', [b, f]);            
     }
     
     // Implemented this because call window.frameElement on a cross-origin 
@@ -1444,7 +1444,7 @@ var kmltree = (function(){
             toggleVisibility(node, true);
             node.addClass('selected');
             kmltreeManager.pauseListeners(function(){
-                kmltreeManager.openBalloon(kmlObject, that);
+                kmltreeManager._openBalloon(kmlObject, that);
             });            
             var parent = node.parent().parent();
             
@@ -1667,7 +1667,7 @@ var kmltree = (function(){
                     docs.push(kmlObject);
                     rememberNetworkLink(node, NetworkLink);
                     $(node).trigger('loaded', [node, kmlObject]);
-                    $(that).trigger('networklinkload', [node, kmlObject]);
+                    $(that).trigger('networklinkload', [node, kmlObject]);                        
                 });
             }
         };
@@ -1736,7 +1736,7 @@ var kmltree = (function(){
                         toggleVisibility(node, true);
                     }
                     kmltreeManager.pauseListeners(function(){
-                        kmltreeManager.openBalloon(kmlObject, that);
+                        kmltreeManager._openBalloon(kmlObject, that);
                     });
                 }
             }
