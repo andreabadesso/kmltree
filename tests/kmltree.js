@@ -2107,6 +2107,7 @@ module('kmlTree');
     // test that content can't get access to parent iframe's data - need to deploy?
     // TODO: change path to files
     earthAsyncTest("displayEnhancedContent option - sandboxed content shouldn't be able to access parent cookies and session info.", function(ge, gex){
+        document.cookie = 'somevalue';
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('jspmark.kml'),
