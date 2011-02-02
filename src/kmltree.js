@@ -152,7 +152,8 @@ var kmltree = (function(){
         displayEnhancedContent: false,
         iframeSandbox: 'http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html',
         unknownIframeDimensionsDefault: {height: 450, width:530},
-        sandboxedBalloonCallback: function(){}
+        sandboxedBalloonCallback: function(){},
+        selectable: function(kmlObject){return false;}
     };
         
         
@@ -239,6 +240,11 @@ var kmltree = (function(){
                             }
                         }
                         var style = this.getComputedStyle();
+                        var selectable = opts.selectable;
+                        if(typeof selectable === 'function'){
+                            selectable = selectable(this);
+                        }
+                        selectable = selectable && this.getId();
                         var child = {
                             renderOptions: renderOptions,
                             name: name || '&nbsp;',
@@ -248,7 +254,7 @@ var kmltree = (function(){
                             id: id,
                             description: this.getDescription(),
                             snippet: snippet,
-                            select: false,
+                            select: selectable,
                             listItemType: getListItemType(style),
                             customIcon: customIcon(this),
                             customClass: '',

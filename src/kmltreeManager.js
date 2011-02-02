@@ -63,6 +63,17 @@ var kmltreeManager = (function(){
         if(tree){
             e.preventDefault();
             ge.setBalloon(null);
+            var selectable = false;
+            var id = f.getId();
+            if(id){
+                selectable = tree.api.opts.selectable;
+                if(typeof selectable === 'function'){
+                    selectable = selectable(f);
+                }
+            }
+            if(selectable){
+                tree.instance.selectById(id);
+            }                
             openBalloon(f, tree);
             return false;
         } // otherwise feature likely loaded outside of a kmltree instance
