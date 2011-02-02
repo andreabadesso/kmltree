@@ -891,8 +891,10 @@ var kmltree = (function(){
                 }
                 var uri = new URI(link);
                 if(uri.getAuthority() === null){
+                    window.nl = NetworkLink;
                     var doc = NetworkLink.getOwnerDocument();
-                    if(doc && doc.getUrl){
+                    window.doc = doc;
+                    if(doc && doc.getUrl()){
                         var base = doc.getUrl();
                         if(base){
                             var base = new URI(base);
