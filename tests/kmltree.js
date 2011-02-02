@@ -929,6 +929,14 @@ module('kmlTree');
         $('.kmltreetest').remove();
         start();
     });
+    
+    // selection tests
+    
+    // test clicking on map to select
+    
+    // test features on map via nL that aren't expanded (should select parent nL)
+    
+    // test expanded nL
 
     earthAsyncTest('Contents of NetworkLinks can be displayed. Depends on <a href="http://code.google.com/p/earth-api-samples/issues/detail?id=260&q=NetworkLink&colspec=ID%20Type%20Summary%20Component%20OpSys%20Browser%20Status%20Stars#c3">this ticket</a>, or a hack', function(ge, gex){
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();

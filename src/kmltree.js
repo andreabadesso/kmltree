@@ -323,11 +323,59 @@ var kmltree = (function(){
                 
         // Selects the first node found matching the ID
         var selectById = function(id){
-            var node = getNodesById(id)[0];
-            return selectNode(node, lookup(node));
+            var nodes = getNodesById(id);
+            if(nodes.length){
+                console.log('found');
+                return selectNode(nodes[0], lookup(nodes[0]));
+            }else{
+                // couldn't find feature in list. Might be in unexpanded 
+                // networklink
+                return false;
+            }
         };
         
         that.selectById = selectById;
+        
+        var getParentNetworkLink = function(kmlObject){
+            console.log('getPArentNetworkLink', kmlObject);
+            var parent = kmlObject.getParentNode();
+            console.log(parent, parent.getType());
+            switch(parent.getType()){
+                case 'KmlNetworkLink':
+                    return parent;
+                    break;
+                case 'GEGlobe':
+                    return false;
+                    break;
+                default:
+                    return getParentNetworkLink(parent);
+            }
+        };
+        
+        var selectKmlObject = function(kmlObject){
+            console.log('selectKmlObject');
+            var id = kmlObject.getId();
+            console.log(id);
+            if(!id){
+                throw('must provide a feature with an ID');
+            }else{
+                console.log('selectById');
+                if(!selectById(id)){
+                    // highlight networklink since feature isn't shown in tree
+                    console.log('blah');
+                    var nL = getParentNetworkLink(kmlObject);
+                    // if nL has an ID, look for that
+                    // if not, look at all networklinks in tree that aren't expanded
+                    // if none match, keep moving up until hitting ge globe
+                    console.log(nL);
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        };
+                
+        that.selectKmlObject = selectKmlObject;
         
         var clearSelection = function(keepBalloons, dontTriggerEvent){
             var prev = $('#'+opts.element.attr('id'))

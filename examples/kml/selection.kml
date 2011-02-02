@@ -169,7 +169,7 @@
 	</Folder>
 	<NetworkLink>
 		<name>networklink a</name>
-		<open>1</open>
+		<open>0</open>
 		<Link>
 			<href>http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_2.kml</href>
 		</Link>
