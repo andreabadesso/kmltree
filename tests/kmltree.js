@@ -1789,11 +1789,10 @@ module('kmlTree');
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
             $(tree).one('balloonopen', function(e, balloon, kmlObject){
                 equals(balloon.getType(), 'GEFeatureBalloon');
-                equals($('#map3d iframe').length, 1, 'Basic popup not loaded into iframe.');
+                equals($('#kmltree-balloon-iframe').length, 0, 'Basic popup not loaded into iframe.');
                 $(tree).one('balloonopen', function(e, balloon, kmlObject){
                     equals(balloon.getType(), 'GEHtmlDivBalloon');
-                    equals($('#map3d iframe').length, 2, 'Enhanced popup displayed in iframe sandbox.');
-                    $('#kmltree-balloon-iframe').remove();
+                    equals($('#kmltree-balloon-iframe').length, 1, 'Enhanced popup displayed in iframe sandbox.');
                     tree.destroy();
                     $('.kmltreetest').remove();
                     start();
@@ -1821,7 +1820,7 @@ module('kmlTree');
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
             $(tree).one('balloonopen', function(e, balloon, kmlObject){
                 equals(balloon.getType(), 'GEFeatureBalloon');
-                equals($('#map3d iframe').length, 1, 'No extra iframes since enhanced content is not shown.');
+                equals($('#kmltree-balloon-iframe').length, 0, 'No extra iframes since enhanced content is not shown.');
                 tree.destroy();
                 $('.kmltreetest').remove();
                 start();
@@ -1863,7 +1862,7 @@ module('kmlTree');
             ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
             $(tree).one('balloonopen', function(e, balloon, kmlObject){
                 equals(balloon.getType(), 'GEHtmlDivBalloon');
-                equals($('#map3d iframe').length, 2, 'Enhanced popup displayed in iframe sandbox.');
+                equals($('#kmltree-balloon-iframe').length, 1, 'Enhanced popup displayed in iframe sandbox.');
             });
             $('.kmltreetest').find('span.name:contains(pmark)')
                 .click();
@@ -2024,7 +2023,7 @@ module('kmlTree');
                     }else{
                         message += 'inline css failed';
                     }
-                    if($('#clock').css('background-color') === 'rgb(255, 0, 0)'){
+                    if($('#clock').css('background-color') === 'rgb(255, 0, 0)' || $('#clock').css('background-color') === 'red'){
                         message += ', remote css okay';                        
                     }else{
                         message += ', remote css failed';
