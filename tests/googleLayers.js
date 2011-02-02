@@ -59,12 +59,12 @@ module('enableGoogleLayersControl');
         var kmlObject = tree.lookup(node);
         var earthState = this.getEarthState(ge, tree, element);
         // Check the status of the layer visibility
-        ok((earthState === (this.initialState === initial)), 'GE State - Layer ' 
+        ok((!!earthState === (this.initialState === initial)), 'GE State - Layer ' 
             + this.name + ' should have ' + (initial ? 'an initial ' : 'a') 
             + ' state = ' + (this.initialState === initial));
         // Check the status of the node representing the layer in the loaded 
         // kml file
-        ok((kmlObject.getVisibility() === (this.initialState === initial)),
+        ok((!!kmlObject.getVisibility() === (this.initialState === initial)),
             'Tree Node kmlObject - Layer ' + this.name + 
             ' should have ' + (initial ? 'an initial' : 'a') 
             + ' state = ' + (this.initialState === initial));
