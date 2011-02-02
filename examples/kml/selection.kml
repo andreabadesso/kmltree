@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>selection.kml</name>
+	<LookAt>
+		<longitude>-119.8792314083132</longitude>
+		<latitude>34.10244371201394</latitude>
+		<altitude>0</altitude>
+		<heading>-54.00420600358277</heading>
+		<tilt>69.67967985610852</tilt>
+		<range>70649.0569196693</range>
+		<altitudeMode>relativeToGround</altitudeMode>
+		<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+	</LookAt>
+	<StyleMap id="msn_ylw-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_ylw-pushpin">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="sh_ylw-pushpin0">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="sn_ylw-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="msn_ylw-pushpin0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_ylw-pushpin1">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="msn_ylw-pushpin1">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_ylw-pushpin0">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="sn_ylw-pushpin1">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Folder>
+		<name>Selection Demo</name>
+		<open>1</open>
+		<LookAt>
+			<longitude>-119.8792314083132</longitude>
+			<latitude>34.10244371201394</latitude>
+			<altitude>0</altitude>
+			<heading>-54.00420600358277</heading>
+			<tilt>69.67967985610852</tilt>
+			<range>70649.0569196693</range>
+			<altitudeMode>relativeToGround</altitudeMode>
+			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+		</LookAt>
+		<Placemark id="Forney">
+			<name>Forney</name>
+			<LookAt>
+				<longitude>-119.8792314083132</longitude>
+				<latitude>34.10244371201394</latitude>
+				<altitude>0</altitude>
+				<heading>-54.00420600358277</heading>
+				<tilt>69.67967985610852</tilt>
+				<range>70649.0569196693</range>
+				<altitudeMode>relativeToGround</altitudeMode>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin</styleUrl>
+			<Point>
+				<altitudeMode>absolute</altitudeMode>
+				<coordinates>-119.917452569685,34.05123087307057,-95.34932586730962</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="Gull Island">
+			<name>Gull Island</name>
+			<LookAt>
+				<longitude>-119.721576740378</longitude>
+				<latitude>34.05418498593534</latitude>
+				<altitude>0</altitude>
+				<heading>-52.80415827193099</heading>
+				<tilt>50.78927534064567</tilt>
+				<range>54599.22206228046</range>
+				<altitudeMode>relativeToGround</altitudeMode>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin1</styleUrl>
+			<Point>
+				<altitudeMode>absolute</altitudeMode>
+				<coordinates>-119.8246347649518,33.9491104120905,-63.55434258857056</coordinates>
+			</Point>
+		</Placemark>
+		<Folder id="FLD1">
+			<name>subfolder</name>
+			<Placemark id="Yellowbanks">
+				<name>Yellowbanks</name>
+				<LookAt>
+					<longitude>-119.721576740378</longitude>
+					<latitude>34.05418498593534</latitude>
+					<altitude>0</altitude>
+					<heading>-52.80415827193099</heading>
+					<tilt>50.78927534064567</tilt>
+					<range>54599.22206228046</range>
+					<altitudeMode>relativeToGround</altitudeMode>
+					<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_ylw-pushpin0</styleUrl>
+				<Point>
+					<altitudeMode>absolute</altitudeMode>
+					<coordinates>-119.5433643915793,34.00667673184685,-63.55434258857056</coordinates>
+				</Point>
+			</Placemark>
+		</Folder>
+	</Folder>
+	<NetworkLink>
+		<name>networklink a</name>
+		<open>1</open>
+		<Link>
+			<href>http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_2.kml</href>
+		</Link>
+	</NetworkLink>
+</Document>
+</kml>
