@@ -30,7 +30,7 @@
 			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
 		</IconStyle>
 	</Style>
-	<Placemark>
+	<Placemark id="JAL">
 		<name>Jalama</name>
 		<description>Watch out for sharks!</description>
 		<Camera>
