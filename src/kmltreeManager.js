@@ -60,24 +60,20 @@ var kmltreeManager = (function(){
     var balloonOpening = function(e){
         var f = e.getFeature();
         var tree = getOwner(f);
-        // console.log('e', e, f, tree);
         if(tree){
             e.preventDefault();
             ge.setBalloon(null);
             var selectable = false;
             var id = f.getId();
-            // console.log('id', id);
             if(id){
                 selectable = tree.api.opts.selectable;
                 if(typeof selectable === 'function'){
                     selectable = selectable(f);
                 }
-                // console.log('selectable', selectable);
             }
             if(selectable){
                 tree.instance.selectById(id, f);
             }
-            // console.log('just openBalloon');
             openBalloon(f, tree);
             return false;                
         } // otherwise feature likely loaded outside of a kmltree instance
