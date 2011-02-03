@@ -39,11 +39,24 @@
                 });
                 
                 tree.load();
+                
+                $(tree).bind('select', function(e, node, kmlObject){
+                    console.log('select');
+                    log(e, node, kmlObject);
+                });
             }
 
             function failureCB(errorCode) {
                 alert('failed to load plugin');
             }
+            
+            window.log = function(){
+              log.history = log.history || [];   // store logs to an array for reference
+              log.history.push(arguments);
+              if(this.console){
+                console.log( Array.prototype.slice.call(arguments) );
+              }
+            };
 
             $(document).ready(init);
             

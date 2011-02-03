@@ -30,33 +30,24 @@
 			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
 		</IconStyle>
 	</Style>
-	<Placemark id="SMI">
-		<name>San Miguel Island</name>
-		<LookAt>
-			<longitude>-119.8792368155035</longitude>
-			<latitude>34.10244669966039</latitude>
-			<altitude>0</altitude>
-			<heading>-54.00420911460243</heading>
-			<tilt>69.68008869126007</tilt>
-			<range>70649.69386482518</range>
+	<Placemark>
+		<name>Jalama</name>
+		<description>Watch out for sharks!</description>
+		<Camera>
+			<longitude>-120.4866102315152</longitude>
+			<latitude>34.4803041603296</latitude>
+			<altitude>39594.18089695703</altitude>
+			<heading>-28.41709488778237</heading>
+			<tilt>4.273738199704431</tilt>
+			<roll>-25.6046433238183</roll>
 			<altitudeMode>relativeToGround</altitudeMode>
 			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
-		</LookAt>
+		</Camera>
 		<styleUrl>#msn_ylw-pushpin</styleUrl>
 		<Point>
 			<altitudeMode>absolute</altitudeMode>
-			<coordinates>-120.3794340676363,34.04276172208179,-95.34931427851036</coordinates>
+			<coordinates>-120.4973,34.49141944444445,-287.8148059362304</coordinates>
 		</Point>
 	</Placemark>
-	<Folder>
-	    <name>Inside this folder is an active NetworkLink</name>
-	    <NetworkLink>
-    		<name>networklink b</name>
-    		<open>0</open>
-    		<Link>
-    			<href>http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_3.kml</href>
-    		</Link>
-    	</NetworkLink>
-	</Folder>
 </Document>
 </kml>
