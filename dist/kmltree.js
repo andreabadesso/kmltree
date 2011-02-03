@@ -1531,6 +1531,7 @@ var kmltree = (function(){
         };
                 
         var selectNode = function(node, kmlObject){
+            // Remember... selectById sometimes fires select events as well!!
             if(!kmlObject){
                 kmlObject = lookup(node);
             }
