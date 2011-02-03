@@ -60,31 +60,26 @@ var kmltreeManager = (function(){
     var balloonOpening = function(e){
         var f = e.getFeature();
         var tree = getOwner(f);
-        console.log('e', e, f, tree);
+        // console.log('e', e, f, tree);
         if(tree){
             e.preventDefault();
             ge.setBalloon(null);
             var selectable = false;
             var id = f.getId();
-            console.log('id', id);
+            // console.log('id', id);
             if(id){
                 selectable = tree.api.opts.selectable;
                 if(typeof selectable === 'function'){
                     selectable = selectable(f);
                 }
-                console.log('selectable', selectable);
+                // console.log('selectable', selectable);
             }
             if(selectable){
-                console.log('selectById');
-                if(!tree.instance.selectKmlObject(f)){
-                    openBalloon(f, tree);
-                }
-                console.log('after selectById');
-            }else{
-                console.log('just openBalloon');
-                openBalloon(f, tree);
-                return false;                
+                tree.instance.selectById(id, f);
             }
+            // console.log('just openBalloon');
+            openBalloon(f, tree);
+            return false;                
         } // otherwise feature likely loaded outside of a kmltree instance
     }
         
@@ -1067,24 +1062,39 @@ var kmltree = (function(){
         that.getNodesById = getNodesById;
                 
         // Selects the first node found matching the ID
-        var selectById = function(id){
+        var selectById = function(id, kmlObject){
             var nodes = getNodesById(id);
             if(nodes.length){
-                console.log('found');
-                return selectNode(nodes[0], lookup(nodes[0]));
+                selectNode(nodes[0], kmlObject || lookup(nodes[0]));
+                return true;
             }else{
                 // couldn't find feature in list. Might be in unexpanded 
                 // networklink
-                return false;
+                // highlight parent networklink if feature isn't shown in 
+                // the tree yet
+                console.log('couldnt find');
+                var node = getFirstRenderedParentNetworkLink(kmlObject);
+                if(node){
+                    console.log('found', node);
+                    clearSelection(true, true);
+                    console.log('after clearselection');
+                    $(node).addClass('sortaSelected');
+                    $(that).trigger('select', [null, kmlObject]);
+                    console.log('selected');
+                    return true;
+                }else{
+                    clearSelection();
+                    return false;                    
+                }
             }
         };
         
         that.selectById = selectById;
         
         var getParentNetworkLink = function(kmlObject){
-            console.log('getPArentNetworkLink', kmlObject);
+            // console.log('getPArentNetworkLink', kmlObject);
             var parent = kmlObject.getParentNode();
-            console.log(parent, parent.getType());
+            // console.log(parent, parent.getType());
             switch(parent.getType()){
                 case 'KmlNetworkLink':
                     return parent;
@@ -1097,31 +1107,45 @@ var kmltree = (function(){
             }
         };
         
-        var selectKmlObject = function(kmlObject){
-            console.log('selectKmlObject');
-            var id = kmlObject.getId();
-            console.log(id);
-            if(!id){
-                throw('must provide a feature with an ID');
+        var getFirstRenderedParentNetworkLink = function(kmlObject, loadedNl){
+            console.log('getFirstRenderedParentNetworkLink');
+            var treeid = opts.element.attr('id');
+            if(!loadedNl){
+                var loadedNl = [];
+                $('#'+treeid+' li.KmlNetworkLink').each(function(){
+                    // console.log('pushit');
+                    loadedNl.push([this, lookup(this)]);
+                });
+                // console.log('loadedNl', loadedNl);
+            }
+            var nL = getParentNetworkLink(kmlObject);
+            console.log('nl');
+            if(nL === false){
+                console.log('hit the top');
+                // walked all the way up to GEGlobe, couldn't find it.
+                return false;
             }else{
-                console.log('selectById');
-                if(!selectById(id)){
-                    // highlight networklink since feature isn't shown in tree
-                    console.log('blah');
-                    var nL = getParentNetworkLink(kmlObject);
-                    console.log(nL);
-                    return false;
-                }else{
-                    return true;
+                // if nL has an ID, look for that
+                console.log('nl', nL);
+                // look at all networklinks in tree that aren't expanded
+                var url = nL.getLink().getHref();
+                // console.log(url);
+                for(var i=0;i<loadedNl.length;i++){
+                    var loadedHref = loadedNl[i][1].getLink().getHref();
+                    var nLHref = nL.getLink().getHref()
+                    if(nLHref === loadedHref){
+                        return loadedNl[i][0];
+                    }
                 }
+                // if none match, keep moving up until hitting ge globe
+                return getFirstRenderedParentNetworkLink(nL, loadedNl);
             }
         };
-                
-        that.selectKmlObject = selectKmlObject;
         
         var clearSelection = function(keepBalloons, dontTriggerEvent){
             var prev = $('#'+opts.element.attr('id'))
                 .find('.selected').removeClass('selected');
+            $('.sortaSelected').removeClass('sortaSelected');
             if(prev.length){
                 prev.each(function(){
                     setModified($(this), 'selected', false);
@@ -1515,9 +1539,9 @@ var kmltree = (function(){
             node.addClass('selected');
             toggleVisibility(node, true);
             node.addClass('selected');
-            kmltreeManager.pauseListeners(function(){
-                kmltreeManager._openBalloon(kmlObject, that);
-            });            
+            // kmltreeManager.pauseListeners(function(){
+            //     kmltreeManager._openBalloon(kmlObject, that);
+            // });            
             var parent = node.parent().parent();
             
             while(!parent.hasClass('kmltree') 
@@ -1801,7 +1825,7 @@ var kmltree = (function(){
                 }
             }
             if(node.hasClass('select')){
-                selectNode(node, kmlObject);
+                selectNode(node, kmlObject);                
             }else{
                 clearSelection();
                 if(node.hasClass('hasDescription') || kmlObject.getType() === 
@@ -1809,11 +1833,11 @@ var kmltree = (function(){
                     if(kmlObject.getType() === 'KmlPlacemark'){
                         toggleVisibility(node, true);
                     }
-                    kmltreeManager.pauseListeners(function(){
-                        kmltreeManager._openBalloon(kmlObject, that);
-                    });
                 }
             }
+            kmltreeManager.pauseListeners(function(){
+                kmltreeManager._openBalloon(kmlObject, that);
+            });
             $(that).trigger('click', [node[0], kmlObject]);
         });
 
