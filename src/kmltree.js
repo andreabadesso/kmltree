@@ -332,15 +332,18 @@ var kmltree = (function(){
                 // networklink
                 // highlight parent networklink if feature isn't shown in 
                 // the tree yet
-                console.log('couldnt find');
                 var node = getFirstRenderedParentNetworkLink(kmlObject);
                 if(node){
-                    console.log('found', node);
+                    node = $(node);
                     clearSelection(true, true);
-                    console.log('after clearselection');
-                    $(node).addClass('sortaSelected');
+                    node.addClass('sortaSelected');
+                    var parent = node.parent().parent();
+                    while(!parent.hasClass('kmltree') 
+                        && !parent.find('>ul:visible').length){
+                        parent.addClass('open');
+                        var parent = parent.parent().parent();
+                    }
                     $(that).trigger('select', [null, kmlObject]);
-                    console.log('selected');
                     return true;
                 }else{
                     clearSelection();
@@ -352,9 +355,7 @@ var kmltree = (function(){
         that.selectById = selectById;
         
         var getParentNetworkLink = function(kmlObject){
-            // console.log('getPArentNetworkLink', kmlObject);
             var parent = kmlObject.getParentNode();
-            // console.log(parent, parent.getType());
             switch(parent.getType()){
                 case 'KmlNetworkLink':
                     return parent;
@@ -368,28 +369,23 @@ var kmltree = (function(){
         };
         
         var getFirstRenderedParentNetworkLink = function(kmlObject, loadedNl){
-            console.log('getFirstRenderedParentNetworkLink');
             var treeid = opts.element.attr('id');
             if(!loadedNl){
                 var loadedNl = [];
                 $('#'+treeid+' li.KmlNetworkLink').each(function(){
-                    // console.log('pushit');
-                    loadedNl.push([this, lookup(this)]);
+                    if(!$(this).hasClass('loaded')){
+                        loadedNl.push([this, lookup(this)]);                        
+                    }
                 });
-                // console.log('loadedNl', loadedNl);
             }
             var nL = getParentNetworkLink(kmlObject);
-            console.log('nl');
             if(nL === false){
-                console.log('hit the top');
                 // walked all the way up to GEGlobe, couldn't find it.
                 return false;
             }else{
                 // if nL has an ID, look for that
-                console.log('nl', nL);
                 // look at all networklinks in tree that aren't expanded
                 var url = nL.getLink().getHref();
-                // console.log(url);
                 for(var i=0;i<loadedNl.length;i++){
                     var loadedHref = loadedNl[i][1].getLink().getHref();
                     var nLHref = nL.getLink().getHref()
