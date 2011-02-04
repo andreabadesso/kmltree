@@ -3,3 +3,4 @@ compiler
 .DS_Store
 runrake
 .tar.gz
+.map
