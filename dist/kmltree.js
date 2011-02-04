@@ -1071,10 +1071,11 @@ var kmltree = (function(){
         that.expandParentsOf = expandParentsOf;
         
         // Selects the first node found matching the ID
-        var selectById = function(id, kmlObject){
+        var selectById = function(id, kmlObject, silent){
             var nodes = getNodesById(id);
             if(nodes.length){
-                selectNode(nodes[0], kmlObject || lookup(nodes[0]));
+                var node = $(nodes[0]);
+                selectNode(node, kmlObject || lookup(node), silent);
                 return true;
             }else{
                 // couldn't find feature in list. Might be in unexpanded 
@@ -1084,11 +1085,22 @@ var kmltree = (function(){
                 var node = getFirstRenderedParentNetworkLink(kmlObject);
                 if(node){
                     node = $(node);
-                    clearSelection(true, true);
-                    node.addClass('sortaSelected');
-                    expandParentsOf(node);
-                    $(that).trigger('select', [null, kmlObject]);
-                    return true;
+                    if(node.is(':visible')){
+                        clearSelection(true, true);
+                        node.addClass('sortaSelected');
+                        if(!silent){
+                            $(that).trigger('select', [node, kmlObject, false]);                            
+                        }
+                        return true;                        
+                    }else{
+                        setExpanderBreadcrumbs(node);
+                        // var parent = firstVisibleParentOf(node);
+                        node.addClass('sortaSelected');
+                        // setModified maybe someday
+                        if(!silent){
+                            $(that).trigger('select', [parent, kmlObject, false]);
+                        }
+                    }
                 }else{
                     clearSelection();
                     return false;                    
@@ -1141,6 +1153,39 @@ var kmltree = (function(){
                 return getFirstRenderedParentNetworkLink(nL, loadedNl);
             }
         };
+        
+        var selectNode = function(node, kmlObject, silent){
+            if(!kmlObject){
+                kmlObject = lookup(node);
+            }
+            node = $(node);
+            clearSelection(true, true);
+            var visible = $(node).is(':visible'); // need to make this actually work
+            toggleVisibility(node, true);
+            node.addClass('selected');
+            setModified(node, 'selected', true);         
+            if(!visible){
+                setExpanderBreadcrumbs(node);
+            }
+            if(!silent){
+                $(that).trigger('select', [node, kmlObject]);                
+            }
+        };
+        
+        that.selectNode = selectNode;
+        
+        var setExpanderBreadcrumbs = function(node){
+            var node = $(node);
+            var parent = node.parent().parent();
+            parent.addClass('sortaSelected');
+            if(!parent.is(':visible')){
+                return setExpanderBreadcrumbs(parent);
+            }else{
+                return parent;
+            }
+        };
+        
+        that.setExpanderBreadcrumbs = setExpanderBreadcrumbs;
         
         var clearSelection = function(keepBalloons, dontTriggerEvent){
             var prev = $('#'+opts.element.attr('id'))
@@ -1530,26 +1575,6 @@ var kmltree = (function(){
             lookupTable[node.attr('id')] = kmlObject;
         };
                 
-        var selectNode = function(node, kmlObject){
-            // Remember... selectById sometimes fires select events as well!!
-            if(!kmlObject){
-                kmlObject = lookup(node);
-            }
-            node = $(node);
-            clearSelection(true, true);
-            node.addClass('selected');
-            toggleVisibility(node, true);
-            node.addClass('selected');
-            // kmltreeManager.pauseListeners(function(){
-            //     kmltreeManager._openBalloon(kmlObject, that);
-            // });            
-            expandParentsOf(node);            
-            setModified(node, 'selected', true);
-            $(that).trigger('select', [node, kmlObject]);
-        };
-        
-        that.selectNode = selectNode;
-        
         var toggleDown = function(node, toggling){
             if(toggling){
                 if(node.hasClass('checkOffOnly')){
@@ -1787,9 +1812,12 @@ var kmltree = (function(){
         
         // Creates a new NetworkLinkQueue that simply opens up the given 
         // NetworkLink and any open NetworkLinks within it.
-        var openNetworkLinkRecursive = function(node){
+        var openNetworkLinkRecursive = function(node, callback){
             var queue = new NetworkLinkQueue({
                 success: function(links){
+                    if(callback){
+                        callback(node, links);
+                    };
                 },
                 error: function(links){
                 },
@@ -1859,10 +1887,17 @@ var kmltree = (function(){
             var el = $(this).parent();
             if(el.hasClass('KmlNetworkLink') && !el.hasClass('loaded') 
                 && !el.hasClass('loading')){
-                openNetworkLinkRecursive(el);
+                openNetworkLinkRecursive(el, function(node, links){
+                    if(node.hasClass('sortaSelected')){
+                        node.removeClass('sortaSelected');
+                        var kmlObject = ge.getBalloon().getFeature();
+                        selectById(kmlObject.getId(), kmlObject, true);
+                    }
+                });
             }else{
                 el.toggleClass('open');
                 setModified(el, 'open', el.hasClass('open'));
+                el.removeClass('sortaSelected');
             }
         });
         
