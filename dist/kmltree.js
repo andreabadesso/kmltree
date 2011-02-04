@@ -1056,7 +1056,20 @@ var kmltree = (function(){
         };
         
         that.getNodesById = getNodesById;
-                
+        
+        
+        var expandParentsOf = function(node){
+            node = $(node);
+            var parent = node.parent().parent();
+            while(!parent.hasClass('kmltree') 
+                && !parent.find('>ul:visible').length){
+                parent.addClass('open');
+                var parent = parent.parent().parent();
+            }
+        };
+        
+        that.expandParentsOf = expandParentsOf;
+        
         // Selects the first node found matching the ID
         var selectById = function(id, kmlObject){
             var nodes = getNodesById(id);
@@ -1073,12 +1086,7 @@ var kmltree = (function(){
                     node = $(node);
                     clearSelection(true, true);
                     node.addClass('sortaSelected');
-                    var parent = node.parent().parent();
-                    while(!parent.hasClass('kmltree') 
-                        && !parent.find('>ul:visible').length){
-                        parent.addClass('open');
-                        var parent = parent.parent().parent();
-                    }
+                    expandParentsOf(node);
                     $(that).trigger('select', [null, kmlObject]);
                     return true;
                 }else{
@@ -1535,14 +1543,7 @@ var kmltree = (function(){
             // kmltreeManager.pauseListeners(function(){
             //     kmltreeManager._openBalloon(kmlObject, that);
             // });            
-            var parent = node.parent().parent();
-            
-            while(!parent.hasClass('kmltree') 
-                && !parent.find('>ul:visible').length){
-                parent.addClass('open');
-                var parent = parent.parent().parent();
-            }
-            
+            expandParentsOf(node);            
             setModified(node, 'selected', true);
             $(that).trigger('select', [node, kmlObject]);
         };
