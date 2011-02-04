@@ -27,7 +27,8 @@ end
 file "dist/kmltree.min.js" => ['dist/kmltree.js', 'compiler/compiler.jar'] do 
   cmd = "java -jar compiler/compiler.jar "
   cmd << "--js dist/kmltree.js "
-  cmd << "--js_output_file dist/kmltree.min.js"
+  cmd << "--js_output_file dist/kmltree.min.js "
+  cmd << "--create_source_map ./kmltree.map"
   sh cmd
 end
 
