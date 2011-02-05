@@ -8,6 +8,21 @@ var kmltreeManager = (function(){
         ge = earthInstance;
         google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
         google.earth.addEventListener(ge, 'balloonclose', balloonClose);
+        google.earth.addEventListener(ge.getGlobe(), 'click', function(e, d){
+            if(e.getButton() === -1){
+                // related to scrolling, ignore
+                return;
+            }
+            var target = e.getTarget();
+            if(target.getType() === 'GEGlobe' && $('.kmltree-selected').length){
+                for(var i=0;i<trees.length;i++){
+                    var treeEl = $(trees[i].api.opts.element);
+                    if(treeEl.find('.kmltree-selected').length + treeEl.find('.kmltree-breadcrumb').length > 0){
+                        trees[i].instance.clearSelection();
+                    }
+                }
+            }
+        });
     }
     
     var register = function(tree, privilegedApi){
@@ -82,7 +97,10 @@ var kmltreeManager = (function(){
     var balloonClose = function(e){
         $('#kmltree-balloon-iframe').remove();
         for(var i=0;i<trees.length;i++){
-            trees[i].instance.clearSelection();
+            var treeEl = $(trees[i].api.opts.element);
+            if(treeEl.find('.kmltree-selected').length + treeEl.find('.kmltree-breadcrumb').length === 1 && treeEl.find('.kmltree-cursor-2').length === 0){
+                trees[i].instance.clearSelection();
+            }
         }
     }
         
@@ -244,6 +262,6 @@ var kmltreeManager = (function(){
             }
         }
     }
-    
+        
     return that;
 })();

@@ -40,9 +40,9 @@
                 
                 tree.load();
                 
-                $(tree).bind('select', function(e, node, kmlObject){
+                $(tree).bind('select', function(e, selectData){
                     console.log('select');
-                    log(e, node, kmlObject);
+                    log(e, selectData);
                 });
             }
 
@@ -52,7 +52,7 @@
             
             window.log = function(){
                 if(this.console){
-                    console.log(Array.prototype.slice.call(arguments));
+                    console.info(Array.prototype.slice.call(arguments));
                 }
             };
 

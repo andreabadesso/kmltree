@@ -8,6 +8,21 @@ var kmltreeManager = (function(){
         ge = earthInstance;
         google.earth.addEventListener(ge, 'balloonopening', balloonOpening);
         google.earth.addEventListener(ge, 'balloonclose', balloonClose);
+        google.earth.addEventListener(ge.getGlobe(), 'click', function(e, d){
+            if(e.getButton() === -1){
+                // related to scrolling, ignore
+                return;
+            }
+            var target = e.getTarget();
+            if(target.getType() === 'GEGlobe' && $('.kmltree-selected').length){
+                for(var i=0;i<trees.length;i++){
+                    var treeEl = $(trees[i].api.opts.element);
+                    if(treeEl.find('.kmltree-selected').length + treeEl.find('.kmltree-breadcrumb').length > 0){
+                        trees[i].instance.clearSelection();
+                    }
+                }
+            }
+        });
     }
     
     var register = function(tree, privilegedApi){
@@ -82,7 +97,10 @@ var kmltreeManager = (function(){
     var balloonClose = function(e){
         $('#kmltree-balloon-iframe').remove();
         for(var i=0;i<trees.length;i++){
-            trees[i].instance.clearSelection();
+            var treeEl = $(trees[i].api.opts.element);
+            if(treeEl.find('.kmltree-selected').length + treeEl.find('.kmltree-breadcrumb').length === 1 && treeEl.find('.kmltree-cursor-2').length === 0){
+                trees[i].instance.clearSelection();
+            }
         }
     }
         
@@ -244,7 +262,7 @@ var kmltreeManager = (function(){
             }
         }
     }
-    
+        
     return that;
 })();/**
 *
@@ -905,6 +923,36 @@ var kmltree = (function(){
         var ge = opts.gex.pluginInstance;
         var destroyed = false;
         var internalState = {};
+        var selectData = [];
+
+        function clearSelectData(){
+            selectData = [];
+        }
+        
+        function indexOfSelectData(node, kmlObject){
+            for(var i=0;i<selectData.length;i++){
+                if($(selectData[i]['node'])[0] === $(node)[0]){
+                    return i;
+                }
+            }
+            return -1;            
+        };
+        
+        function addSelectData(node, kmlObject){
+            var index = indexOfSelectData(node, kmlObject);
+            if(index === -1){
+                selectData.push({'node': node, 'kmlObject': kmlObject});                
+            }
+        }
+        
+        function removeSelectData(node, kmlObject){
+            var index = indexOfSelectData(node, kmlObject);
+            if(index === -1){
+                throw('removeSelectData error');                
+            }else{
+                selectData.splice(index, 1);
+            }
+        }
 
         if(parseFloat(ge.getPluginVersion()) < 5.2){
             alert('kmltree requires a google earth plugin version >= 5.2');
@@ -1075,6 +1123,7 @@ var kmltree = (function(){
             var nodes = getNodesById(id);
             if(nodes.length){
                 var node = $(nodes[0]);
+                clearSelection(true, true);
                 selectNode(node, kmlObject || lookup(node), silent);
                 return true;
             }else{
@@ -1087,22 +1136,18 @@ var kmltree = (function(){
                     node = $(node);
                     if(node.is(':visible')){
                         clearSelection(true, true);
-                        node.addClass('breadcrumb');
+                        node.addClass('kmltree-breadcrumb');
                         if(!silent){
-                            setTimeout(function(){
-                                $(that).trigger('select', [node, kmlObject, false]);                            
-                            }, 1);
+                            triggerSelect(node, kmlObject);
                         }
                         return true;                        
                     }else{
                         setExpanderBreadcrumbs(node);
                         // var parent = firstVisibleParentOf(node);
-                        node.addClass('breadcrumb');
+                        node.addClass('kmltree-breadcrumb');
                         // setModified maybe someday
                         if(!silent){
-                            setTimeout(function(){
-                                $(that).trigger('select', [parent, kmlObject, false]);                                
-                            }, 1);
+                            triggerSelect(parent, kmlObject);
                         }
                     }
                 }else{
@@ -1163,27 +1208,77 @@ var kmltree = (function(){
                 kmlObject = lookup(node);
             }
             node = $(node);
-            clearSelection(true, true);
             var visible = $(node).is(':visible'); // need to make this actually work
             toggleVisibility(node, true);
-            node.addClass('selected');
+            node.addClass('kmltree-selected');
             setModified(node, 'selected', true);         
             if(!visible){
                 setExpanderBreadcrumbs(node);
             }
             if(!silent){
-                setTimeout(function(){
-                    $(that).trigger('select', [node, kmlObject]);                
-                }, 1);
+                triggerSelect(node, kmlObject);
+            }else{
+                addSelectData(node, kmlObject);
             }
         };
         
         that.selectNode = selectNode;
         
+        var selectNodes = function(nodes, silent){
+            var last = nodes.length - 1;
+            nodes.each(function(i){
+                selectNode(this, null, !!silent || (!silent && i !== nodes.length - 1));
+            });
+        };
+                
+        var deselectNodes = function(nodes, silent){
+            nodes.each(function(i){
+                deselectNode(this, null, !!silent || (!silent && i !== nodes.length - 1));
+            });
+        };
+                
+        var deselectNode = function(node, kmlObject, silent){
+            if(!kmlObject){
+                kmlObject = lookup(node);
+            }
+            node = $(node);
+            // var visible = $(node).is(':visible');
+            node.removeClass('kmltree-selected');
+            setModified(node, 'selected', false);
+            // if(!visible){
+            //     setExpanderBreadcrumbs(node);
+            // }
+            if(!silent){
+                removeAndTrigger(node, kmlObject);
+            }else{
+                removeSelectData(node, kmlObject);
+            }
+        };
+        
+        that.deselectNode = deselectNode;
+        
+        var triggerSelect = function(node, kmlObject){
+            if(node && kmlObject){
+                addSelectData(node, kmlObject);
+            }else{
+                clearSelectData();
+            }
+            setTimeout(function(){
+                $(that).trigger('select', [selectData]);
+            }, 1);
+        };
+        
+        var removeAndTrigger = function(node, kmlObject){
+            removeSelectData(node, kmlObject);
+            setTimeout(function(){
+                $(that).trigger('select', [selectData]);
+            }, 1);
+        }
+        
         var setExpanderBreadcrumbs = function(node){
             var node = $(node);
             var parent = node.parent().parent();
-            parent.addClass('breadcrumb');
+            parent.addClass('kmltree-breadcrumb');
             if(!parent.is(':visible')){
                 return setExpanderBreadcrumbs(parent);
             }else{
@@ -1194,18 +1289,21 @@ var kmltree = (function(){
         that.setExpanderBreadcrumbs = setExpanderBreadcrumbs;
         
         var clearSelection = function(keepBalloons, dontTriggerEvent){
-            var prev = $('#'+opts.element.attr('id'))
-                .find('.selected').removeClass('selected');
-            $('.breadcrumb').removeClass('breadcrumb');
+            clearSelectData();
+            var treeEl = $('#'+opts.element.attr('id'));
+            var prev = treeEl
+                .find('.kmltree-selected').removeClass('kmltree-selected');
+            treeEl.find('.kmltree-breadcrumb')
+                .removeClass('kmltree-breadcrumb');
+            treeEl.find('.kmltree-cursor-1').removeClass('kmltree-cursor-1');
+            treeEl.find('.kmltree-cursor-2').removeClass('kmltree-cursor-2');
             if(prev.length){
                 prev.each(function(){
                     setModified($(this), 'selected', false);
                 });
-                if(!dontTriggerEvent){
-                    setTimeout(function(){
-                        $(that).trigger('select', [null, null]);
-                    }, 1);
-                }
+            }
+            if(!dontTriggerEvent){
+                triggerSelect(null, null);
             }
             var balloon = ge.getBalloon();
             if(balloon && !keepBalloons){
@@ -1844,6 +1942,7 @@ var kmltree = (function(){
         
         $('#'+id+' li > span.name').live('click', function(e){
             e.stopPropagation();
+            var dontOpen = false;
             var node = $(this).parent();
             var kmlObject = lookup(node);
             if(node.hasClass('error') && node.hasClass('KmlNetworkLink')){
@@ -1855,9 +1954,86 @@ var kmltree = (function(){
                 }
             }
             if(node.hasClass('select')){
-                selectNode(node, kmlObject);                
+                if(e.metaKey){
+                    if(node.hasClass('kmltree-selected')){
+                        $('.kmltree-cursor-1').removeClass('kmltree-cursor-1');
+                        node.removeClass('kmltree-cursor-1');
+                        deselectNode(node, kmlObject)
+                    }else{
+                        $('.kmltree-cursor-1').removeClass('kmltree-cursor-1');
+                        $('.kmltree-cursor-2').removeClass('kmltree-cursor-2');
+                        node.addClass('kmltree-cursor-1');
+                        selectNode(node, kmlObject);                      
+                    }
+                    kmltreeManager.pauseListeners(function(){
+                        ge.setBalloon(null);
+                    });
+                    dontOpen = true;
+                }else if(e.shiftKey){
+                    // if(node.hasClass('kmltree-selected') || node.hasClass('kmltree-breadcrumbs')){
+                    //     // do nothing
+                    // }else{
+                    // make sure not shift+selecting something in a 
+                    // different part of the tree (shift select only works 
+                    // with siblings)
+                    var treeEl = $('#'+opts.element.attr('id'));
+                    selected = treeEl.find('.kmltree-selected');
+                    if(selected.length === 1){
+                        selected.addClass('kmltree-cursor-1');
+                    }
+                    var cursor1 = treeEl.find('.kmltree-cursor-1');
+                    if(cursor1.length === 0){
+                        // just do a normal selection
+                        clearSelection(true, true);
+                        selectNode(node, kmlObject);
+                    }else{
+                        var parent = node.parent().parent();
+                        var first_cursor = treeEl.find('.kmltree-cursor-1');
+                        if(first_cursor.parent().parent()[0] !== parent[0]){
+                            // do nothing. can only shift-select siblings
+                        }else{
+                            var cursor2 = treeEl.find('.kmltree-cursor-2');
+                            if(cursor2.length){
+                                var cursors = treeEl.find('.kmltree-cursor-1, .kmltree-cursor-2');
+                                var first = cursors.first();
+                                var last = cursors.last()
+                                var siblings = first.parent().parent().find('> ul > li');
+                                // already have a range selected. Need to deselect
+                                var range = first.nextUntil('[id="'+last.attr('id')+'"]').andSelf().add(last);
+                                cursor2.removeClass('kmltree-cursor-2');
+                                deselectNodes(range, true)
+                            }
+                            node.addClass('kmltree-cursor-2');
+                            var cursors = treeEl.find('.kmltree-cursor-1, .kmltree-cursor-2');
+                            var first = cursors.first();
+                            var last = cursors.last();
+                            var range;
+                            if(first[0] === last[0]){
+                                // just one is selected
+                                range = first;
+                                treeEl.find('.kmltree-cursor-1, .kmltree-cursor-2').removeClass('kmltree-cursor-2').removeClass('kmltree-cursor-1');
+                            }else{
+                                var siblings = first.parent().parent().find('> ul > li');
+                                var range = first.nextUntil('[id="'+last.attr('id')+'"]').andSelf().add(last);                                
+                            }
+                            selectNodes(range);
+                            kmltreeManager.pauseListeners(function(){
+                                ge.setBalloon(null);
+                            });
+                        }
+                            // if(selected.first)
+                        // get furthest selected sibling
+                        // deselect everything quickly
+                        // select range 
+                        dontOpen = true;
+                    }
+                }else{
+                    clearSelection(true, true);
+                    selectNode(node, kmlObject);
+                }
             }else{
                 clearSelection();
+                node.addClass('kmltree-cursor-1');
                 if(node.hasClass('hasDescription') || kmlObject.getType() === 
                     'KmlPlacemark'){
                     if(kmlObject.getType() === 'KmlPlacemark'){
@@ -1865,9 +2041,11 @@ var kmltree = (function(){
                     }
                 }
             }
-            kmltreeManager.pauseListeners(function(){
-                kmltreeManager._openBalloon(kmlObject, that);
-            });
+            if(!dontOpen){
+                kmltreeManager.pauseListeners(function(){
+                    kmltreeManager._openBalloon(kmlObject, that);
+                });                
+            }
             $(that).trigger('click', [node[0], kmlObject]);
         });
 
@@ -1880,14 +2058,18 @@ var kmltree = (function(){
         // Events to handle clearing selection
                 
         opts.element.click(function(e){
+            var el = $(e.target);
+            var fire = false;
             if(e.target === this){
-                clearSelection();
+                fire = true;
             }else{
-                var el = $(e.target);
                 if(el.hasClass('toggle') && !el.hasClass('select')){
-                    clearSelection();
+                    fire = true;
                 }
             }
+            if(el.find('.kmltree-selected').length || el.find('.kmltree-breadcrumb').length){
+                clearSelection();
+            }            
         });
         
         // expand events
@@ -1897,13 +2079,13 @@ var kmltree = (function(){
             if(el.hasClass('KmlNetworkLink') && !el.hasClass('loaded') 
                 && !el.hasClass('loading')){
                 openNetworkLinkRecursive(el, function(node, links){
-                    if(node.hasClass('breadcrumb')){
+                    if(node.hasClass('kmltree-breadcrumb')){
                         if(closing){
-                            if(el.find('.selected').length){
-                                el.addClass('breadcrumb');
+                            if(el.find('.kmltree-selected').length){
+                                el.addClass('kmltree-breadcrumb');
                             }
                         }else{
-                            el.removeClass('breadcrumb');                    
+                            el.removeClass('kmltree-breadcrumb');                    
                         }
                         var kmlObject = ge.getBalloon().getFeature();
                         selectById(kmlObject.getId(), kmlObject, true);
@@ -1913,11 +2095,11 @@ var kmltree = (function(){
                 el.toggleClass('open');
                 setModified(el, 'open', el.hasClass('open'));
                 if(closing){
-                    if(el.find('.selected').length){
-                        el.addClass('breadcrumb');
+                    if(el.find('.kmltree-selected').length){
+                        el.addClass('kmltree-breadcrumb');
                     }
                 }else{
-                    el.removeClass('breadcrumb');                    
+                    el.removeClass('kmltree-breadcrumb');                    
                 }
             }
         });
@@ -1925,7 +2107,7 @@ var kmltree = (function(){
         $('#'+id+' li > .toggler').live('click', function(){
             var node = $(this).parent();
             var toggle = !node.hasClass('visible');
-            if(!toggle && node.hasClass('selected')){
+            if(!toggle && node.hasClass('kmltree-selected')){
                 clearSelection();
             }
             if(!toggle && ge.getBalloon()){
