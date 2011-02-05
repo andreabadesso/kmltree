@@ -945,7 +945,9 @@ module('kmlTree');
             selectable: true
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
-            $(tree).one('select', function(e, node, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
                 ok(true, 'select event fired');
                 equals(kmlObject.getName(), 'Forney', 'Correct feature selected');
                 tree.destroy();
@@ -978,7 +980,9 @@ module('kmlTree');
             }
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
-            $(tree).one('select', function(e, node, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
                 ok(true, 'select event fired');
                 equals(kmlObject.getName(), 'Forney', 'Correct feature selected');
                 ge.setBalloon(null);
@@ -993,8 +997,8 @@ module('kmlTree');
         tree.load(true);
     });
 
-    // selections on unexpanded features get breadcrumbs indicating what items to expand to reach them in the tree
-    earthAsyncTest("un-expanded feature's parent has breadcrumb class, and it is removed when expanded", function(ge, gex){
+    // selections on unexpanded features get kmltree-breadcrumbs indicating what items to expand to reach them in the tree
+    earthAsyncTest("un-expanded feature's parent has kmltree-breadcrumb class, and it is removed when expanded", function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('selection.kml'),
@@ -1005,14 +1009,16 @@ module('kmlTree');
             selectable: true
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
-            $(tree).one('select', function(e, node, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
                 ok(true, 'select event fired');
                 equals(kmlObject.getName(), 'Yellowbanks', 'Correct feature selected');
-                var folder = $('.breadcrumb.KmlFolder > :contains(Yellowbanks)').parent();
-                ok(folder.hasClass('KmlFolder'), 'Parent KmlFolder has breadcrumb class');
+                var folder = $('.kmltree-breadcrumb.KmlFolder > :contains(Yellowbanks)').parent();
+                ok(folder.hasClass('KmlFolder'), 'Parent KmlFolder has kmltree-breadcrumb class');
                 folder.find('.expander').click();
-                ok(!folder.hasClass('breadcrumb'), 'Breadcrumb class removed now that folder is expanded');
-                ok(node.hasClass('selected'), 'primary node should be selected');
+                ok(!folder.hasClass('kmltree-breadcrumb'), 'kmltree-breadcrumb class removed now that folder is expanded');
+                ok(node.hasClass('kmltree-selected'), 'primary node should be selected');
                 tree.destroy();
                 $('.kmltreetest').remove();
                 start();
@@ -1022,7 +1028,7 @@ module('kmlTree');
         tree.load(true);
     });
     
-    earthAsyncTest("selection breadcrumbs - one networklink deep", function(ge, gex){
+    earthAsyncTest("selection kmltree-breadcrumbs - one networklink deep", function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('selection.kml'),
@@ -1033,18 +1039,20 @@ module('kmlTree');
             selectable: true
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
-            $(tree).one('select', function(e, node, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
                 ok(true, 'select event fired');
                 equals(kmlObject.getName(), 'San Miguel Island', 'Correct feature selected');
                 ok(node.hasClass('KmlNetworkLink'), 'Node returned to event callback is actually the parent networklink');
-                ok(node.hasClass('breadcrumb'), 'NetworkLink has breadcrumb class');
+                ok(node.hasClass('kmltree-breadcrumb'), 'NetworkLink has kmltree-breadcrumb class');
                 $(tree).one('networklinkload', function(e){
-                    ok(!node.hasClass('breadcrumb'), 'NetworkLink should no longer have breadcrumb class');
-                    ok(node.find('.selected:contains("San Miguel")').length === 1, 'Child feature is selected');
+                    ok(!node.hasClass('kmltree-breadcrumb'), 'NetworkLink should no longer have kmltree-breadcrumb class');
+                    ok(node.find('.kmltree-selected:contains("San Miguel")').length === 1, 'Child feature is selected');
                     // roll back up
                     var nla = $('.KmlNetworkLink > :contains("networklink a")').parent();
                     nla.find('.expander').click();
-                    ok(nla.hasClass('breadcrumb'), 'collapsing networklink back up add breadcrumb.');
+                    ok(nla.hasClass('kmltree-breadcrumb'), 'collapsing networklink back up add kmltree-breadcrumb.');
                     tree.destroy();
                     $('.kmltreetest').remove();
                     start();
@@ -1059,7 +1067,7 @@ module('kmlTree');
         tree.load(true);
     });
     
-    earthAsyncTest("selection breadcrumbs - two networklinks deep with folder in-between", function(ge, gex){
+    earthAsyncTest("selection kmltree-breadcrumbs - two networklinks deep with folder in-between", function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('selection.kml'),
@@ -1070,25 +1078,27 @@ module('kmlTree');
             selectable: true
         });
         $(tree).one('kmlLoaded', function(e, kmlObject){
-            $(tree).one('select', function(e, node, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
                 ok(true, 'select event fired');
                 equals(kmlObject.getName(), 'Jalama', 'Correct feature selected');
                 ok(node.hasClass('KmlNetworkLink'), 'Node returned to event callback is actually the parent networklink');
-                ok(node.hasClass('breadcrumb'), 'NetworkLink has breadcrumb class');
+                ok(node.hasClass('kmltree-breadcrumb'), 'NetworkLink has kmltree-breadcrumb class');
                 $(tree).one('networklinkload', function(e){
-                    ok(!node.hasClass('breadcrumb'), 'NetworkLink should no longer have breadcrumb class');
-                    var folder = node.find('.KmlFolder.breadcrumb');
-                    ok(folder, 'Folder has breadcrumb class');
+                    ok(!node.hasClass('kmltree-breadcrumb'), 'NetworkLink should no longer have kmltree-breadcrumb class');
+                    var folder = node.find('.KmlFolder.kmltree-breadcrumb');
+                    ok(folder, 'Folder has kmltree-breadcrumb class');
                     folder.find('> .expander').click();
-                    ok(!folder.hasClass('breadcrumb'), 'After expanding, folder breadcrumb is removed');
-                    var nlb = folder.find('.KmlNetworkLink.breadcrumb');
-                    ok(nlb, 'networklink b breadcrumb-ed');
+                    ok(!folder.hasClass('kmltree-breadcrumb'), 'After expanding, folder kmltree-breadcrumb is removed');
+                    var nlb = folder.find('.KmlNetworkLink.kmltree-breadcrumb');
+                    ok(nlb, 'networklink b kmltree-breadcrumb-ed');
                     $(tree).one('networklinkload', function(e){
-                        ok(!nlb.hasClass('breadcrumb'), 'Breadcrumb class removed from expanded networklink');
-                        ok(node.find('.selected').length, 'Selected item found under networklink');
+                        ok(!nlb.hasClass('kmltree-breadcrumb'), 'kmltree-breadcrumb class removed from expanded networklink');
+                        ok(node.find('.kmltree-selected').length, 'Selected item found under networklink');
                         // rollup
                         node.find('> .expander').click();
-                        ok(node.hasClass('breadcrumb'), 'collapsed networklink indicates location of nested selection.');
+                        ok(node.hasClass('kmltree-breadcrumb'), 'collapsed networklink indicates location of nested selection.');
                         tree.destroy();
                         $('.kmltreetest').remove();
                         start();

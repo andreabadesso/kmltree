@@ -145,6 +145,24 @@
 				<coordinates>-119.8246347649518,33.9491104120905,-63.55434258857056</coordinates>
 			</Point>
 		</Placemark>
+		<Placemark id="ADMRLS">
+    		<name>Admiral&apos;s Reef</name>
+    		<LookAt>
+    			<longitude>-119.4193371265044</longitude>
+    			<latitude>34.00258845667152</latitude>
+    			<altitude>0</altitude>
+    			<heading>-0.0003006277700235199</heading>
+    			<tilt>0</tilt>
+    			<range>4063.372032407893</range>
+    			<altitudeMode>relativeToGround</altitudeMode>
+    			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+    		</LookAt>
+    		<styleUrl>#msn_ylw-pushpin</styleUrl>
+    		<Point>
+    			<altitudeMode>absolute</altitudeMode>
+    			<coordinates>-119.4193371265044,34.00258888888889,-11.1313545812785</coordinates>
+    		</Point>
+    	</Placemark>
 		<Folder id="FLD1">
 			<name>subfolder</name>
 			<Placemark id="Yellowbanks">
