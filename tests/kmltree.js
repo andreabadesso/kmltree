@@ -934,7 +934,7 @@ module('kmlTree');
         tree.load(true);
     });
 
-    earthAsyncTest('static selectable option', function(ge, gex){
+    earthAsyncTest('selectable - static selectable option', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
             url: example('selection.kml'),
@@ -959,7 +959,7 @@ module('kmlTree');
         tree.load(true);
     });
 
-    earthAsyncTest('callable selectable option', function(ge, gex){
+    earthAsyncTest('selectable - callable selectable option', function(ge, gex){
         var gulltested = 0;
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
@@ -992,10 +992,124 @@ module('kmlTree');
                 $('.kmltreetest').remove();
                 start();                    
             });
-            triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');
+            triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');                
         });
         tree.load(true);
     });
+    
+    // multiple-select should be turned off by default
+    earthAsyncTest('selectable - multipleSelect off by default', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('selection.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multiple: false
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
+                ok(true, 'select event fired');
+                equals(kmlObject.getName(), 'Forney', 'Correct feature selected');
+                var e = jQuery.Event('click');
+                e.metaKey = true;
+                $(tree).one('select', function(e, data){
+                    equals(data.length, 1, 'Only one kmlObject selected');
+                    equals(data[0].kmlObject.getName(), 'Gull Island', 'Correct selected feature');
+                    tree.destroy();
+                    $('.kmltreetest').remove();
+                    start();                    
+                });
+                $('li.GullIsland > span.name').trigger(e);
+            });
+            triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');                
+        });
+        tree.load(true);
+    });
+
+    function inSelectData(data, name){
+        for(var i =0;i<data.length;i++){
+            var kmlObject = data[i].kmlObject;
+            if(kmlObject.getName() === name){
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // command-select support
+    earthAsyncTest('selectable - multipleSelect command/ctrl+select support', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('selection.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multipleSelect: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
+                ok(true, 'select event fired');
+                equals(kmlObject.getName(), 'Forney', 'Correct feature selected');
+                var e = jQuery.Event('click');
+                e.metaKey = true;
+                $(tree).one('select', function(e, data){
+                    equals(data.length, 2, 'Two kmlObjects selected');
+                    ok(inSelectData(data, 'Gull Island'), 'Gull Island in selected features');
+                    ok(inSelectData(data, 'Forney'), 'Forney in selected features');
+                    $(tree).one('select', function(e, data){
+                        equals(data.length, 1, 'Command+Clicking again deselects');
+                        ok(inSelectData(data, 'Forney'), 'Forney in selected features');                        
+                        var e = jQuery.Event('click');
+                        e.metaKey = true;
+                        $(tree).one('select', function(e, data){
+                            equals(data.length, 2, 'Two kmlObjects selected');
+                            ok(inSelectData(data, 'Gull Island'), 'Gull Island in selected features');
+                            ok(inSelectData(data, 'Forney'), 'Forney in selected features');                            
+                            $(tree).one('select', function(e, data){
+                                equals(data.length, 1, 'Clicking without meta-key clears multiple select');
+                                setTimeout(function(){
+                                    equals($('.selected').length, 0, 'Trying to select unselectable does nothing.');
+                                    tree.destroy();
+                                    $('.kmltreetest').remove();
+                                    start();
+                                }, 500);
+                                var e = jQuery.Event('click');
+                                e.metaKey = true;
+                                $('#FLD1').trigger(e);
+                            });
+                            $('li.GullIsland > span.name').click();
+                        });                      
+                        var e = jQuery.Event('click');
+                        e.metaKey = true;
+                        $('li.GullIsland > span.name').trigger(e);
+                    });
+                    var e = jQuery.Event('click');
+                    e.metaKey = true;
+                    $('li.GullIsland > span.name').trigger(e);
+                });
+                $('li.GullIsland > span.name').trigger(e);
+            });
+            triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');                
+        });
+        tree.load(true);
+    });
+    
+    // shift+select support
+    
+    // TODO: Test cases for all the new apis that aren't yet tested
 
     // selections on unexpanded features get kmltree-breadcrumbs indicating what items to expand to reach them in the tree
     earthAsyncTest("un-expanded feature's parent has kmltree-breadcrumb class, and it is removed when expanded", function(ge, gex){
