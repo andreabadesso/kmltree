@@ -35,7 +35,8 @@
                     setExtent: true,
                     selectable: function(kmlObject){
                         return kmlObject.getType() === 'KmlPlacemark';
-                    }
+                    },
+                    multipleSelect: true
                 });
                 
                 tree.load();

@@ -145,6 +145,8 @@ var kmltreeManager = (function(){
         return false;
     };
     
+    that.getOwner = getOwner;
+    
     var openBalloon = function(kmlObject, tree){
         $(window).unbind("message.kmlTreeIframeEvents");
         var balloon;

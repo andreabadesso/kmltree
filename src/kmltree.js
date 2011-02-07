@@ -153,7 +153,8 @@ var kmltree = (function(){
         iframeSandbox: 'http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html',
         unknownIframeDimensionsDefault: {height: 450, width:530},
         sandboxedBalloonCallback: function(){},
-        selectable: function(kmlObject){return false;}
+        selectable: function(kmlObject){return false;},
+        multipleSelect: false
     };
         
         
@@ -873,6 +874,17 @@ var kmltree = (function(){
             }
             clearKmlObjects();
             clearLookups();
+            var b = ge.getBalloon();
+            if(b){
+                var f = b.getFeature();
+                if(f){
+                    var owner = kmltreeManager.getOwner(f);
+                    if(owner && owner.instance === that){
+                        ge.setBalloon(null);
+                    }
+                }
+            }
+            ge.setBalloon(null);
             var id = opts.element.attr('id');
             $('#'+id+' li > span.name').die();
             $('#'+id+' li').die();
@@ -1187,6 +1199,7 @@ var kmltree = (function(){
         var id = opts.element.attr('id');
         
         $('#'+id+' li > span.name').live('click', function(e){
+            console.log('click', e);
             e.stopPropagation();
             var dontOpen = false;
             var node = $(this).parent();
@@ -1200,7 +1213,7 @@ var kmltree = (function(){
                 }
             }
             if(node.hasClass('select')){
-                if(e.metaKey){
+                if(opts.multipleSelect && e.metaKey){
                     if(node.hasClass('kmltree-selected')){
                         $('.kmltree-cursor-1').removeClass('kmltree-cursor-1');
                         node.removeClass('kmltree-cursor-1');
@@ -1215,7 +1228,7 @@ var kmltree = (function(){
                         ge.setBalloon(null);
                     });
                     dontOpen = true;
-                }else if(e.shiftKey){
+                }else if(opts.multipleSelect && e.shiftKey){
                     // if(node.hasClass('kmltree-selected') || node.hasClass('kmltree-breadcrumbs')){
                     //     // do nothing
                     // }else{
