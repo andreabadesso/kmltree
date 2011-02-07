@@ -1955,7 +1955,6 @@ var kmltree = (function(){
         var id = opts.element.attr('id');
         
         $('#'+id+' li > span.name').live('click', function(e){
-            console.log('click', e);
             e.stopPropagation();
             var dontOpen = false;
             var node = $(this).parent();
