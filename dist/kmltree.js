@@ -73,6 +73,7 @@ var kmltreeManager = (function(){
     };
     
     var balloonOpening = function(e){
+        console.log('balloonOpening');
         var f = e.getFeature();
         var tree = getOwner(f);
         if(tree){
@@ -95,11 +96,15 @@ var kmltreeManager = (function(){
     }
         
     var balloonClose = function(e){
+        console.log('balloon close');
         $('#kmltree-balloon-iframe').remove();
         for(var i=0;i<trees.length;i++){
             var treeEl = $(trees[i].api.opts.element);
-            if(treeEl.find('.kmltree-selected').length + treeEl.find('.kmltree-breadcrumb').length === 1 && treeEl.find('.kmltree-cursor-2').length === 0){
+            if(treeEl.find('.kmltree-selected').length + treeEl.find('.KmlNetworkLink.kmltree-breadcrumb:not(.loaded)').length === 1 && treeEl.find('.kmltree-cursor-2').length === 0){
+                console.log('found stuff');
                 trees[i].instance.clearSelection();
+            }else{
+                console.log('didnt find stuff', treeEl.find('.kmltree-selected'), treeEl.find('KmlNetworkLink.kmltree-breadcrumb:not(.loaded)'), treeEl.find('.kmltree-selected').length + treeEl.find('KmlNetworkLink.kmltree-breadcrumb:not(.loaded)').length);
             }
         }
     }
@@ -145,7 +150,14 @@ var kmltreeManager = (function(){
         return false;
     };
     
-    that.getOwner = getOwner;
+    that.getOwner = function(kmlObject){
+        var t = getOwner(kmlObject);
+        if(t){
+            return t.instance;
+        }else{
+            return false;
+        }
+    };
     
     var openBalloon = function(kmlObject, tree){
         $(window).unbind("message.kmlTreeIframeEvents");
@@ -1258,8 +1270,6 @@ var kmltree = (function(){
             }
         };
         
-        that.deselectNode = deselectNode;
-        
         var triggerSelect = function(node, kmlObject){
             if(node && kmlObject){
                 addSelectData(node, kmlObject);
@@ -1288,9 +1298,7 @@ var kmltree = (function(){
                 return parent;
             }
         };
-        
-        that.setExpanderBreadcrumbs = setExpanderBreadcrumbs;
-        
+                
         var clearSelection = function(keepBalloons, dontTriggerEvent){
             clearSelectData();
             var treeEl = $('#'+opts.element.attr('id'));

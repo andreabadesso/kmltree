@@ -34,7 +34,7 @@
 		<ListStyle>
 		</ListStyle>
 	</Style>
-	<Placemark>
+	<Placemark id="hello">
 		<name>Hello!</name>
 		<description>Hello from MSI!</description>
 		<LookAt>

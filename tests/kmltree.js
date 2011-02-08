@@ -5,12 +5,14 @@ module('kmlTree');
 
     function triggerBalloon(ge, url){
         var f = ge.getElementByUrl(url);
+        console.log(f.getName());
         if(!f){
             throw('could not find feature with url ', url);
         }
         var balloon = ge.createHtmlStringBalloon('');
         balloon.setFeature(f); 
         ge.setBalloon(balloon);
+        console.log('set balloon');
     }
     
     // from http://stackoverflow.com/questions/901115/get-querystring-with-jquery
@@ -1108,6 +1110,125 @@ module('kmlTree');
     });
     
     // shift+select support
+    earthAsyncTest('selectable - multipleSelect shift+click', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('selection.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multipleSelect: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
+                ok(true, 'select event fired');
+                equals(kmlObject.getName(), 'Forney', 'Correct feature selected');
+                var e = jQuery.Event('click');
+                e.shiftKey = true;
+                $(tree).one('select', function(e, data){
+                    equals(data.length, 3, 'Selected all 3 placemarks');
+                    ok(inSelectData(data, 'Gull Island'), 'Gull Island in selected features');
+                    ok(inSelectData(data, 'Forney'), 'Forney in selected features');                            
+                    ok(inSelectData(data, "Admiral's Reef"), "Admiral's Reef in selected features");
+                    $(tree).one('select', function(e, data){
+                        equals(data.length, 1, 'Switch cursor to gull');
+                        $(tree).one('select', function(e, data){
+                            equals(data.length, 2, 'Selected Admirals and Gull');
+                            ok(inSelectData(data, 'Gull Island'), 'Gull Island in selected features');
+                            ok(inSelectData(data, "Admiral's Reef"), "Admiral's Reef in selected features");
+                            $(tree).one('select', function(e, data){
+                                equals(data.length, 2, 'Selected Forney and Gull');
+                                ok(inSelectData(data, 'Gull Island'), 'Gull Island in selected features');
+                                ok(inSelectData(data, "Forney"), "Admiral's Reef in selected features");
+                                tree.destroy();
+                                $('.kmltreetest').remove();
+                                start();                                 
+                            });
+                            var e = jQuery.Event('click');
+                            e.shiftKey = true;
+                            $('li.Forney > span.name').trigger(e);                        
+                        });
+                        var e = jQuery.Event('click');
+                        e.shiftKey = true;
+                        $('li.ADMRLS > span.name').trigger(e);                        
+                    });
+                    triggerBalloon(ge, tree.kmlObject.getUrl() + '#GullIsland');                
+                });
+                $('li.ADMRLS > span.name').trigger(e);
+            });
+            triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');                
+        });
+        tree.load(true);
+    });
+    
+    // multipleSelect - two kmltrees
+    // normal selections from map and tree
+    // shift select on both trees
+    earthAsyncTest('selectable - multiple trees', function(ge, gex){
+        var gulltested = 0;
+        $(document.body).append('<div class="kmltreetest"></div>');
+        $(document.body).append('<div class="kmltreetest2"></div>');
+
+        var tree = kmltree({
+            url: example('selection.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multipleSelect: true
+        });
+
+        var tree2 = kmltree({
+            url: example('hello.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest2'),
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multipleSelect: true
+        });
+
+        $(tree).one('kmlLoaded', function(){
+            $(tree2).one('kmlLoaded', function(e, kmlObject){
+                console.log('loaded');
+                $(tree).one('select', function(e, data){
+                    console.log('select one');
+                    equals(data.length, 1, 'One feature selected from map');
+                    ok(inSelectData(data, 'Forney'), 'Forney in selected features');
+                    $(tree2).one('select', function(e, data){
+                        console.log('select two');
+                        equals(data.length, 1, 'One feature selected from map on other tree');
+                        ok(inSelectData(data, 'Hello!'), 'Hello! in selected features');
+                        equals($('.kmltree .kmltree-selected').length, 1, 'Only one feature from one tree selected');
+                        // tree.destroy();
+                        // tree2.destroy();
+                        // $('.kmltreetest').remove();
+                        // $('.kmltreetest2').remove();
+                        // start();
+                    });
+                    console.log(tree2);
+                    console.log(tree2.kmlObject.getUrl() + '#hello');
+                    triggerBalloon(ge, tree2.kmlObject.getUrl() + '#hello');                        
+                });
+                triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');
+            });            
+            tree2.load(true);
+        });
+        tree.load(true);
+    });
+    
+    // test kmltreeManager.getOwner
     
     
     // TODO: Test cases for all the new apis that aren't yet tested
