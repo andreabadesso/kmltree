@@ -196,8 +196,11 @@ module('enableGoogleLayersControl');
     r.testOption('Scale Legend', false);
     r.testOption('Status Bar', true);
     r.testOption('Overview Map', false);
-    r.testOption('Atmosphere', true);    
-    r.testLayer('3d Terrain and Ocean Surface', true, 'LAYER_TERRAIN');
+    r.testOption('Atmosphere', true);
+    r.testSpecial('Street View', true, function(ge){
+        return ge.getNavigationControl().getStreetViewEnabled();
+    });
+    r.testLayer('3d Terrain and Ocean Surface', true, 'LAYER_TERRAIN');  
     r.testSpecial('Sun', false, function(ge){
         return ge.getSun().getVisibility();
     });
@@ -213,6 +216,7 @@ module('enableGoogleLayersControl');
     
     var r = new Runner('includedLayers.kml');
     r.testLayer('Roads', false, 'LAYER_ROADS');
+    r.testLayer('3d Trees', false, 'LAYER_TREES');
     r.testLayer('Borders and Labels', false, 'LAYER_BORDERS');
     r.testLayer('3d Buildings', false, 'LAYER_BUILDINGS');
     r.testLayer('Low Resolution 3d Buildings', false, 
