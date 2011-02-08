@@ -41,9 +41,25 @@
                 
                 tree.load();
                 
+                var tree2 = kmltree({
+                    url: './kml/hello.kml',
+                    gex: gex, 
+                    element: $('#tree2'),
+                    mapElement: $('#map3d'),
+                    selectable: function(kmlObject){
+                        return kmlObject.getType() === 'KmlPlacemark';
+                    },
+                    multipleSelect: true
+                });
+                
+                tree2.load();       
+                
                 $(tree).bind('select', function(e, selectData){
-                    console.log('select');
-                    log(e, selectData);
+                    console.log('select tree1', e, selectData);
+                });
+                
+                $(tree2).bind('select', function(e, selectData){
+                    console.log('select tree2', e, selectData);
                 });
             }
 
@@ -69,6 +85,8 @@
             link.
         </p>
         <div id="tree"></div>
+        <br>
+        <div id="tree2"></div>
         <div id="map3d"></div>
         <br style="clear:both;">
     </body>

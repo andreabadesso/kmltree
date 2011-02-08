@@ -502,8 +502,6 @@ var kmltree = (function(){
             }
         };
         
-        that.deselectNode = deselectNode;
-        
         var triggerSelect = function(node, kmlObject){
             if(node && kmlObject){
                 addSelectData(node, kmlObject);
@@ -532,9 +530,7 @@ var kmltree = (function(){
                 return parent;
             }
         };
-        
-        that.setExpanderBreadcrumbs = setExpanderBreadcrumbs;
-        
+                
         var clearSelection = function(keepBalloons, dontTriggerEvent){
             clearSelectData();
             var treeEl = $('#'+opts.element.attr('id'));
