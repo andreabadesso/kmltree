@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-        <title>Simple Example</title>
+        <title>Selection Example</title>
         <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRQPjtdHQ3xdBuNAR-KDFOW1mqdVsRRmZhmrl-MOSGS44M9Gug9FdssEgQ"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>
         <!-- earth-api-utility-library dependencies -->
@@ -41,25 +41,8 @@
                 
                 tree.load();
                 
-                var tree2 = kmltree({
-                    url: './kml/hello.kml',
-                    gex: gex, 
-                    element: $('#tree2'),
-                    mapElement: $('#map3d'),
-                    selectable: function(kmlObject){
-                        return kmlObject.getType() === 'KmlPlacemark';
-                    },
-                    multipleSelect: true
-                });
-                
-                tree2.load();       
-                
                 $(tree).bind('select', function(e, selectData){
                     console.log('select tree1', e, selectData);
-                });
-                
-                $(tree2).bind('select', function(e, selectData){
-                    console.log('select tree2', e, selectData);
                 });
             }
 
@@ -78,15 +61,12 @@
         </script>
     </head>
     <body>
-        <h1><a href="http://code.google.com/p/kmltree/">kmltree</a> > <a href="http://code.google.com/p/kmltree/wiki/ExampleUses">examples</a> > hello world</h1>
-        <a class="src" href="kml/hello.kml">source kml</a>
+        <h1><a href="http://code.google.com/p/kmltree/">kmltree</a> > <a href="http://code.google.com/p/kmltree/wiki/ExampleUses">examples</a> > selection</h1>
+        <a class="src" href="kml/selection.kml">source kml</a>
         <p class="description">
-            This simple example shows how to display a kml file via a relative 
-            link.
+            This example shows selection support via the <code>selectable</code> option in combination with the <code>multipleSelect</code> option. Try using the command/control and shift keys to select multiple features from the tree.<br> If you have a window.console object enabled, you can view the <code>select</code> events firing.
         </p>
         <div id="tree"></div>
-        <br>
-        <div id="tree2"></div>
         <div id="map3d"></div>
         <br style="clear:both;">
     </body>
