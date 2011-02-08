@@ -45,6 +45,11 @@ var kmltreeManager = (function(){
                 break;
             }
         }
+        for(var key in cache){
+            if(cache[key].instance === tree){
+                delete cache[key];
+            }
+        }
         return tree;
     };
     

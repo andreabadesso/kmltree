@@ -890,6 +890,8 @@ var kmltree = (function(){
             $('#'+id+' li > span.name').die();
             $('#'+id+' li').die();
             $('#'+id+' li > .expander').die();
+            $(that).die();
+            $(that).unbind();
             $('#kmltree-balloon-iframe').remove();
             opts.element.html('');
         };
