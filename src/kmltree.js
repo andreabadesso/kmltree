@@ -150,7 +150,7 @@ var kmltree = (function(){
         setExtent: false,
         displayDocumentRoot: 'auto',
         displayEnhancedContent: false,
-        iframeSandbox: 'http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html',
+        iframeSandbox: 'http://kmltree.googlecode.com/hg/src/iframe.html',
         unknownIframeDimensionsDefault: {height: 450, width:530},
         sandboxedBalloonCallback: function(){},
         selectable: function(kmlObject){return false;},
