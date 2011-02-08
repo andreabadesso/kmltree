@@ -463,6 +463,7 @@ var kmltree = (function(){
                 setExpanderBreadcrumbs(node);
             }
             if(!silent){
+                kmltreeManager._clearEverythingButMe(that);
                 triggerSelect(node, kmlObject);
             }else{
                 addSelectData(node, kmlObject);

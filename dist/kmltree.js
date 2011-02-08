@@ -73,7 +73,6 @@ var kmltreeManager = (function(){
     };
     
     var balloonOpening = function(e){
-        console.log('balloonOpening');
         var f = e.getFeature();
         var tree = getOwner(f);
         if(tree){
@@ -96,18 +95,28 @@ var kmltreeManager = (function(){
     }
         
     var balloonClose = function(e){
-        console.log('balloon close');
         $('#kmltree-balloon-iframe').remove();
         for(var i=0;i<trees.length;i++){
             var treeEl = $(trees[i].api.opts.element);
             if(treeEl.find('.kmltree-selected').length + treeEl.find('.KmlNetworkLink.kmltree-breadcrumb:not(.loaded)').length === 1 && treeEl.find('.kmltree-cursor-2').length === 0){
-                console.log('found stuff');
                 trees[i].instance.clearSelection();
             }else{
-                console.log('didnt find stuff', treeEl.find('.kmltree-selected'), treeEl.find('KmlNetworkLink.kmltree-breadcrumb:not(.loaded)'), treeEl.find('.kmltree-selected').length + treeEl.find('KmlNetworkLink.kmltree-breadcrumb:not(.loaded)').length);
+                // console.log('didnt find stuff', treeEl.find('.kmltree-selected'), treeEl.find('KmlNetworkLink.kmltree-breadcrumb:not(.loaded)'), treeEl.find('.kmltree-selected').length + treeEl.find('KmlNetworkLink.kmltree-breadcrumb:not(.loaded)').length);
             }
         }
-    }
+    };
+    
+    var _clearEverythingButMe = function(tree){
+        for(var i=0;i<trees.length;i++){
+            if(trees[i].instance !== tree){
+                if($(trees[i].api.opts.element).find('.kmltree-selected').length || $(trees[i].api.opts.element).find('.kmltree-breadcrumb').length){
+                    trees[i].instance.clearSelection();                    
+                }
+            }
+        }
+    };
+    
+    that._clearEverythingButMe = _clearEverythingButMe;
         
     var ownsUrl = function(doc, url){
         if(doc.getUrl() === url){
@@ -1231,6 +1240,7 @@ var kmltree = (function(){
                 setExpanderBreadcrumbs(node);
             }
             if(!silent){
+                kmltreeManager._clearEverythingButMe(that);
                 triggerSelect(node, kmlObject);
             }else{
                 addSelectData(node, kmlObject);
