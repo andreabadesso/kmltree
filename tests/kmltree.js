@@ -1221,8 +1221,53 @@ module('kmlTree');
         tree.load(true);
     });
     
-    // test kmltreeManager.getOwner
-    
+    earthAsyncTest('kmltreeManager - getOwner', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        $(document.body).append('<div class="kmltreetest2"></div>');
+
+        var tree = kmltree({
+            url: example('selection.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multipleSelect: true
+        });
+
+        var tree2 = kmltree({
+            url: example('hello.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest2'),
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multipleSelect: true
+        });
+
+        $(tree).one('kmlLoaded', function(){
+            $(tree2).one('kmlLoaded', function(e, kmlObject){
+                setTimeout(function(){
+                    // Wait for networklink to load
+                    var hello = tree2.lookup($('.hello'));
+                    var jalama = ge.getElementByUrl('http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_3.kml#JAL');
+                    equals(kmltreeManager.getOwner(jalama), tree, 'Jalama placemark belongs to tree 1. It is within an unexpanded networklink.');
+                    equals(kmltreeManager.getOwner(hello), tree2, 'Hello placemark is within tree2');
+                    tree.destroy();
+                    tree2.destroy();
+                    $('.kmltreetest').remove();
+                    $('.kmltreetest2').remove();
+                    start();                    
+                }, 1000);
+            });            
+            tree2.load(true);
+        });
+        tree.load(true);
+    });
     
     // TODO: Test cases for all the new apis that aren't yet tested
 
