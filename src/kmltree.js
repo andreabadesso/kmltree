@@ -478,6 +478,8 @@ var kmltree = (function(){
                 selectNode(this, null, !!silent || (!silent && i !== nodes.length - 1));
             });
         };
+        
+        that.selectNodes = selectNodes;
                 
         var deselectNodes = function(nodes, silent){
             nodes.each(function(i){
@@ -485,6 +487,8 @@ var kmltree = (function(){
             });
         };
                 
+        that.deselectNodes = deselectNodes;
+
         var deselectNode = function(node, kmlObject, silent){
             if(!kmlObject){
                 kmlObject = lookup(node);

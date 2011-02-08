@@ -224,12 +224,12 @@ var kmltreeManager = (function(){
                 // count on that event to fire. I think this is so you can 
                 // have callbacks like balloonOpening that don't go into an 
                 // infinite loop
+                google.earth.removeEventListener(
+                    ge, 'balloonopening', boCallback);
                 setTimeout(function(){
                     $(tree).trigger('balloonopen', [
                         e.getBalloon(), e.getFeature()]);
                 }, 1);
-                google.earth.removeEventListener(
-                    ge, 'balloonopening', boCallback);
             };
             google.earth.addEventListener(ge, 'balloonopening', boCallback);
         }
