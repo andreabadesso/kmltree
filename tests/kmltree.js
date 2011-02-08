@@ -2677,7 +2677,7 @@ module('kmlTree');
                     $('.kmltreetest').remove();
                     $('.kmltreetest2').remove();
                     start();                    
-                }, 1000);
+                }, 2000);
             });
             tree2.load(true);
         });
