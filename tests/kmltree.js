@@ -5,14 +5,12 @@ module('kmlTree');
 
     function triggerBalloon(ge, url){
         var f = ge.getElementByUrl(url);
-        console.log(f.getName());
         if(!f){
             throw('could not find feature with url ', url);
         }
         var balloon = ge.createHtmlStringBalloon('');
         balloon.setFeature(f); 
         ge.setBalloon(balloon);
-        console.log('set balloon');
     }
     
     // from http://stackoverflow.com/questions/901115/get-querystring-with-jquery
@@ -1201,25 +1199,20 @@ module('kmlTree');
 
         $(tree).one('kmlLoaded', function(){
             $(tree2).one('kmlLoaded', function(e, kmlObject){
-                console.log('loaded');
                 $(tree).one('select', function(e, data){
-                    console.log('select one');
                     equals(data.length, 1, 'One feature selected from map');
                     ok(inSelectData(data, 'Forney'), 'Forney in selected features');
                     $(tree2).one('select', function(e, data){
-                        console.log('select two');
                         equals(data.length, 1, 'One feature selected from map on other tree');
                         ok(inSelectData(data, 'Hello!'), 'Hello! in selected features');
                         equals($('.kmltree .kmltree-selected').length, 1, 'Only one feature from one tree selected');
-                        // tree.destroy();
-                        // tree2.destroy();
-                        // $('.kmltreetest').remove();
-                        // $('.kmltreetest2').remove();
-                        // start();
+                        tree.destroy();
+                        tree2.destroy();
+                        $('.kmltreetest').remove();
+                        $('.kmltreetest2').remove();
+                        start();
                     });
-                    console.log(tree2);
-                    console.log(tree2.kmlObject.getUrl() + '#hello');
-                    triggerBalloon(ge, tree2.kmlObject.getUrl() + '#hello');                        
+                    $('.kmltreetest2 .hello .name').click();
                 });
                 triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');
             });            
