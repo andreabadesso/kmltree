@@ -64,6 +64,21 @@
 			</ListStyle>
 		</Style>
 	</Folder>
+	<Folder id="LAYER_TREES">
+		<name>3d Trees</name>
+		<visibility>0</visibility>
+		<Style>
+			<ListStyle>
+				<listItemType>checkHideChildren</listItemType>
+				<ItemIcon>
+					<state>open</state>
+					<href>http://localhost/~cburt/kmltree/src/images/trees.png</href>
+				</ItemIcon>
+				<bgColor>00ffffff</bgColor>
+				<maxSnippetLines>2</maxSnippetLines>
+			</ListStyle>
+		</Style>
+	</Folder>
 	<Folder id="GRID">
 		<name>Grid</name>
 		<visibility>0</visibility>

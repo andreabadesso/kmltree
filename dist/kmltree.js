@@ -2293,6 +2293,8 @@ var kmltree = (function(){
                 case 'GRID':
                     options.setGridVisibility(toggle);
                     break;
+                case 'STREET_VIEW':
+                    ge.getNavigationControl().setStreetViewEnabled(toggle); 
             }
         }
     };
