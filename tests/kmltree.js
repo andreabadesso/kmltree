@@ -934,6 +934,93 @@ module('kmlTree');
         tree.load(true);
     });
 
+    earthAsyncTest("selection kmltree-breadcrumbs - one networklink deep", function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('selection.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            selectable: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
+                ok(true, 'select event fired');
+                equals(kmlObject.getName(), 'San Miguel Island', 'Correct feature selected');
+                ok(node.hasClass('KmlNetworkLink'), 'Node returned to event callback is actually the parent networklink');
+                ok(node.hasClass('kmltree-breadcrumb'), 'NetworkLink has kmltree-breadcrumb class');
+                $(tree).one('networklinkload', function(e){
+                    ok(!node.hasClass('kmltree-breadcrumb'), 'NetworkLink should no longer have kmltree-breadcrumb class');
+                    ok(node.find('.kmltree-selected:contains("San Miguel")').length === 1, 'Child feature is selected');
+                    // roll back up
+                    var nla = $('.KmlNetworkLink > :contains("networklink a")').parent();
+                    nla.find('.expander').click();
+                    ok(nla.hasClass('kmltree-breadcrumb'), 'collapsing networklink back up add kmltree-breadcrumb.');
+                    tree.destroy();
+                    $('.kmltreetest').remove();
+                    start();
+                });
+                node.find('.expander').click()
+            });
+            setTimeout(function(){
+                // wait for networklink to load up
+                triggerBalloon(ge, 'http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_2.kml#SMI');                
+            }, 1000);
+        });
+        tree.load(true);
+    });
+    
+    earthAsyncTest("selection kmltree-breadcrumbs - two networklinks deep with folder in-between", function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('selection.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            selectable: true
+        });
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
+                ok(true, 'select event fired');
+                equals(kmlObject.getName(), 'Jalama', 'Correct feature selected');
+                ok(node.hasClass('KmlNetworkLink'), 'Node returned to event callback is actually the parent networklink');
+                ok(node.hasClass('kmltree-breadcrumb'), 'NetworkLink has kmltree-breadcrumb class');
+                $(tree).one('networklinkload', function(e){
+                    ok(!node.hasClass('kmltree-breadcrumb'), 'NetworkLink should no longer have kmltree-breadcrumb class');
+                    var folder = node.find('.KmlFolder.kmltree-breadcrumb');
+                    ok(folder, 'Folder has kmltree-breadcrumb class');
+                    folder.find('> .expander').click();
+                    ok(!folder.hasClass('kmltree-breadcrumb'), 'After expanding, folder kmltree-breadcrumb is removed');
+                    var nlb = folder.find('.KmlNetworkLink.kmltree-breadcrumb');
+                    ok(nlb, 'networklink b kmltree-breadcrumb-ed');
+                    $(tree).one('networklinkload', function(e){
+                        ok(!nlb.hasClass('kmltree-breadcrumb'), 'kmltree-breadcrumb class removed from expanded networklink');
+                        ok(node.find('.kmltree-selected').length, 'Selected item found under networklink');
+                        // rollup
+                        node.find('> .expander').click();
+                        ok(node.hasClass('kmltree-breadcrumb'), 'collapsed networklink indicates location of nested selection.');
+                        tree.destroy();
+                        $('.kmltreetest').remove();
+                        start();
+                    });
+                    nlb.find('> .expander').click();
+                });
+                node.find('> .expander').click()
+            });
+            setTimeout(function(){
+                // wait for networklink to load up
+                triggerBalloon(ge, 'http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_3.kml#JAL');                
+            }, 2000);
+        });
+        tree.load(true);
+    });
+
     earthAsyncTest('selectable - static selectable option', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
@@ -1127,8 +1214,6 @@ module('kmlTree');
                 var kmlObject = data[0].kmlObject;
                 ok(true, 'select event fired');
                 equals(kmlObject.getName(), 'Forney', 'Correct feature selected');
-                var e = jQuery.Event('click');
-                e.shiftKey = true;
                 $(tree).one('select', function(e, data){
                     equals(data.length, 3, 'Selected all 3 placemarks');
                     ok(inSelectData(data, 'Gull Island'), 'Gull Island in selected features');
@@ -1158,6 +1243,8 @@ module('kmlTree');
                     });
                     triggerBalloon(ge, tree.kmlObject.getUrl() + '#GullIsland');                
                 });
+                var e = jQuery.Event('click');
+                e.shiftKey = true;
                 $('li.ADMRLS > span.name').trigger(e);
             });
             triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');                
@@ -1210,59 +1297,11 @@ module('kmlTree');
                         tree2.destroy();
                         $('.kmltreetest').remove();
                         $('.kmltreetest2').remove();
-                        start();
+                        start();                            
                     });
                     $('.kmltreetest2 .hello .name').click();
                 });
                 triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');
-            });            
-            tree2.load(true);
-        });
-        tree.load(true);
-    });
-    
-    earthAsyncTest('kmltreeManager - getOwner', function(ge, gex){
-        $(document.body).append('<div class="kmltreetest"></div>');
-        $(document.body).append('<div class="kmltreetest2"></div>');
-
-        var tree = kmltree({
-            url: example('selection.kml'),
-            gex: gex, 
-            mapElement: $('#map3d'), 
-            element: $('.kmltreetest'),
-            bustCache: false,
-            selectable: function(kmlObject){
-                return kmlObject.getType() === 'KmlPlacemark';
-            },
-            multipleSelect: true
-        });
-
-        var tree2 = kmltree({
-            url: example('hello.kml'),
-            gex: gex, 
-            mapElement: $('#map3d'), 
-            element: $('.kmltreetest2'),
-            bustCache: false,
-            selectable: function(kmlObject){
-                return kmlObject.getType() === 'KmlPlacemark';
-            },
-            multipleSelect: true
-        });
-
-        $(tree).one('kmlLoaded', function(){
-            $(tree2).one('kmlLoaded', function(e, kmlObject){
-                setTimeout(function(){
-                    // Wait for networklink to load
-                    var hello = tree2.lookup($('.hello'));
-                    var jalama = ge.getElementByUrl('http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_3.kml#JAL');
-                    equals(kmltreeManager.getOwner(jalama), tree, 'Jalama placemark belongs to tree 1. It is within an unexpanded networklink.');
-                    equals(kmltreeManager.getOwner(hello), tree2, 'Hello placemark is within tree2');
-                    tree.destroy();
-                    tree2.destroy();
-                    $('.kmltreetest').remove();
-                    $('.kmltreetest2').remove();
-                    start();                    
-                }, 1000);
             });            
             tree2.load(true);
         });
@@ -1302,93 +1341,6 @@ module('kmlTree');
         tree.load(true);
     });
     
-    earthAsyncTest("selection kmltree-breadcrumbs - one networklink deep", function(ge, gex){
-        $(document.body).append('<div class="kmltreetest"></div>');
-        var tree = kmltree({
-            url: example('selection.kml'),
-            gex: gex, 
-            mapElement: $('#map3d'), 
-            element: $('.kmltreetest'),
-            bustCache: false,
-            selectable: true
-        });
-        $(tree).one('kmlLoaded', function(e, kmlObject){
-            $(tree).one('select', function(e, data){
-                var node = data[0].node;
-                var kmlObject = data[0].kmlObject;
-                ok(true, 'select event fired');
-                equals(kmlObject.getName(), 'San Miguel Island', 'Correct feature selected');
-                ok(node.hasClass('KmlNetworkLink'), 'Node returned to event callback is actually the parent networklink');
-                ok(node.hasClass('kmltree-breadcrumb'), 'NetworkLink has kmltree-breadcrumb class');
-                $(tree).one('networklinkload', function(e){
-                    ok(!node.hasClass('kmltree-breadcrumb'), 'NetworkLink should no longer have kmltree-breadcrumb class');
-                    ok(node.find('.kmltree-selected:contains("San Miguel")').length === 1, 'Child feature is selected');
-                    // roll back up
-                    var nla = $('.KmlNetworkLink > :contains("networklink a")').parent();
-                    nla.find('.expander').click();
-                    ok(nla.hasClass('kmltree-breadcrumb'), 'collapsing networklink back up add kmltree-breadcrumb.');
-                    tree.destroy();
-                    $('.kmltreetest').remove();
-                    start();
-                });
-                node.find('.expander').click()
-            });
-            setTimeout(function(){
-                // wait for networklink to load up
-                triggerBalloon(ge, 'http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_2.kml#SMI');                
-            }, 1000);
-        });
-        tree.load(true);
-    });
-    
-    earthAsyncTest("selection kmltree-breadcrumbs - two networklinks deep with folder in-between", function(ge, gex){
-        $(document.body).append('<div class="kmltreetest"></div>');
-        var tree = kmltree({
-            url: example('selection.kml'),
-            gex: gex, 
-            mapElement: $('#map3d'), 
-            element: $('.kmltreetest'),
-            bustCache: false,
-            selectable: true
-        });
-        $(tree).one('kmlLoaded', function(e, kmlObject){
-            $(tree).one('select', function(e, data){
-                var node = data[0].node;
-                var kmlObject = data[0].kmlObject;
-                ok(true, 'select event fired');
-                equals(kmlObject.getName(), 'Jalama', 'Correct feature selected');
-                ok(node.hasClass('KmlNetworkLink'), 'Node returned to event callback is actually the parent networklink');
-                ok(node.hasClass('kmltree-breadcrumb'), 'NetworkLink has kmltree-breadcrumb class');
-                $(tree).one('networklinkload', function(e){
-                    ok(!node.hasClass('kmltree-breadcrumb'), 'NetworkLink should no longer have kmltree-breadcrumb class');
-                    var folder = node.find('.KmlFolder.kmltree-breadcrumb');
-                    ok(folder, 'Folder has kmltree-breadcrumb class');
-                    folder.find('> .expander').click();
-                    ok(!folder.hasClass('kmltree-breadcrumb'), 'After expanding, folder kmltree-breadcrumb is removed');
-                    var nlb = folder.find('.KmlNetworkLink.kmltree-breadcrumb');
-                    ok(nlb, 'networklink b kmltree-breadcrumb-ed');
-                    $(tree).one('networklinkload', function(e){
-                        ok(!nlb.hasClass('kmltree-breadcrumb'), 'kmltree-breadcrumb class removed from expanded networklink');
-                        ok(node.find('.kmltree-selected').length, 'Selected item found under networklink');
-                        // rollup
-                        node.find('> .expander').click();
-                        ok(node.hasClass('kmltree-breadcrumb'), 'collapsed networklink indicates location of nested selection.');
-                        tree.destroy();
-                        $('.kmltreetest').remove();
-                        start();
-                    });
-                    nlb.find('> .expander').click();
-                });
-                node.find('> .expander').click()
-            });
-            setTimeout(function(){
-                // wait for networklink to load up
-                triggerBalloon(ge, 'http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_3.kml#JAL');                
-            }, 1000);
-        });
-        tree.load(true);
-    });
-
     earthAsyncTest('Contents of NetworkLinks can be displayed. Depends on <a href="http://code.google.com/p/earth-api-samples/issues/detail?id=260&q=NetworkLink&colspec=ID%20Type%20Summary%20Component%20OpSys%20Browser%20Status%20Stars#c3">this ticket</a>, or a hack', function(ge, gex){
         var firstLat = ge.getView().copyAsCamera(ge.ALTITUDE_ABSOLUTE).getLatitude();
         $(document.body).append('<div class="kmltreetest"></div>');
@@ -2680,6 +2632,54 @@ module('kmlTree');
                 });
                 $('.kmltreetest').find('span.name:contains(networklink off)').parent().find('>.expander').click();
             }, 1000);
+        });
+        tree.load(true);
+    });
+    
+    earthAsyncTest('kmltreeManager - getOwner', function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        $(document.body).append('<div class="kmltreetest2"></div>');
+
+        var tree = kmltree({
+            url: example('selection.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multipleSelect: true
+        });
+
+        var tree2 = kmltree({
+            url: example('hello.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest2'),
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multipleSelect: true
+        });
+
+        $(tree).one('kmlLoaded', function(){
+            $(tree2).one('kmlLoaded', function(e, kmlObject){
+                setTimeout(function(){
+                    // Wait for networklink to load
+                    var hello = tree2.lookup($('.hello'));
+                    var jalama = ge.getElementByUrl('http://underbluewaters-try-better-selection-api.googlecode.com/hg/examples/kml/selection_3.kml#JAL');
+                    equals(kmltreeManager.getOwner(jalama), tree, 'Jalama placemark belongs to tree 1. It is within an unexpanded networklink.');
+                    equals(kmltreeManager.getOwner(hello), tree2, 'Hello placemark is within tree2');
+                    tree.destroy();
+                    tree2.destroy();
+                    $('.kmltreetest').remove();
+                    $('.kmltreetest2').remove();
+                    start();                    
+                }, 1000);
+            });
+            tree2.load(true);
         });
         tree.load(true);
     });

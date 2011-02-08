@@ -45,6 +45,11 @@ var kmltreeManager = (function(){
                 break;
             }
         }
+        for(var key in cache){
+            if(cache[key].instance === tree){
+                delete cache[key];
+            }
+        }
         return tree;
     };
     
@@ -1667,6 +1672,8 @@ var kmltree = (function(){
             $('#'+id+' li > span.name').die();
             $('#'+id+' li').die();
             $('#'+id+' li > .expander').die();
+            $(that).die();
+            $(that).unbind();
             $('#kmltree-balloon-iframe').remove();
             opts.element.html('');
         };
