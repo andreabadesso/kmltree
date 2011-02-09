@@ -262,6 +262,37 @@ module('kmlTree');
     });
     
     // className option
+    earthAsyncTest('classname option', 4, function(ge, gex){
+        $(document.body).append('<div class="kmltreetest"></div>');
+        var tree = kmltree({
+            url: example('hello.kml'),
+            gex: gex, 
+            mapElement: $('#map3d'), 
+            element: $('.kmltreetest'),
+            bustCache: false,
+            classname: function(kmlObject){
+                var type = kmlObject.getType();
+                if(type === 'KmlPlacemark'){
+                    return 'myPlacemarkClass'
+                }else if(type === 'KmlDocument'){
+                    return 'myDocClass';
+                }else{
+                    return 'myClass';
+                }
+            }
+        });
+
+        $(tree).bind('kmlLoaded', function(e, kmlObject){
+            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
+            equals($('li.myPlacemarkClass.KmlPlacemark').length, 1, 'Placemark has custom class');
+            equals($('li.myDocClass.KmlDocument').length, 1, 'Doc has custom class');
+            tree.destroy();
+            $('.kmltreetest').remove();
+            start();
+        });
+        ok(tree !== false, 'Tree initialized');
+        tree.load(true);
+    });
 
     earthAsyncTest('getNodesById', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');

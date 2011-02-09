@@ -97,7 +97,7 @@ var kmltree = (function(){
         '<li UNSELECTABLE="on" id="<%= id %>" class="kmltree-item ',
         '<%= listItemType %> ',
         '<%= type %> ',
-        '<%= customClass %> ',
+        '<%= classname %> ',
         '<%= (visible ? "visible " : "") %>',
         '<%= (customIcon ? "hasIcon " : "") %>',
         '<%= (alwaysRenderNodes ? "alwaysRenderNodes " : "") %>',
@@ -140,7 +140,6 @@ var kmltree = (function(){
     ].join(''));
     
     var constructor_defaults = {
-        visitFunction: function(kmlObject, config){return config},
         refreshWithState: true,
         bustCache: false,
         restoreState: false,
@@ -154,7 +153,8 @@ var kmltree = (function(){
         unknownIframeDimensionsDefault: {height: 450, width:530},
         sandboxedBalloonCallback: function(){},
         selectable: function(kmlObject){return false;},
-        multipleSelect: false
+        multipleSelect: false,
+        classname: function(kmlObject){return ''}
     };
         
         
@@ -288,13 +288,12 @@ var kmltree = (function(){
                             select: selectable,
                             listItemType: getListItemType(style),
                             customIcon: customIcon(this),
-                            customClass: '',
+                            classname: opts.classname(this),
                             children: [],
                             alwaysRenderNodes: false,
                             kmlId: this.getId().replace(/\W/g, '-'),
                             geoType: geotype
                         }
-                        child = opts.visitFunction(this, child);
                         parent.children.push(child);
                         if(child.listItemType !== 'checkHideChildren'){
                             context.child = child;
