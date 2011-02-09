@@ -1310,10 +1310,21 @@ var kmltree = (function(){
             $(that).trigger('click', [node[0], kmlObject]);
         });
 
-        $('#'+id+' li > span.name').live('contextmenu', function(){            
-            var parent = $(this).parent();
-            var kmlObject = lookup(parent);
-            $(that).trigger('contextmenu', [parent[0], kmlObject]);
+        $('#'+id+' li').live('contextmenu', function(e){
+            var node = $(this);
+            if(node.hasClass('select')){
+                if(!node.hasClass('kmltree-selected')){
+                    clearSelection(true, true);
+                    selectNode(node);
+                }
+                setTimeout(function(){
+                    // Set timeout so that it fires after select event if 
+                    // selecting new feature
+                    $(that).trigger('context', [selectData]);                    
+                }, 2);
+            }
+            e.preventDefault();
+            return false;
         });
         
         // Events to handle clearing selection

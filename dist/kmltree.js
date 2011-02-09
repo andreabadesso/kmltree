@@ -932,7 +932,7 @@ var kmltree = (function(){
         setExtent: false,
         displayDocumentRoot: 'auto',
         displayEnhancedContent: false,
-        iframeSandbox: 'http://underbluewaters-try-unsafe-popups.googlecode.com/hg/src/iframe.html',
+        iframeSandbox: 'http://kmltree.googlecode.com/hg/src/iframe.html',
         unknownIframeDimensionsDefault: {height: 450, width:530},
         sandboxedBalloonCallback: function(){},
         selectable: function(kmlObject){return false;},
@@ -2092,10 +2092,19 @@ var kmltree = (function(){
             $(that).trigger('click', [node[0], kmlObject]);
         });
 
-        $('#'+id+' li > span.name').live('contextmenu', function(){            
-            var parent = $(this).parent();
-            var kmlObject = lookup(parent);
-            $(that).trigger('contextmenu', [parent[0], kmlObject]);
+        $('#'+id+' li').live('contextmenu', function(e){
+            var node = $(this);
+            if(node.hasClass('select')){
+                if(!node.hasClass('kmltree-selected')){
+                    clearSelection(true, true);
+                    selectNode(node);
+                }
+                setTimeout(function(){
+                    $(that).trigger('context', [selectData]);                    
+                }, 2);
+            }
+            e.preventDefault();
+            return false;
         });
         
         // Events to handle clearing selection

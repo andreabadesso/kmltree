@@ -213,32 +213,55 @@ module('kmlTree');
         ok(tree !== false, 'Tree initialized');
         tree.load(true);
     });
-
-    earthAsyncTest('contextmenu events', function(ge, gex){
+    
+    earthAsyncTest('context menu support', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
         var tree = kmltree({
-            url: example('kmlForestTest.kml'),
+            url: example('selection.kml'),
             gex: gex, 
             mapElement: $('#map3d'), 
             element: $('.kmltreetest'),
-            bustCache: false
+            bustCache: false,
+            selectable: function(kmlObject){
+                return kmlObject.getType() === 'KmlPlacemark';
+            },
+            multipleSelect: true
         });
-        $(tree).bind('kmlLoaded', function(e, kmlObject){
-            ok(kmlObject.getType() === 'KmlDocument', 'KmlDocument loaded correctly');
-            $('.kmltreetest').find('span.name:contains(Placemark without description)')
-                .trigger('contextmenu');
+        $(tree).one('kmlLoaded', function(e, kmlObject){
+            $(tree).one('select', function(e, data){
+                var node = data[0].node;
+                var kmlObject = data[0].kmlObject;
+                ok(true, 'select event fired');
+                equals(kmlObject.getName(), 'Forney', 'Correct feature selected');
+                var e = jQuery.Event('click');
+                e.metaKey = true;
+                $(tree).one('select', function(e, data){
+                    equals(data.length, 2, 'Two kmlObjects selected');
+                    ok(inSelectData(data, 'Gull Island'), 'Gull Island in selected features');
+                    ok(inSelectData(data, 'Forney'), 'Forney in selected features');
+                    $(tree).one('context', function(e, data){
+                        equals(data.length, 2, 'Two kmlObjects selected');
+                        ok(inSelectData(data, 'Gull Island'), 'Gull Island in selected features');
+                        ok(inSelectData(data, 'Forney'), 'Forney in selected features'); 
+                        $(tree).one('context', function(e, data){
+                            equals(data.length, 1, 'One kmlObject selected');
+                            ok(inSelectData(data, "Admiral's Reef"), "Admiral's Reef in selected features"); 
+                            tree.destroy();
+                            $('.kmltreetest').remove();
+                            start();
+                        });
+                        $('li.ADMRLS').trigger('contextmenu');
+                    });
+                    $('li.GullIsland > span.name').trigger('contextmenu');
+                });
+                $('li.GullIsland > span.name').trigger(e);
+            });
+            triggerBalloon(ge, tree.kmlObject.getUrl() + '#Forney');                
         });
-        $(tree).bind('contextmenu', function(e, node, kmlObject){
-            equals(kmlObject.getName(), 'Placemark without description');
-            equals(e.target, tree);
-            $('.kmltreetest').remove();
-            equals(this, tree, '"this" refers to the instance of kmltree');
-            tree.destroy();
-            start();
-        });
-        ok(tree !== false, 'Tree initialized');
         tree.load(true);
     });
+    
+    // className option
 
     earthAsyncTest('getNodesById', function(ge, gex){
         $(document.body).append('<div class="kmltreetest"></div>');
