@@ -152,7 +152,7 @@
             
             function parentResize(){
                 var height = $(document.body).height() + 30;
-                var width = $(document.body).width() + 18;
+                var width = $(document.body).width() + 20;
                 parent.postMessage(
                     JSON.stringify({height: height, width:width}), '*');
             }
