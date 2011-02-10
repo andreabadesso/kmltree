@@ -1,63 +1,45 @@
 html, body {
     margin:0px;
     padding:0px;
+    background-color:#4C6882;
 }
 
-#tree, .tree {
-    position:absolute;
-    top:140px;
-    left:10px;
-    padding:10px;
-    width:420px;
-    height: 580px;
-    overflow-y:auto;
-    border:solid 1px black;
+.content {
+    margin-left:auto;
+    margin-right:auto;
+    width:90%;
+    background-color:white;
+    border:solid 2px #314253;
+    border-top:none;
 }
 
-#tree2, .tree {
-    position:absolute;
-    top:350px;
-    left:10px;
+#tree {
+    float:left;
     padding:10px;
-    width:420px;
-    height: 580px;
+    width:35%;
+    height: 650px;
     overflow-y:auto;
+}
+
+#tree2 {
+    position:absolute;
+    top:250px;
+    left:6%;
 }
 
 #map3d {
-    position:absolute;
-    left:455px;
-    top:140px;
-    height: 700px;
-    width: 700px;
+    float:right;
+    height: 665px;
+    width: 65%;
 }
 
 h1 {
-    font-size:24px;
+    background-color:#E6E6E6;
+    font-size:1em;
     font-weight:normal;
     font-family:sans-serif;
-    color:#DBE8EB;
     margin:0;
     padding:10px;
-    background-image : -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        color-stop(0.41, rgb(36,45,57)),
-        color-stop(0.65, rgb(49,58,75)),
-        color-stop(0.86, rgb(57,68,85))
-    );
-    
-    background-image: -moz-linear-gradient(
-        center bottom,
-        rgb(36,45,57) 41%,
-        rgb(49,58,75) 65%,
-        rgb(57,68,85) 86%
-    );
-}
-
-h1 a, h1 a:visited {
-    color:#DBE8EB;
 }
 
 #nav {
@@ -81,15 +63,15 @@ h1 a, h1 a:visited {
 }
 
 a.src {
+    float:right;
     padding:10px;
-    position:relative;
     top:10px;
     left:10px;
     padding-left:20px;
-    background: white url(kml.png) no-repeat left center;
+    background: transparent url(kml.png) no-repeat left center;
 }
 
-p.description {
+p {
     padding:10px;
 }
 
@@ -106,4 +88,10 @@ ul.log li {
     background-color:#EDDD83;
     margin:5px;
     padding:5px;
+}
+
+#codeSample {
+    padding:0;
+    margin:0;
+    border:none;
 }

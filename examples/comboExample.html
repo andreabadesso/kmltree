@@ -2,32 +2,20 @@
 <html>
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-        <title>Combo Example</title>
-        <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRQPjtdHQ3xdBuNAR-KDFOW1mqdVsRRmZhmrl-MOSGS44M9Gug9FdssEgQ"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>
-        <!-- earth-api-utility-library dependencies -->
-        <script src="http://geojs.googlecode.com/svn/trunk/dist/geo.pack.js" type="text/javascript" charset="utf-8"></script>
-        <script src="http://earth-api-utility-library.googlecode.com/svn/trunk/extensions/dist/extensions.pack.js" type="text/javascript" charset="utf-8"></script>
-        <!-- kmltree source files -->
-        <link rel="stylesheet" href="../dist/kmltree.css" media="screen">
-        <script src="../dist/kmltree.min.js" type="text/javascript"></script>
-
-        <link rel="stylesheet" href="examples.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <title>Combo KML Example</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js" type="text/javascript"></script>
+        <script src="examples.js" type="text/javascript"></script>
+        <script src="https://www.google.com/jsapi?autoload=%7B%22modules%22%3A%5B%7B%22name%22%3A%22earth%22%2C%22version%22%3A%221%22%7D%5D%7D&key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRQPjtdHQ3xdBuNAR-KDFOW1mqdVsRRmZhmrl-MOSGS44M9Gug9FdssEgQ" type="text/javascript" charset="utf-8"></script>
+        <script id="sample" type="text/example" charset="utf-8">
         
-        <script src="examples.js" type="text/javascript" charset="utf-8"></script>
-        <script type="text/javascript" charset="utf-8">
-            google.load("earth", "1");
             var tree;
-            
-            function init() {
-                google.earth.createInstance('map3d', initCB, failureCB);
-            }
 
-            function initCB(instance) {
-                var log = new Log();
-                ge = instance;
+            $(document).ready(function(){
+                google.earth.createInstance('map3d', init, failure);                
+            });
+
+            function init(ge) {
                 ge.getWindow().setVisibility(true);
-                
                 var gex = gex = new GEarthExtensions(ge);
                 
                 tree = kmltree({
@@ -37,26 +25,26 @@
                     element: $('#tree'),
                     setExtent: true
                 });
-                
+
                 tree.load();
+                
             }
 
-            function failureCB(errorCode) {
+            function failure(errorCode) {
                 alert('failed to load plugin');
             }
-
-            $(document).ready(init);
             
         </script>
     </head>
     <body>
-        <h1><a href="http://code.google.com/p/kmltree/">kmltree</a> > <a href="http://code.google.com/p/kmltree/wiki/ExampleUses">examples</a> > combo example</h1>
-        <a class="src" href="kml/kmlForestTest.kml">source kml</a>
-        <p class="description">
-            Combination example.
-        </p>
-        <div id="tree"></div>
-        <div id="map3d"></div>
-        <br style="clear:both;">
+        <div class="content">
+            <p class="description">
+                This example demonstrates how kmltree renders a wide variety 
+                of KML features, included NetworkLinks, Tours, Placemarks, and 
+                Folders. Notice that some Placemarks have custom icons, and 
+                that you can expand NetworkLinks. Also, the visibility and 
+                open state specified within the kml document is respected.
+            </p>            
+        </div>
     </body>
 </html>
