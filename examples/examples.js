@@ -1,10 +1,10 @@
 $(document).one('ready', function(){
     // Append stylesheets
-    $('head').append([
-        '<link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" type="text/css" media="screen" charset="utf-8">',
-        '<link rel="stylesheet" href="examples.css" type="text/css" media="screen" title="no title" charset="utf-8">',
-        '<link rel="stylesheet" href="../dist/kmltree.css" media="screen">'
-    ].join('\n'));
+    addLinks([
+        'http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css',
+        'examples.css',
+        '../dist/kmltree.css'
+    ]);
     
     $.ajaxSetup({
       dataType: 'script'
@@ -15,7 +15,7 @@ $(document).one('ready', function(){
         $.ajax({url: '../dist/kmltree.min.js'})        
     )
         .then(function(){
-            var t = $('#sample').text();
+            var t = $('#sample').html();
             jQuery.globalEval(t);
             $(document).trigger('ready');            
             setTimeout(function(){
@@ -33,7 +33,7 @@ $(document).one('ready', function(){
     $('.description').before($('<a class="src" href="#">source kml</a><h1><a href="http://code.google.com/p/kmltree/">kmltree</a> > <a href="http://code.google.com/p/kmltree/wiki/ExampleUses">examples</a> > <span class="breadcrumb-end"></span></h1><div id="tree"></div><div id="tree2"></div><div id="map3d"></div><br style="clear:both;">'));
     $('span.breadcrumb-end').text($('title').text());
     $('.content').append('<pre class="prettyprint" id="codeSample"></pre>');
-    $('#codeSample').text($('#sample').text());
+    $('#codeSample').text($('#sample').html());
     jQuery.getScript('http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js', function(){
         prettyPrint();        
     });
@@ -47,4 +47,18 @@ function resizeMap3d(){
     var tw = $('#tree').width();
     var mw = $('#map3d').width();
     $('#map3d').width(cw - tw - 23);
+}
+
+function addLink(href){
+    var link = $("<link/>").appendTo($("head"));
+    link.attr({
+    rel: "stylesheet",
+    href: href
+    });
+}
+
+function addLinks(hrefs){
+    for(var i=0;i<hrefs.length;i++){
+        addLink(hrefs[i]);
+    }
 }
