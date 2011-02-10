@@ -2,34 +2,22 @@
 <html>
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-        <title>Selection Example</title>
-        <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRQPjtdHQ3xdBuNAR-KDFOW1mqdVsRRmZhmrl-MOSGS44M9Gug9FdssEgQ"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>
-        <!-- earth-api-utility-library dependencies -->
-        <script src="http://geojs.googlecode.com/svn/trunk/dist/geo.pack.js" type="text/javascript" charset="utf-8"></script>
-        <script src="http://earth-api-utility-library.googlecode.com/svn/trunk/extensions/dist/extensions.pack.js" type="text/javascript" charset="utf-8"></script>
-        <!-- kmltree source files -->
-        <link rel="stylesheet" href="../dist/kmltree.css" media="screen">
-        <script src="../dist/kmltree.min.js" type="text/javascript"></script>
-        <script src="examples.js" type="text/javascript" charset="utf-8"></script>
-
-        <link rel="stylesheet" href="examples.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <title>Combo KML Example</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js" type="text/javascript"></script>
+        <script src="examples.js" type="text/javascript"></script>
+        <script src="https://www.google.com/jsapi?autoload=%7B%22modules%22%3A%5B%7B%22name%22%3A%22earth%22%2C%22version%22%3A%221%22%7D%5D%7D&key=ABQIAAAAbEBR9v0lqBFdTfOcbe5WjRQPjtdHQ3xdBuNAR-KDFOW1mqdVsRRmZhmrl-MOSGS44M9Gug9FdssEgQ" type="text/javascript" charset="utf-8"></script>
+        <script id="sample" type="text/example" charset="utf-8">
         
-        <script type="text/javascript" charset="utf-8">
-            google.load("earth", "1");
-            var log;
-            
-            function init() {
-                log = new Log();
-                google.earth.createInstance('map3d', initCB, failureCB);
-            }
+            var tree;
 
-            function initCB(instance) {
-                ge = instance;
+            $(document).ready(function(){
+                google.earth.createInstance('map3d', init, failure);                
+            });
+
+            function init(ge) {
                 ge.getWindow().setVisibility(true);
-                
-                var gex = gex = new GEarthExtensions(ge);
-                
+                var gex = gex = new GEarthExtensions(ge);      
+
                 var tree = kmltree({
                     url: './kml/selection.kml',
                     gex: gex, 
@@ -41,46 +29,45 @@
                     },
                     multipleSelect: true
                 });
-                
+
                 tree.load();
-                
+
                 $(tree).bind('select', function(e, selectData){
-                    log.add('select event. selectData = "'+formatSelectData(selectData)+ '"');
+                    if(console && console.log){
+                        console.log('select event', selectData);
+                    }
                 });
 
                 $(tree).bind('context', function(e, selectData){
-                    log.add('context event. selectData = "'+formatSelectData(selectData)+ '"');
+                    if(console && console.log){
+                        console.log('context event', selectData);
+                    }
                 });
-
+                
             }
 
-            function formatSelectData(selectData){
-                var data = [];
-                for(var i = 0; i<selectData.length; i++){
-                    data.push({
-                        node: "li"+$(selectData[i].node).text(),
-                        kmlObject: "kmlObject "+selectData[i].kmlObject.getName()
-                    });
-                };
-                return JSON.stringify(data);
-            };
-
-            function failureCB(errorCode) {
+            function failure(errorCode) {
                 alert('failed to load plugin');
             }
-            
-            $(document).ready(init);
             
         </script>
     </head>
     <body>
-        <h1><a href="http://code.google.com/p/kmltree/">kmltree</a> > <a href="http://code.google.com/p/kmltree/wiki/ExampleUses">examples</a> > selection</h1>
-        <a class="src" href="kml/selection.kml">source kml</a>
-        <p class="description">
-            This example shows selection support via the <code>selectable</code> option in combination with the <code>multipleSelect</code> option. Try using the command/control and shift keys to select multiple features from the tree.
-        </p>
-        <div id="tree"></div>
-        <div id="map3d"></div>
-        <br style="clear:both;">
+        <div class="content">
+            <p class="description">
+                This example shows selection support via the 
+                <code>selectable</code> option in combination with the 
+                <code>multipleSelect</code> option. Try using the 
+                command/control and shift keys to select multiple features 
+                from the tree. Also, notice how selecting features from the
+                map that are within contracted Folders or NetworkLinks show
+                "breadcrumb" indicators on their first visible parent.
+            </p>
+            <p>
+                If your browser supports the <code>console.log</code> 
+                function, you can see the <code>code</code> and 
+                <code>context</code> events firing.                
+            </p>
+        </div>
     </body>
 </html>

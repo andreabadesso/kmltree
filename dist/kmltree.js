@@ -953,7 +953,8 @@ var kmltree = (function(){
         var destroyed = false;
         var internalState = {};
         var selectData = [];
-
+        that.url = opts.url;
+        
         function clearSelectData(){
             selectData = [];
         }
