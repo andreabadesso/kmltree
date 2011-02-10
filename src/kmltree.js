@@ -202,8 +202,8 @@ var kmltree = (function(){
             }
         }
 
-        if(parseFloat(ge.getPluginVersion()) < 5.2){
-            alert('kmltree requires a google earth plugin version >= 5.2');
+        if(parseFloat(ge.getApiVersion()) < 1.005){
+            alert('kmltree requires a google earth plugin version >= 1.005');
         }
                 
         if(!opts.url || !opts.gex || !opts.element || !opts.mapElement){
