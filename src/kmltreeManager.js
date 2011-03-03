@@ -124,6 +124,10 @@ var kmltreeManager = (function(){
     that._clearEverythingButMe = _clearEverythingButMe;
         
     var ownsUrl = function(doc, url){
+        if(!doc){
+            // In case the tree failed to load
+            return false;
+        }
         if(doc.getUrl() === url){
             return true;
         }
