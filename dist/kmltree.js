@@ -124,6 +124,10 @@ var kmltreeManager = (function(){
     that._clearEverythingButMe = _clearEverythingButMe;
         
     var ownsUrl = function(doc, url){
+        if(!doc){
+            // In case the tree failed to load
+            return false;
+        }
         if(doc.getUrl() === url){
             return true;
         }
@@ -135,6 +139,13 @@ var kmltreeManager = (function(){
     var getOwner = function(kmlObject){
         var url = kmlObject.getUrl();
         var urlWithoutId = url.split('#')[0];
+        // Remove cachebuster. If not done, selection of features within 
+        // networklinks from the map will stop working after refresh.
+        // Took a while to notice that bug!!
+        urlWithoutId = urlWithoutId.replace(/cachebuster=\d+/, '')
+        if(urlWithoutId.indexOf('?') === urlWithoutId.length - 1){
+            urlWithoutId = urlWithoutId.replace('?', '');
+        }
         if(cache[urlWithoutId]){
             return cache[urlWithoutId];
         }
