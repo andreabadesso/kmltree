@@ -4,10 +4,16 @@
 div.kmltree
   font-family: sans-serif
   font-size: 12px
-  +user-select("none")
+  +user-select(none)
+
+  li
+    +user-select(none)
+    
+    .toggler, .expander
+      +user-select(none)
 
   p.error
-    +user-select("text")
+    +user-select(text)
 
   ul
     list-style: none
