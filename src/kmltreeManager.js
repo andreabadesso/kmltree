@@ -174,7 +174,6 @@ var kmltreeManager = (function(){
             var tree = trees[i].instance;
             var api = trees[i].api;
             var docs = tree.docs;
-            window.trees = trees;
             for(var j = 0; j<docs.length;j++){
                 var doc = docs[j];
                 if(ownsUrl(doc, url)){
