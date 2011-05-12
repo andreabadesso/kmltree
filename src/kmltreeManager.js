@@ -131,21 +131,33 @@ var kmltreeManager = (function(){
         if(doc.getUrl() === url){
             return true;
         }
+        if(trimUrl(doc.getUrl()) === trimUrl(url)){
+            return true;
+        }
         if(doc.getElementByUrl(url)){
             return true;
         }
+        if(doc.getElementByUrl(trimUrl(url))){
+            return true;
+        }
+        return false;
+    }
+    
+    var trimUrl = function(url){
+        var newUrl = url.split('#')[0];
+        // Remove cachebuster. If not done, selection of features within 
+        // networklinks from the map will stop working after refresh.
+        // Took a while to notice that bug!!
+        newUrl = newUrl.replace(/cachebuster=\d+/, '');
+        if(newUrl.indexOf('?') === newUrl.length - 1){
+            newUrl = newUrl.replace('?', '');
+        }
+        return newUrl;
     }
 
     var getOwner = function(kmlObject){
         var url = kmlObject.getUrl();
-        var urlWithoutId = url.split('#')[0];
-        // Remove cachebuster. If not done, selection of features within 
-        // networklinks from the map will stop working after refresh.
-        // Took a while to notice that bug!!
-        urlWithoutId = urlWithoutId.replace(/cachebuster=\d+/, '')
-        if(urlWithoutId.indexOf('?') === urlWithoutId.length - 1){
-            urlWithoutId = urlWithoutId.replace('?', '');
-        }
+        var urlWithoutId = trimUrl(url);
         if(cache[urlWithoutId]){
             return cache[urlWithoutId];
         }
@@ -161,7 +173,8 @@ var kmltreeManager = (function(){
         for(var i=0;i<trees.length;i++){
             var tree = trees[i].instance;
             var api = trees[i].api;
-            var docs = trees[i].api.docs;
+            var docs = tree.docs;
+            window.trees = trees;
             for(var j = 0; j<docs.length;j++){
                 var doc = docs[j];
                 if(ownsUrl(doc, url)){
