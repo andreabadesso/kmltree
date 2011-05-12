@@ -1098,9 +1098,7 @@ var kmltree = (function(){
                 }
                 var uri = new URI(link);
                 if(uri.getAuthority() === null){
-                    window.nl = NetworkLink;
                     var doc = NetworkLink.getOwnerDocument();
-                    window.doc = doc;
                     if(doc && doc.getUrl()){
                         var base = doc.getUrl();
                         if(base){
@@ -1148,10 +1146,7 @@ var kmltree = (function(){
                     node.removeClass('loading');
                     node.addClass('loaded');
                     setLookup(node, kmlObject);
-                    console.log('opened nl', kmlObject.getUrl());
                     docs.push(kmlObject);
-                    window.pushed = docs;
-                    console.log('added to docs for', that.kmlObject.getUrl(), jQuery.map(docs, function(d){return d.getUrl()}), docs.length);
                     rememberNetworkLink(node, NetworkLink);
                     $(node).trigger('loaded', [node, kmlObject]);
                     $(that).trigger('networklinkload', [node, kmlObject, NetworkLink]);                        
